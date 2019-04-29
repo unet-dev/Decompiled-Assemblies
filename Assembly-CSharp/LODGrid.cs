@@ -1,0 +1,24 @@
+using System;
+
+public class LODGrid : SingletonComponent<LODGrid>, IClientComponent
+{
+	public static bool Paused;
+
+	public float CellSize = 50f;
+
+	public float MaxMilliseconds = 0.1f;
+
+	public const float MaxRefreshDistance = 500f;
+
+	public static float TreeMeshDistance;
+
+	static LODGrid()
+	{
+		LODGrid.Paused = false;
+		LODGrid.TreeMeshDistance = 500f;
+	}
+
+	public LODGrid()
+	{
+	}
+}

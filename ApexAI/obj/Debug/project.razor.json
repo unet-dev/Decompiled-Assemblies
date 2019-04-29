@@ -1,0 +1,14 @@
+{
+  "ProjectFilePath": "e:\\Code Projects\\DecompiledAssemblies\\ApexAI\\ApexAI.csproj",
+  "TargetFramework": "v4.6",
+  "TagHelpers": [],
+  "Configuration": {
+    "ConfigurationName": "UnsupportedRazor",
+    "LanguageVersion": "1.0",
+    "Extensions": [
+      {
+        "ExtensionName": "UnsupportedRazorExtension"
+      }
+    ]
+  }
+}

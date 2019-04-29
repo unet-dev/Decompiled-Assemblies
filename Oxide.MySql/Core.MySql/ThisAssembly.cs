@@ -1,0 +1,66 @@
+using System;
+
+namespace Oxide.Core.MySql
+{
+	internal class ThisAssembly
+	{
+		public ThisAssembly()
+		{
+		}
+
+		public class Git
+		{
+			public const bool IsDirty = true;
+
+			public const string IsDirtyString = "true";
+
+			public const string Branch = "master";
+
+			public const string Commit = "770b2ff";
+
+			public const string Sha = "770b2fff01f89eb0c7b980beed36600d3264b6a1";
+
+			public const string Commits = "1";
+
+			public const string Tag = "";
+
+			public const string BaseTag = "";
+
+			public Git()
+			{
+			}
+
+			public class BaseVersion
+			{
+				public const string Major = "0";
+
+				public const string Minor = "1";
+
+				public const string Patch = "0";
+
+				public BaseVersion()
+				{
+				}
+			}
+
+			public class SemVer
+			{
+				public const string Major = "0";
+
+				public const string Minor = "1";
+
+				public const string Patch = "1";
+
+				public const string Label = "";
+
+				public const string DashLabel = "";
+
+				public const string Source = "Default";
+
+				public SemVer()
+				{
+				}
+			}
+		}
+	}
+}
