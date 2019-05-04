@@ -13,7 +13,7 @@ public class ConsoleGen
 
 	static ConsoleGen()
 	{
-		ConsoleSystem.Command[] command = new ConsoleSystem.Command[527];
+		ConsoleSystem.Command[] command = new ConsoleSystem.Command[526];
 		command[0] = new ConsoleSystem.Command()
 		{
 			Name = "framebudgetms",
@@ -1932,16 +1932,6 @@ public class ConsoleGen
 		};
 		command[190] = new ConsoleSystem.Command()
 		{
-			Name = "puzzleprefabrespawn",
-			Parent = "debug",
-			FullName = "debug.puzzleprefabrespawn",
-			ServerAdmin = true,
-			Description = "respawn all puzzles from their prefabs",
-			Variable = false,
-			Call = (ConsoleSystem.Arg arg) => Debugging.puzzleprefabrespawn(arg)
-		};
-		command[191] = new ConsoleSystem.Command()
-		{
 			Name = "puzzlereset",
 			Parent = "debug",
 			FullName = "debug.puzzlereset",
@@ -1950,7 +1940,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Debugging.puzzlereset(arg)
 		};
-		command[192] = new ConsoleSystem.Command()
+		command[191] = new ConsoleSystem.Command()
 		{
 			Name = "renderinfo",
 			Parent = "debug",
@@ -1959,7 +1949,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Debugging.renderinfo(arg)
 		};
-		command[193] = new ConsoleSystem.Command()
+		command[192] = new ConsoleSystem.Command()
 		{
 			Name = "stall",
 			Parent = "debug",
@@ -1968,7 +1958,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Debugging.stall(arg)
 		};
-		command[194] = new ConsoleSystem.Command()
+		command[193] = new ConsoleSystem.Command()
 		{
 			Name = "bracket_0_blockcount",
 			Parent = "decay",
@@ -1979,7 +1969,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.bracket_0_blockcount.ToString(),
 			SetOveride = (string str) => ConVar.Decay.bracket_0_blockcount = str.ToInt(0)
 		};
-		command[195] = new ConsoleSystem.Command()
+		command[194] = new ConsoleSystem.Command()
 		{
 			Name = "bracket_0_costfraction",
 			Parent = "decay",
@@ -1990,7 +1980,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.bracket_0_costfraction.ToString(),
 			SetOveride = (string str) => ConVar.Decay.bracket_0_costfraction = str.ToFloat(0f)
 		};
-		command[196] = new ConsoleSystem.Command()
+		command[195] = new ConsoleSystem.Command()
 		{
 			Name = "bracket_1_blockcount",
 			Parent = "decay",
@@ -2001,7 +1991,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.bracket_1_blockcount.ToString(),
 			SetOveride = (string str) => ConVar.Decay.bracket_1_blockcount = str.ToInt(0)
 		};
-		command[197] = new ConsoleSystem.Command()
+		command[196] = new ConsoleSystem.Command()
 		{
 			Name = "bracket_1_costfraction",
 			Parent = "decay",
@@ -2012,7 +2002,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.bracket_1_costfraction.ToString(),
 			SetOveride = (string str) => ConVar.Decay.bracket_1_costfraction = str.ToFloat(0f)
 		};
-		command[198] = new ConsoleSystem.Command()
+		command[197] = new ConsoleSystem.Command()
 		{
 			Name = "bracket_2_blockcount",
 			Parent = "decay",
@@ -2023,7 +2013,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.bracket_2_blockcount.ToString(),
 			SetOveride = (string str) => ConVar.Decay.bracket_2_blockcount = str.ToInt(0)
 		};
-		command[199] = new ConsoleSystem.Command()
+		command[198] = new ConsoleSystem.Command()
 		{
 			Name = "bracket_2_costfraction",
 			Parent = "decay",
@@ -2034,7 +2024,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.bracket_2_costfraction.ToString(),
 			SetOveride = (string str) => ConVar.Decay.bracket_2_costfraction = str.ToFloat(0f)
 		};
-		command[200] = new ConsoleSystem.Command()
+		command[199] = new ConsoleSystem.Command()
 		{
 			Name = "bracket_3_blockcount",
 			Parent = "decay",
@@ -2045,7 +2035,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.bracket_3_blockcount.ToString(),
 			SetOveride = (string str) => ConVar.Decay.bracket_3_blockcount = str.ToInt(0)
 		};
-		command[201] = new ConsoleSystem.Command()
+		command[200] = new ConsoleSystem.Command()
 		{
 			Name = "bracket_3_costfraction",
 			Parent = "decay",
@@ -2056,7 +2046,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.bracket_3_costfraction.ToString(),
 			SetOveride = (string str) => ConVar.Decay.bracket_3_costfraction = str.ToFloat(0f)
 		};
-		command[202] = new ConsoleSystem.Command()
+		command[201] = new ConsoleSystem.Command()
 		{
 			Name = "debug",
 			Parent = "decay",
@@ -2066,7 +2056,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.debug.ToString(),
 			SetOveride = (string str) => ConVar.Decay.debug = str.ToBool()
 		};
-		command[203] = new ConsoleSystem.Command()
+		command[202] = new ConsoleSystem.Command()
 		{
 			Name = "delay_metal",
 			Parent = "decay",
@@ -2077,7 +2067,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.delay_metal.ToString(),
 			SetOveride = (string str) => ConVar.Decay.delay_metal = str.ToFloat(0f)
 		};
-		command[204] = new ConsoleSystem.Command()
+		command[203] = new ConsoleSystem.Command()
 		{
 			Name = "delay_override",
 			Parent = "decay",
@@ -2088,7 +2078,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.delay_override.ToString(),
 			SetOveride = (string str) => ConVar.Decay.delay_override = str.ToFloat(0f)
 		};
-		command[205] = new ConsoleSystem.Command()
+		command[204] = new ConsoleSystem.Command()
 		{
 			Name = "delay_stone",
 			Parent = "decay",
@@ -2099,7 +2089,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.delay_stone.ToString(),
 			SetOveride = (string str) => ConVar.Decay.delay_stone = str.ToFloat(0f)
 		};
-		command[206] = new ConsoleSystem.Command()
+		command[205] = new ConsoleSystem.Command()
 		{
 			Name = "delay_toptier",
 			Parent = "decay",
@@ -2110,7 +2100,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.delay_toptier.ToString(),
 			SetOveride = (string str) => ConVar.Decay.delay_toptier = str.ToFloat(0f)
 		};
-		command[207] = new ConsoleSystem.Command()
+		command[206] = new ConsoleSystem.Command()
 		{
 			Name = "delay_twig",
 			Parent = "decay",
@@ -2121,7 +2111,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.delay_twig.ToString(),
 			SetOveride = (string str) => ConVar.Decay.delay_twig = str.ToFloat(0f)
 		};
-		command[208] = new ConsoleSystem.Command()
+		command[207] = new ConsoleSystem.Command()
 		{
 			Name = "delay_wood",
 			Parent = "decay",
@@ -2132,7 +2122,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.delay_wood.ToString(),
 			SetOveride = (string str) => ConVar.Decay.delay_wood = str.ToFloat(0f)
 		};
-		command[209] = new ConsoleSystem.Command()
+		command[208] = new ConsoleSystem.Command()
 		{
 			Name = "duration_metal",
 			Parent = "decay",
@@ -2143,7 +2133,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.duration_metal.ToString(),
 			SetOveride = (string str) => ConVar.Decay.duration_metal = str.ToFloat(0f)
 		};
-		command[210] = new ConsoleSystem.Command()
+		command[209] = new ConsoleSystem.Command()
 		{
 			Name = "duration_override",
 			Parent = "decay",
@@ -2154,7 +2144,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.duration_override.ToString(),
 			SetOveride = (string str) => ConVar.Decay.duration_override = str.ToFloat(0f)
 		};
-		command[211] = new ConsoleSystem.Command()
+		command[210] = new ConsoleSystem.Command()
 		{
 			Name = "duration_stone",
 			Parent = "decay",
@@ -2165,7 +2155,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.duration_stone.ToString(),
 			SetOveride = (string str) => ConVar.Decay.duration_stone = str.ToFloat(0f)
 		};
-		command[212] = new ConsoleSystem.Command()
+		command[211] = new ConsoleSystem.Command()
 		{
 			Name = "duration_toptier",
 			Parent = "decay",
@@ -2176,7 +2166,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.duration_toptier.ToString(),
 			SetOveride = (string str) => ConVar.Decay.duration_toptier = str.ToFloat(0f)
 		};
-		command[213] = new ConsoleSystem.Command()
+		command[212] = new ConsoleSystem.Command()
 		{
 			Name = "duration_twig",
 			Parent = "decay",
@@ -2187,7 +2177,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.duration_twig.ToString(),
 			SetOveride = (string str) => ConVar.Decay.duration_twig = str.ToFloat(0f)
 		};
-		command[214] = new ConsoleSystem.Command()
+		command[213] = new ConsoleSystem.Command()
 		{
 			Name = "duration_wood",
 			Parent = "decay",
@@ -2198,7 +2188,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.duration_wood.ToString(),
 			SetOveride = (string str) => ConVar.Decay.duration_wood = str.ToFloat(0f)
 		};
-		command[215] = new ConsoleSystem.Command()
+		command[214] = new ConsoleSystem.Command()
 		{
 			Name = "outside_test_range",
 			Parent = "decay",
@@ -2209,7 +2199,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.outside_test_range.ToString(),
 			SetOveride = (string str) => ConVar.Decay.outside_test_range = str.ToFloat(0f)
 		};
-		command[216] = new ConsoleSystem.Command()
+		command[215] = new ConsoleSystem.Command()
 		{
 			Name = "scale",
 			Parent = "decay",
@@ -2219,7 +2209,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.scale.ToString(),
 			SetOveride = (string str) => ConVar.Decay.scale = str.ToFloat(0f)
 		};
-		command[217] = new ConsoleSystem.Command()
+		command[216] = new ConsoleSystem.Command()
 		{
 			Name = "tick",
 			Parent = "decay",
@@ -2229,7 +2219,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.tick.ToString(),
 			SetOveride = (string str) => ConVar.Decay.tick = str.ToFloat(0f)
 		};
-		command[218] = new ConsoleSystem.Command()
+		command[217] = new ConsoleSystem.Command()
 		{
 			Name = "upkeep",
 			Parent = "decay",
@@ -2240,7 +2230,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.upkeep.ToString(),
 			SetOveride = (string str) => ConVar.Decay.upkeep = str.ToBool()
 		};
-		command[219] = new ConsoleSystem.Command()
+		command[218] = new ConsoleSystem.Command()
 		{
 			Name = "upkeep_grief_protection",
 			Parent = "decay",
@@ -2251,7 +2241,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.upkeep_grief_protection.ToString(),
 			SetOveride = (string str) => ConVar.Decay.upkeep_grief_protection = str.ToFloat(0f)
 		};
-		command[220] = new ConsoleSystem.Command()
+		command[219] = new ConsoleSystem.Command()
 		{
 			Name = "upkeep_heal_scale",
 			Parent = "decay",
@@ -2262,7 +2252,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.upkeep_heal_scale.ToString(),
 			SetOveride = (string str) => ConVar.Decay.upkeep_heal_scale = str.ToFloat(0f)
 		};
-		command[221] = new ConsoleSystem.Command()
+		command[220] = new ConsoleSystem.Command()
 		{
 			Name = "upkeep_inside_decay_scale",
 			Parent = "decay",
@@ -2273,7 +2263,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.upkeep_inside_decay_scale.ToString(),
 			SetOveride = (string str) => ConVar.Decay.upkeep_inside_decay_scale = str.ToFloat(0f)
 		};
-		command[222] = new ConsoleSystem.Command()
+		command[221] = new ConsoleSystem.Command()
 		{
 			Name = "upkeep_period_minutes",
 			Parent = "decay",
@@ -2284,7 +2274,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Decay.upkeep_period_minutes.ToString(),
 			SetOveride = (string str) => ConVar.Decay.upkeep_period_minutes = str.ToFloat(0f)
 		};
-		command[223] = new ConsoleSystem.Command()
+		command[222] = new ConsoleSystem.Command()
 		{
 			Name = "debug_toggle",
 			Parent = "entity",
@@ -2293,7 +2283,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.debug_toggle(arg)
 		};
-		command[224] = new ConsoleSystem.Command()
+		command[223] = new ConsoleSystem.Command()
 		{
 			Name = "deleteby",
 			Parent = "entity",
@@ -2303,7 +2293,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(Entity.DeleteBy(arg.GetULong(0, (ulong)0)))
 		};
-		command[225] = new ConsoleSystem.Command()
+		command[224] = new ConsoleSystem.Command()
 		{
 			Name = "find_entity",
 			Parent = "entity",
@@ -2312,7 +2302,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.find_entity(arg)
 		};
-		command[226] = new ConsoleSystem.Command()
+		command[225] = new ConsoleSystem.Command()
 		{
 			Name = "find_group",
 			Parent = "entity",
@@ -2321,7 +2311,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.find_group(arg)
 		};
-		command[227] = new ConsoleSystem.Command()
+		command[226] = new ConsoleSystem.Command()
 		{
 			Name = "find_id",
 			Parent = "entity",
@@ -2330,7 +2320,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.find_id(arg)
 		};
-		command[228] = new ConsoleSystem.Command()
+		command[227] = new ConsoleSystem.Command()
 		{
 			Name = "find_parent",
 			Parent = "entity",
@@ -2339,7 +2329,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.find_parent(arg)
 		};
-		command[229] = new ConsoleSystem.Command()
+		command[228] = new ConsoleSystem.Command()
 		{
 			Name = "find_radius",
 			Parent = "entity",
@@ -2348,7 +2338,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.find_radius(arg)
 		};
-		command[230] = new ConsoleSystem.Command()
+		command[229] = new ConsoleSystem.Command()
 		{
 			Name = "find_self",
 			Parent = "entity",
@@ -2357,7 +2347,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.find_self(arg)
 		};
-		command[231] = new ConsoleSystem.Command()
+		command[230] = new ConsoleSystem.Command()
 		{
 			Name = "find_status",
 			Parent = "entity",
@@ -2366,7 +2356,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.find_status(arg)
 		};
-		command[232] = new ConsoleSystem.Command()
+		command[231] = new ConsoleSystem.Command()
 		{
 			Name = "nudge",
 			Parent = "entity",
@@ -2375,7 +2365,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.nudge(arg.GetInt(0, 0))
 		};
-		command[233] = new ConsoleSystem.Command()
+		command[232] = new ConsoleSystem.Command()
 		{
 			Name = "spawnlootfrom",
 			Parent = "entity",
@@ -2384,7 +2374,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Entity.spawnlootfrom(arg)
 		};
-		command[234] = new ConsoleSystem.Command()
+		command[233] = new ConsoleSystem.Command()
 		{
 			Name = "spawn",
 			Parent = "entity",
@@ -2393,7 +2383,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(Entity.svspawn(arg.GetString(0, ""), arg.GetVector3(1, Vector3.zero)))
 		};
-		command[235] = new ConsoleSystem.Command()
+		command[234] = new ConsoleSystem.Command()
 		{
 			Name = "spawnitem",
 			Parent = "entity",
@@ -2402,7 +2392,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(Entity.svspawnitem(arg.GetString(0, ""), arg.GetVector3(1, Vector3.zero)))
 		};
-		command[236] = new ConsoleSystem.Command()
+		command[235] = new ConsoleSystem.Command()
 		{
 			Name = "addtime",
 			Parent = "env",
@@ -2411,7 +2401,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Env.addtime(arg)
 		};
-		command[237] = new ConsoleSystem.Command()
+		command[236] = new ConsoleSystem.Command()
 		{
 			Name = "day",
 			Parent = "env",
@@ -2421,7 +2411,7 @@ public class ConsoleGen
 			GetOveride = () => Env.day.ToString(),
 			SetOveride = (string str) => Env.day = str.ToInt(0)
 		};
-		command[238] = new ConsoleSystem.Command()
+		command[237] = new ConsoleSystem.Command()
 		{
 			Name = "month",
 			Parent = "env",
@@ -2431,7 +2421,7 @@ public class ConsoleGen
 			GetOveride = () => Env.month.ToString(),
 			SetOveride = (string str) => Env.month = str.ToInt(0)
 		};
-		command[239] = new ConsoleSystem.Command()
+		command[238] = new ConsoleSystem.Command()
 		{
 			Name = "progresstime",
 			Parent = "env",
@@ -2441,7 +2431,7 @@ public class ConsoleGen
 			GetOveride = () => Env.progresstime.ToString(),
 			SetOveride = (string str) => Env.progresstime = str.ToBool()
 		};
-		command[240] = new ConsoleSystem.Command()
+		command[239] = new ConsoleSystem.Command()
 		{
 			Name = "time",
 			Parent = "env",
@@ -2451,7 +2441,7 @@ public class ConsoleGen
 			GetOveride = () => Env.time.ToString(),
 			SetOveride = (string str) => Env.time = str.ToFloat(0f)
 		};
-		command[241] = new ConsoleSystem.Command()
+		command[240] = new ConsoleSystem.Command()
 		{
 			Name = "year",
 			Parent = "env",
@@ -2461,7 +2451,7 @@ public class ConsoleGen
 			GetOveride = () => Env.year.ToString(),
 			SetOveride = (string str) => Env.year = str.ToInt(0)
 		};
-		command[242] = new ConsoleSystem.Command()
+		command[241] = new ConsoleSystem.Command()
 		{
 			Name = "limit",
 			Parent = "fps",
@@ -2472,7 +2462,7 @@ public class ConsoleGen
 			GetOveride = () => FPS.limit.ToString(),
 			SetOveride = (string str) => FPS.limit = str.ToInt(0)
 		};
-		command[243] = new ConsoleSystem.Command()
+		command[242] = new ConsoleSystem.Command()
 		{
 			Name = "collect",
 			Parent = "gc",
@@ -2481,7 +2471,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.GC.collect()
 		};
-		command[244] = new ConsoleSystem.Command()
+		command[243] = new ConsoleSystem.Command()
 		{
 			Name = "unload",
 			Parent = "gc",
@@ -2490,7 +2480,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.GC.unload()
 		};
-		command[245] = new ConsoleSystem.Command()
+		command[244] = new ConsoleSystem.Command()
 		{
 			Name = "breakitem",
 			Parent = "global",
@@ -2499,7 +2489,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.breakitem(arg)
 		};
-		command[246] = new ConsoleSystem.Command()
+		command[245] = new ConsoleSystem.Command()
 		{
 			Name = "colliders",
 			Parent = "global",
@@ -2508,7 +2498,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.colliders(arg)
 		};
-		command[247] = new ConsoleSystem.Command()
+		command[246] = new ConsoleSystem.Command()
 		{
 			Name = "developer",
 			Parent = "global",
@@ -2518,7 +2508,7 @@ public class ConsoleGen
 			GetOveride = () => Global.developer.ToString(),
 			SetOveride = (string str) => Global.developer = str.ToInt(0)
 		};
-		command[248] = new ConsoleSystem.Command()
+		command[247] = new ConsoleSystem.Command()
 		{
 			Name = "error",
 			Parent = "global",
@@ -2527,7 +2517,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.error(arg)
 		};
-		command[249] = new ConsoleSystem.Command()
+		command[248] = new ConsoleSystem.Command()
 		{
 			Name = "free",
 			Parent = "global",
@@ -2536,7 +2526,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.free(arg)
 		};
-		command[250] = new ConsoleSystem.Command()
+		command[249] = new ConsoleSystem.Command()
 		{
 			Name = "injure",
 			Parent = "global",
@@ -2545,7 +2535,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.injure(arg)
 		};
-		command[251] = new ConsoleSystem.Command()
+		command[250] = new ConsoleSystem.Command()
 		{
 			Name = "kill",
 			Parent = "global",
@@ -2554,7 +2544,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.kill(arg)
 		};
-		command[252] = new ConsoleSystem.Command()
+		command[251] = new ConsoleSystem.Command()
 		{
 			Name = "maxthreads",
 			Parent = "global",
@@ -2564,7 +2554,7 @@ public class ConsoleGen
 			GetOveride = () => Global.maxthreads.ToString(),
 			SetOveride = (string str) => Global.maxthreads = str.ToInt(0)
 		};
-		command[253] = new ConsoleSystem.Command()
+		command[252] = new ConsoleSystem.Command()
 		{
 			Name = "objects",
 			Parent = "global",
@@ -2573,7 +2563,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.objects(arg)
 		};
-		command[254] = new ConsoleSystem.Command()
+		command[253] = new ConsoleSystem.Command()
 		{
 			Name = "perf",
 			Parent = "global",
@@ -2584,7 +2574,7 @@ public class ConsoleGen
 			GetOveride = () => Global.perf.ToString(),
 			SetOveride = (string str) => Global.perf = str.ToInt(0)
 		};
-		command[255] = new ConsoleSystem.Command()
+		command[254] = new ConsoleSystem.Command()
 		{
 			Name = "queue",
 			Parent = "global",
@@ -2593,7 +2583,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.queue(arg)
 		};
-		command[256] = new ConsoleSystem.Command()
+		command[255] = new ConsoleSystem.Command()
 		{
 			Name = "quit",
 			Parent = "global",
@@ -2602,7 +2592,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.quit(arg)
 		};
-		command[257] = new ConsoleSystem.Command()
+		command[256] = new ConsoleSystem.Command()
 		{
 			Name = "report",
 			Parent = "global",
@@ -2611,7 +2601,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.report(arg)
 		};
-		command[258] = new ConsoleSystem.Command()
+		command[257] = new ConsoleSystem.Command()
 		{
 			Name = "respawn",
 			Parent = "global",
@@ -2620,7 +2610,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.respawn(arg)
 		};
-		command[259] = new ConsoleSystem.Command()
+		command[258] = new ConsoleSystem.Command()
 		{
 			Name = "respawn_sleepingbag",
 			Parent = "global",
@@ -2629,7 +2619,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.respawn_sleepingbag(arg)
 		};
-		command[260] = new ConsoleSystem.Command()
+		command[259] = new ConsoleSystem.Command()
 		{
 			Name = "respawn_sleepingbag_remove",
 			Parent = "global",
@@ -2638,7 +2628,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.respawn_sleepingbag_remove(arg)
 		};
-		command[261] = new ConsoleSystem.Command()
+		command[260] = new ConsoleSystem.Command()
 		{
 			Name = "restart",
 			Parent = "global",
@@ -2647,7 +2637,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.restart(arg)
 		};
-		command[262] = new ConsoleSystem.Command()
+		command[261] = new ConsoleSystem.Command()
 		{
 			Name = "setinfo",
 			Parent = "global",
@@ -2656,7 +2646,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.setinfo(arg)
 		};
-		command[263] = new ConsoleSystem.Command()
+		command[262] = new ConsoleSystem.Command()
 		{
 			Name = "sleep",
 			Parent = "global",
@@ -2665,7 +2655,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.sleep(arg)
 		};
-		command[264] = new ConsoleSystem.Command()
+		command[263] = new ConsoleSystem.Command()
 		{
 			Name = "spectate",
 			Parent = "global",
@@ -2674,7 +2664,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.spectate(arg)
 		};
-		command[265] = new ConsoleSystem.Command()
+		command[264] = new ConsoleSystem.Command()
 		{
 			Name = "status_sv",
 			Parent = "global",
@@ -2683,7 +2673,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.status_sv(arg)
 		};
-		command[266] = new ConsoleSystem.Command()
+		command[265] = new ConsoleSystem.Command()
 		{
 			Name = "subscriptions",
 			Parent = "global",
@@ -2692,7 +2682,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.subscriptions(arg)
 		};
-		command[267] = new ConsoleSystem.Command()
+		command[266] = new ConsoleSystem.Command()
 		{
 			Name = "sysinfo",
 			Parent = "global",
@@ -2701,7 +2691,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.sysinfo(arg)
 		};
-		command[268] = new ConsoleSystem.Command()
+		command[267] = new ConsoleSystem.Command()
 		{
 			Name = "sysuid",
 			Parent = "global",
@@ -2710,7 +2700,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.sysuid(arg)
 		};
-		command[269] = new ConsoleSystem.Command()
+		command[268] = new ConsoleSystem.Command()
 		{
 			Name = "teleport",
 			Parent = "global",
@@ -2719,7 +2709,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.teleport(arg)
 		};
-		command[270] = new ConsoleSystem.Command()
+		command[269] = new ConsoleSystem.Command()
 		{
 			Name = "teleport2me",
 			Parent = "global",
@@ -2728,7 +2718,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.teleport2me(arg)
 		};
-		command[271] = new ConsoleSystem.Command()
+		command[270] = new ConsoleSystem.Command()
 		{
 			Name = "teleportany",
 			Parent = "global",
@@ -2737,7 +2727,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.teleportany(arg)
 		};
-		command[272] = new ConsoleSystem.Command()
+		command[271] = new ConsoleSystem.Command()
 		{
 			Name = "teleportpos",
 			Parent = "global",
@@ -2746,7 +2736,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.teleportpos(arg)
 		};
-		command[273] = new ConsoleSystem.Command()
+		command[272] = new ConsoleSystem.Command()
 		{
 			Name = "textures",
 			Parent = "global",
@@ -2755,7 +2745,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.textures(arg)
 		};
-		command[274] = new ConsoleSystem.Command()
+		command[273] = new ConsoleSystem.Command()
 		{
 			Name = "timewarning",
 			Parent = "global",
@@ -2765,7 +2755,7 @@ public class ConsoleGen
 			GetOveride = () => Global.timewarning.ToString(),
 			SetOveride = (string str) => Global.timewarning = str.ToBool()
 		};
-		command[275] = new ConsoleSystem.Command()
+		command[274] = new ConsoleSystem.Command()
 		{
 			Name = "version",
 			Parent = "global",
@@ -2774,7 +2764,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Global.version(arg)
 		};
-		command[276] = new ConsoleSystem.Command()
+		command[275] = new ConsoleSystem.Command()
 		{
 			Name = "enabled",
 			Parent = "halloween",
@@ -2784,7 +2774,7 @@ public class ConsoleGen
 			GetOveride = () => Halloween.enabled.ToString(),
 			SetOveride = (string str) => Halloween.enabled = str.ToBool()
 		};
-		command[277] = new ConsoleSystem.Command()
+		command[276] = new ConsoleSystem.Command()
 		{
 			Name = "murdererpopulation",
 			Parent = "halloween",
@@ -2795,7 +2785,7 @@ public class ConsoleGen
 			GetOveride = () => Halloween.murdererpopulation.ToString(),
 			SetOveride = (string str) => Halloween.murdererpopulation = str.ToFloat(0f)
 		};
-		command[278] = new ConsoleSystem.Command()
+		command[277] = new ConsoleSystem.Command()
 		{
 			Name = "scarecrow_beancan_vs_player_dmg_modifier",
 			Parent = "halloween",
@@ -2806,7 +2796,7 @@ public class ConsoleGen
 			GetOveride = () => Halloween.scarecrow_beancan_vs_player_dmg_modifier.ToString(),
 			SetOveride = (string str) => Halloween.scarecrow_beancan_vs_player_dmg_modifier = str.ToFloat(0f)
 		};
-		command[279] = new ConsoleSystem.Command()
+		command[278] = new ConsoleSystem.Command()
 		{
 			Name = "scarecrow_body_dmg_modifier",
 			Parent = "halloween",
@@ -2817,7 +2807,7 @@ public class ConsoleGen
 			GetOveride = () => Halloween.scarecrow_body_dmg_modifier.ToString(),
 			SetOveride = (string str) => Halloween.scarecrow_body_dmg_modifier = str.ToFloat(0f)
 		};
-		command[280] = new ConsoleSystem.Command()
+		command[279] = new ConsoleSystem.Command()
 		{
 			Name = "scarecrow_chase_stopping_distance",
 			Parent = "halloween",
@@ -2828,7 +2818,7 @@ public class ConsoleGen
 			GetOveride = () => Halloween.scarecrow_chase_stopping_distance.ToString(),
 			SetOveride = (string str) => Halloween.scarecrow_chase_stopping_distance = str.ToFloat(0f)
 		};
-		command[281] = new ConsoleSystem.Command()
+		command[280] = new ConsoleSystem.Command()
 		{
 			Name = "scarecrow_throw_beancan_global_delay",
 			Parent = "halloween",
@@ -2839,7 +2829,7 @@ public class ConsoleGen
 			GetOveride = () => Halloween.scarecrow_throw_beancan_global_delay.ToString(),
 			SetOveride = (string str) => Halloween.scarecrow_throw_beancan_global_delay = str.ToFloat(0f)
 		};
-		command[282] = new ConsoleSystem.Command()
+		command[281] = new ConsoleSystem.Command()
 		{
 			Name = "scarecrowpopulation",
 			Parent = "halloween",
@@ -2850,7 +2840,7 @@ public class ConsoleGen
 			GetOveride = () => Halloween.scarecrowpopulation.ToString(),
 			SetOveride = (string str) => Halloween.scarecrowpopulation = str.ToFloat(0f)
 		};
-		command[283] = new ConsoleSystem.Command()
+		command[282] = new ConsoleSystem.Command()
 		{
 			Name = "scarecrows_throw_beancans",
 			Parent = "halloween",
@@ -2861,7 +2851,7 @@ public class ConsoleGen
 			GetOveride = () => Halloween.scarecrows_throw_beancans.ToString(),
 			SetOveride = (string str) => Halloween.scarecrows_throw_beancans = str.ToBool()
 		};
-		command[284] = new ConsoleSystem.Command()
+		command[283] = new ConsoleSystem.Command()
 		{
 			Name = "cd",
 			Parent = "hierarchy",
@@ -2870,7 +2860,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Hierarchy.cd(arg)
 		};
-		command[285] = new ConsoleSystem.Command()
+		command[284] = new ConsoleSystem.Command()
 		{
 			Name = "del",
 			Parent = "hierarchy",
@@ -2879,7 +2869,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Hierarchy.del(arg)
 		};
-		command[286] = new ConsoleSystem.Command()
+		command[285] = new ConsoleSystem.Command()
 		{
 			Name = "ls",
 			Parent = "hierarchy",
@@ -2888,7 +2878,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Hierarchy.ls(arg)
 		};
-		command[287] = new ConsoleSystem.Command()
+		command[286] = new ConsoleSystem.Command()
 		{
 			Name = "endloot",
 			Parent = "inventory",
@@ -2897,7 +2887,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Inventory.endloot(arg)
 		};
-		command[288] = new ConsoleSystem.Command()
+		command[287] = new ConsoleSystem.Command()
 		{
 			Name = "give",
 			Parent = "inventory",
@@ -2906,7 +2896,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Inventory.give(arg)
 		};
-		command[289] = new ConsoleSystem.Command()
+		command[288] = new ConsoleSystem.Command()
 		{
 			Name = "giveall",
 			Parent = "inventory",
@@ -2915,7 +2905,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Inventory.giveall(arg)
 		};
-		command[290] = new ConsoleSystem.Command()
+		command[289] = new ConsoleSystem.Command()
 		{
 			Name = "givearm",
 			Parent = "inventory",
@@ -2924,7 +2914,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Inventory.givearm(arg)
 		};
-		command[291] = new ConsoleSystem.Command()
+		command[290] = new ConsoleSystem.Command()
 		{
 			Name = "giveid",
 			Parent = "inventory",
@@ -2933,7 +2923,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Inventory.giveid(arg)
 		};
-		command[292] = new ConsoleSystem.Command()
+		command[291] = new ConsoleSystem.Command()
 		{
 			Name = "giveto",
 			Parent = "inventory",
@@ -2942,7 +2932,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Inventory.giveto(arg)
 		};
-		command[293] = new ConsoleSystem.Command()
+		command[292] = new ConsoleSystem.Command()
 		{
 			Name = "lighttoggle",
 			Parent = "inventory",
@@ -2951,7 +2941,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Inventory.lighttoggle(arg)
 		};
-		command[294] = new ConsoleSystem.Command()
+		command[293] = new ConsoleSystem.Command()
 		{
 			Name = "resetbp",
 			Parent = "inventory",
@@ -2960,7 +2950,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Inventory.resetbp(arg)
 		};
-		command[295] = new ConsoleSystem.Command()
+		command[294] = new ConsoleSystem.Command()
 		{
 			Name = "unlockall",
 			Parent = "inventory",
@@ -2969,7 +2959,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Inventory.unlockall(arg)
 		};
-		command[296] = new ConsoleSystem.Command()
+		command[295] = new ConsoleSystem.Command()
 		{
 			Name = "printmanifest",
 			Parent = "manifest",
@@ -2978,7 +2968,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(ConVar.Manifest.PrintManifest())
 		};
-		command[297] = new ConsoleSystem.Command()
+		command[296] = new ConsoleSystem.Command()
 		{
 			Name = "printmanifestraw",
 			Parent = "manifest",
@@ -2987,7 +2977,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(ConVar.Manifest.PrintManifestRaw())
 		};
-		command[298] = new ConsoleSystem.Command()
+		command[297] = new ConsoleSystem.Command()
 		{
 			Name = "visdebug",
 			Parent = "net",
@@ -2997,7 +2987,7 @@ public class ConsoleGen
 			GetOveride = () => Net.visdebug.ToString(),
 			SetOveride = (string str) => Net.visdebug = str.ToBool()
 		};
-		command[299] = new ConsoleSystem.Command()
+		command[298] = new ConsoleSystem.Command()
 		{
 			Name = "bulletaccuracy",
 			Parent = "heli",
@@ -3007,7 +2997,7 @@ public class ConsoleGen
 			GetOveride = () => PatrolHelicopter.bulletAccuracy.ToString(),
 			SetOveride = (string str) => PatrolHelicopter.bulletAccuracy = str.ToFloat(0f)
 		};
-		command[300] = new ConsoleSystem.Command()
+		command[299] = new ConsoleSystem.Command()
 		{
 			Name = "bulletdamagescale",
 			Parent = "heli",
@@ -3017,7 +3007,7 @@ public class ConsoleGen
 			GetOveride = () => PatrolHelicopter.bulletDamageScale.ToString(),
 			SetOveride = (string str) => PatrolHelicopter.bulletDamageScale = str.ToFloat(0f)
 		};
-		command[301] = new ConsoleSystem.Command()
+		command[300] = new ConsoleSystem.Command()
 		{
 			Name = "call",
 			Parent = "heli",
@@ -3026,7 +3016,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => PatrolHelicopter.call(arg)
 		};
-		command[302] = new ConsoleSystem.Command()
+		command[301] = new ConsoleSystem.Command()
 		{
 			Name = "calltome",
 			Parent = "heli",
@@ -3035,7 +3025,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => PatrolHelicopter.calltome(arg)
 		};
-		command[303] = new ConsoleSystem.Command()
+		command[302] = new ConsoleSystem.Command()
 		{
 			Name = "drop",
 			Parent = "heli",
@@ -3044,7 +3034,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => PatrolHelicopter.drop(arg)
 		};
-		command[304] = new ConsoleSystem.Command()
+		command[303] = new ConsoleSystem.Command()
 		{
 			Name = "guns",
 			Parent = "heli",
@@ -3054,7 +3044,7 @@ public class ConsoleGen
 			GetOveride = () => PatrolHelicopter.guns.ToString(),
 			SetOveride = (string str) => PatrolHelicopter.guns = str.ToInt(0)
 		};
-		command[305] = new ConsoleSystem.Command()
+		command[304] = new ConsoleSystem.Command()
 		{
 			Name = "lifetimeminutes",
 			Parent = "heli",
@@ -3064,7 +3054,7 @@ public class ConsoleGen
 			GetOveride = () => PatrolHelicopter.lifetimeMinutes.ToString(),
 			SetOveride = (string str) => PatrolHelicopter.lifetimeMinutes = str.ToFloat(0f)
 		};
-		command[306] = new ConsoleSystem.Command()
+		command[305] = new ConsoleSystem.Command()
 		{
 			Name = "strafe",
 			Parent = "heli",
@@ -3073,7 +3063,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => PatrolHelicopter.strafe(arg)
 		};
-		command[307] = new ConsoleSystem.Command()
+		command[306] = new ConsoleSystem.Command()
 		{
 			Name = "testpuzzle",
 			Parent = "heli",
@@ -3082,7 +3072,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => PatrolHelicopter.testpuzzle(arg)
 		};
-		command[308] = new ConsoleSystem.Command()
+		command[307] = new ConsoleSystem.Command()
 		{
 			Name = "bouncethreshold",
 			Parent = "physics",
@@ -3092,7 +3082,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Physics.bouncethreshold.ToString(),
 			SetOveride = (string str) => ConVar.Physics.bouncethreshold = str.ToFloat(0f)
 		};
-		command[309] = new ConsoleSystem.Command()
+		command[308] = new ConsoleSystem.Command()
 		{
 			Name = "droppedmode",
 			Parent = "physics",
@@ -3103,7 +3093,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Physics.droppedmode.ToString(),
 			SetOveride = (string str) => ConVar.Physics.droppedmode = str.ToInt(0)
 		};
-		command[310] = new ConsoleSystem.Command()
+		command[309] = new ConsoleSystem.Command()
 		{
 			Name = "gravity",
 			Parent = "physics",
@@ -3114,7 +3104,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Physics.gravity.ToString(),
 			SetOveride = (string str) => ConVar.Physics.gravity = str.ToFloat(0f)
 		};
-		command[311] = new ConsoleSystem.Command()
+		command[310] = new ConsoleSystem.Command()
 		{
 			Name = "minsteps",
 			Parent = "physics",
@@ -3125,7 +3115,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Physics.minsteps.ToString(),
 			SetOveride = (string str) => ConVar.Physics.minsteps = str.ToFloat(0f)
 		};
-		command[312] = new ConsoleSystem.Command()
+		command[311] = new ConsoleSystem.Command()
 		{
 			Name = "sendeffects",
 			Parent = "physics",
@@ -3136,7 +3126,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Physics.sendeffects.ToString(),
 			SetOveride = (string str) => ConVar.Physics.sendeffects = str.ToBool()
 		};
-		command[313] = new ConsoleSystem.Command()
+		command[312] = new ConsoleSystem.Command()
 		{
 			Name = "sleepthreshold",
 			Parent = "physics",
@@ -3146,7 +3136,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Physics.sleepthreshold.ToString(),
 			SetOveride = (string str) => ConVar.Physics.sleepthreshold = str.ToFloat(0f)
 		};
-		command[314] = new ConsoleSystem.Command()
+		command[313] = new ConsoleSystem.Command()
 		{
 			Name = "solveriterationcount",
 			Parent = "physics",
@@ -3157,7 +3147,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Physics.solveriterationcount.ToString(),
 			SetOveride = (string str) => ConVar.Physics.solveriterationcount = str.ToInt(0)
 		};
-		command[315] = new ConsoleSystem.Command()
+		command[314] = new ConsoleSystem.Command()
 		{
 			Name = "steps",
 			Parent = "physics",
@@ -3168,7 +3158,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Physics.steps.ToString(),
 			SetOveride = (string str) => ConVar.Physics.steps = str.ToFloat(0f)
 		};
-		command[316] = new ConsoleSystem.Command()
+		command[315] = new ConsoleSystem.Command()
 		{
 			Name = "clear_assets",
 			Parent = "pool",
@@ -3177,7 +3167,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.Pool.clear_assets(arg)
 		};
-		command[317] = new ConsoleSystem.Command()
+		command[316] = new ConsoleSystem.Command()
 		{
 			Name = "clear_memory",
 			Parent = "pool",
@@ -3186,7 +3176,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.Pool.clear_memory(arg)
 		};
-		command[318] = new ConsoleSystem.Command()
+		command[317] = new ConsoleSystem.Command()
 		{
 			Name = "clear_prefabs",
 			Parent = "pool",
@@ -3195,7 +3185,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.Pool.clear_prefabs(arg)
 		};
-		command[319] = new ConsoleSystem.Command()
+		command[318] = new ConsoleSystem.Command()
 		{
 			Name = "debug",
 			Parent = "pool",
@@ -3205,7 +3195,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Pool.debug.ToString(),
 			SetOveride = (string str) => ConVar.Pool.debug = str.ToBool()
 		};
-		command[320] = new ConsoleSystem.Command()
+		command[319] = new ConsoleSystem.Command()
 		{
 			Name = "enabled",
 			Parent = "pool",
@@ -3215,7 +3205,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Pool.enabled.ToString(),
 			SetOveride = (string str) => ConVar.Pool.enabled = str.ToBool()
 		};
-		command[321] = new ConsoleSystem.Command()
+		command[320] = new ConsoleSystem.Command()
 		{
 			Name = "export_prefabs",
 			Parent = "pool",
@@ -3224,7 +3214,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.Pool.export_prefabs(arg)
 		};
-		command[322] = new ConsoleSystem.Command()
+		command[321] = new ConsoleSystem.Command()
 		{
 			Name = "mode",
 			Parent = "pool",
@@ -3234,7 +3224,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Pool.mode.ToString(),
 			SetOveride = (string str) => ConVar.Pool.mode = str.ToInt(0)
 		};
-		command[323] = new ConsoleSystem.Command()
+		command[322] = new ConsoleSystem.Command()
 		{
 			Name = "print_assets",
 			Parent = "pool",
@@ -3243,7 +3233,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.Pool.print_assets(arg)
 		};
-		command[324] = new ConsoleSystem.Command()
+		command[323] = new ConsoleSystem.Command()
 		{
 			Name = "print_memory",
 			Parent = "pool",
@@ -3252,7 +3242,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.Pool.print_memory(arg)
 		};
-		command[325] = new ConsoleSystem.Command()
+		command[324] = new ConsoleSystem.Command()
 		{
 			Name = "print_prefabs",
 			Parent = "pool",
@@ -3261,7 +3251,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.Pool.print_prefabs(arg)
 		};
-		command[326] = new ConsoleSystem.Command()
+		command[325] = new ConsoleSystem.Command()
 		{
 			Name = "start",
 			Parent = "profile",
@@ -3270,7 +3260,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.Profile.start(arg)
 		};
-		command[327] = new ConsoleSystem.Command()
+		command[326] = new ConsoleSystem.Command()
 		{
 			Name = "stop",
 			Parent = "profile",
@@ -3279,7 +3269,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => ConVar.Profile.stop(arg)
 		};
-		command[328] = new ConsoleSystem.Command()
+		command[327] = new ConsoleSystem.Command()
 		{
 			Name = "hostileduration",
 			Parent = "sentry",
@@ -3290,7 +3280,7 @@ public class ConsoleGen
 			GetOveride = () => Sentry.hostileduration.ToString(),
 			SetOveride = (string str) => Sentry.hostileduration = str.ToFloat(0f)
 		};
-		command[329] = new ConsoleSystem.Command()
+		command[328] = new ConsoleSystem.Command()
 		{
 			Name = "targetall",
 			Parent = "sentry",
@@ -3301,7 +3291,7 @@ public class ConsoleGen
 			GetOveride = () => Sentry.targetall.ToString(),
 			SetOveride = (string str) => Sentry.targetall = str.ToBool()
 		};
-		command[330] = new ConsoleSystem.Command()
+		command[329] = new ConsoleSystem.Command()
 		{
 			Name = "arrowarmor",
 			Parent = "server",
@@ -3312,7 +3302,7 @@ public class ConsoleGen
 			GetOveride = () => Server.arrowarmor.ToString(),
 			SetOveride = (string str) => Server.arrowarmor = str.ToFloat(0f)
 		};
-		command[331] = new ConsoleSystem.Command()
+		command[330] = new ConsoleSystem.Command()
 		{
 			Name = "arrowdamage",
 			Parent = "server",
@@ -3323,7 +3313,7 @@ public class ConsoleGen
 			GetOveride = () => Server.arrowdamage.ToString(),
 			SetOveride = (string str) => Server.arrowdamage = str.ToFloat(0f)
 		};
-		command[332] = new ConsoleSystem.Command()
+		command[331] = new ConsoleSystem.Command()
 		{
 			Name = "authtimeout",
 			Parent = "server",
@@ -3333,7 +3323,7 @@ public class ConsoleGen
 			GetOveride = () => Server.authtimeout.ToString(),
 			SetOveride = (string str) => Server.authtimeout = str.ToInt(0)
 		};
-		command[333] = new ConsoleSystem.Command()
+		command[332] = new ConsoleSystem.Command()
 		{
 			Name = "backup",
 			Parent = "server",
@@ -3343,7 +3333,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.backup()
 		};
-		command[334] = new ConsoleSystem.Command()
+		command[333] = new ConsoleSystem.Command()
 		{
 			Name = "bleedingarmor",
 			Parent = "server",
@@ -3354,7 +3344,7 @@ public class ConsoleGen
 			GetOveride = () => Server.bleedingarmor.ToString(),
 			SetOveride = (string str) => Server.bleedingarmor = str.ToFloat(0f)
 		};
-		command[335] = new ConsoleSystem.Command()
+		command[334] = new ConsoleSystem.Command()
 		{
 			Name = "bleedingdamage",
 			Parent = "server",
@@ -3365,7 +3355,7 @@ public class ConsoleGen
 			GetOveride = () => Server.bleedingdamage.ToString(),
 			SetOveride = (string str) => Server.bleedingdamage = str.ToFloat(0f)
 		};
-		command[336] = new ConsoleSystem.Command()
+		command[335] = new ConsoleSystem.Command()
 		{
 			Name = "branch",
 			Parent = "server",
@@ -3375,7 +3365,7 @@ public class ConsoleGen
 			GetOveride = () => Server.branch.ToString(),
 			SetOveride = (string str) => Server.branch = str
 		};
-		command[337] = new ConsoleSystem.Command()
+		command[336] = new ConsoleSystem.Command()
 		{
 			Name = "bulletarmor",
 			Parent = "server",
@@ -3386,7 +3376,7 @@ public class ConsoleGen
 			GetOveride = () => Server.bulletarmor.ToString(),
 			SetOveride = (string str) => Server.bulletarmor = str.ToFloat(0f)
 		};
-		command[338] = new ConsoleSystem.Command()
+		command[337] = new ConsoleSystem.Command()
 		{
 			Name = "bulletdamage",
 			Parent = "server",
@@ -3397,7 +3387,7 @@ public class ConsoleGen
 			GetOveride = () => Server.bulletdamage.ToString(),
 			SetOveride = (string str) => Server.bulletdamage = str.ToFloat(0f)
 		};
-		command[339] = new ConsoleSystem.Command()
+		command[338] = new ConsoleSystem.Command()
 		{
 			Name = "cheatreport",
 			Parent = "server",
@@ -3406,7 +3396,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.cheatreport(arg)
 		};
-		command[340] = new ConsoleSystem.Command()
+		command[339] = new ConsoleSystem.Command()
 		{
 			Name = "combatlog",
 			Parent = "server",
@@ -3416,7 +3406,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(Server.combatlog(arg))
 		};
-		command[341] = new ConsoleSystem.Command()
+		command[340] = new ConsoleSystem.Command()
 		{
 			Name = "combatlogdelay",
 			Parent = "server",
@@ -3426,7 +3416,7 @@ public class ConsoleGen
 			GetOveride = () => Server.combatlogdelay.ToString(),
 			SetOveride = (string str) => Server.combatlogdelay = str.ToInt(0)
 		};
-		command[342] = new ConsoleSystem.Command()
+		command[341] = new ConsoleSystem.Command()
 		{
 			Name = "combatlogsize",
 			Parent = "server",
@@ -3436,7 +3426,7 @@ public class ConsoleGen
 			GetOveride = () => Server.combatlogsize.ToString(),
 			SetOveride = (string str) => Server.combatlogsize = str.ToInt(0)
 		};
-		command[343] = new ConsoleSystem.Command()
+		command[342] = new ConsoleSystem.Command()
 		{
 			Name = "compression",
 			Parent = "server",
@@ -3446,7 +3436,7 @@ public class ConsoleGen
 			GetOveride = () => Server.compression.ToString(),
 			SetOveride = (string str) => Server.compression = str.ToBool()
 		};
-		command[344] = new ConsoleSystem.Command()
+		command[343] = new ConsoleSystem.Command()
 		{
 			Name = "corpsedespawn",
 			Parent = "server",
@@ -3456,7 +3446,7 @@ public class ConsoleGen
 			GetOveride = () => Server.corpsedespawn.ToString(),
 			SetOveride = (string str) => Server.corpsedespawn = str.ToFloat(0f)
 		};
-		command[345] = new ConsoleSystem.Command()
+		command[344] = new ConsoleSystem.Command()
 		{
 			Name = "corpses",
 			Parent = "server",
@@ -3466,7 +3456,7 @@ public class ConsoleGen
 			GetOveride = () => Server.corpses.ToString(),
 			SetOveride = (string str) => Server.corpses = str.ToBool()
 		};
-		command[346] = new ConsoleSystem.Command()
+		command[345] = new ConsoleSystem.Command()
 		{
 			Name = "cycletime",
 			Parent = "server",
@@ -3476,7 +3466,7 @@ public class ConsoleGen
 			GetOveride = () => Server.cycletime.ToString(),
 			SetOveride = (string str) => Server.cycletime = str.ToFloat(0f)
 		};
-		command[347] = new ConsoleSystem.Command()
+		command[346] = new ConsoleSystem.Command()
 		{
 			Name = "debrisdespawn",
 			Parent = "server",
@@ -3486,7 +3476,7 @@ public class ConsoleGen
 			GetOveride = () => Server.debrisdespawn.ToString(),
 			SetOveride = (string str) => Server.debrisdespawn = str.ToFloat(0f)
 		};
-		command[348] = new ConsoleSystem.Command()
+		command[347] = new ConsoleSystem.Command()
 		{
 			Name = "description",
 			Parent = "server",
@@ -3496,7 +3486,7 @@ public class ConsoleGen
 			GetOveride = () => Server.description.ToString(),
 			SetOveride = (string str) => Server.description = str
 		};
-		command[349] = new ConsoleSystem.Command()
+		command[348] = new ConsoleSystem.Command()
 		{
 			Name = "dropitems",
 			Parent = "server",
@@ -3506,7 +3496,7 @@ public class ConsoleGen
 			GetOveride = () => Server.dropitems.ToString(),
 			SetOveride = (string str) => Server.dropitems = str.ToBool()
 		};
-		command[350] = new ConsoleSystem.Command()
+		command[349] = new ConsoleSystem.Command()
 		{
 			Name = "encryption",
 			Parent = "server",
@@ -3516,7 +3506,7 @@ public class ConsoleGen
 			GetOveride = () => Server.encryption.ToString(),
 			SetOveride = (string str) => Server.encryption = str.ToInt(0)
 		};
-		command[351] = new ConsoleSystem.Command()
+		command[350] = new ConsoleSystem.Command()
 		{
 			Name = "entitybatchsize",
 			Parent = "server",
@@ -3526,7 +3516,7 @@ public class ConsoleGen
 			GetOveride = () => Server.entitybatchsize.ToString(),
 			SetOveride = (string str) => Server.entitybatchsize = str.ToInt(0)
 		};
-		command[352] = new ConsoleSystem.Command()
+		command[351] = new ConsoleSystem.Command()
 		{
 			Name = "entitybatchtime",
 			Parent = "server",
@@ -3536,7 +3526,7 @@ public class ConsoleGen
 			GetOveride = () => Server.entitybatchtime.ToString(),
 			SetOveride = (string str) => Server.entitybatchtime = str.ToFloat(0f)
 		};
-		command[353] = new ConsoleSystem.Command()
+		command[352] = new ConsoleSystem.Command()
 		{
 			Name = "entityrate",
 			Parent = "server",
@@ -3546,7 +3536,7 @@ public class ConsoleGen
 			GetOveride = () => Server.entityrate.ToString(),
 			SetOveride = (string str) => Server.entityrate = str.ToInt(0)
 		};
-		command[354] = new ConsoleSystem.Command()
+		command[353] = new ConsoleSystem.Command()
 		{
 			Name = "events",
 			Parent = "server",
@@ -3556,7 +3546,7 @@ public class ConsoleGen
 			GetOveride = () => Server.events.ToString(),
 			SetOveride = (string str) => Server.events = str.ToBool()
 		};
-		command[355] = new ConsoleSystem.Command()
+		command[354] = new ConsoleSystem.Command()
 		{
 			Name = "fps",
 			Parent = "server",
@@ -3565,7 +3555,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.fps(arg)
 		};
-		command[356] = new ConsoleSystem.Command()
+		command[355] = new ConsoleSystem.Command()
 		{
 			Name = "globalchat",
 			Parent = "server",
@@ -3575,7 +3565,7 @@ public class ConsoleGen
 			GetOveride = () => Server.globalchat.ToString(),
 			SetOveride = (string str) => Server.globalchat = str.ToBool()
 		};
-		command[357] = new ConsoleSystem.Command()
+		command[356] = new ConsoleSystem.Command()
 		{
 			Name = "headerimage",
 			Parent = "server",
@@ -3585,7 +3575,7 @@ public class ConsoleGen
 			GetOveride = () => Server.headerimage.ToString(),
 			SetOveride = (string str) => Server.headerimage = str
 		};
-		command[358] = new ConsoleSystem.Command()
+		command[357] = new ConsoleSystem.Command()
 		{
 			Name = "hostname",
 			Parent = "server",
@@ -3595,7 +3585,7 @@ public class ConsoleGen
 			GetOveride = () => Server.hostname.ToString(),
 			SetOveride = (string str) => Server.hostname = str
 		};
-		command[359] = new ConsoleSystem.Command()
+		command[358] = new ConsoleSystem.Command()
 		{
 			Name = "identity",
 			Parent = "server",
@@ -3605,7 +3595,7 @@ public class ConsoleGen
 			GetOveride = () => Server.identity.ToString(),
 			SetOveride = (string str) => Server.identity = str
 		};
-		command[360] = new ConsoleSystem.Command()
+		command[359] = new ConsoleSystem.Command()
 		{
 			Name = "idlekick",
 			Parent = "server",
@@ -3615,7 +3605,7 @@ public class ConsoleGen
 			GetOveride = () => Server.idlekick.ToString(),
 			SetOveride = (string str) => Server.idlekick = str.ToInt(0)
 		};
-		command[361] = new ConsoleSystem.Command()
+		command[360] = new ConsoleSystem.Command()
 		{
 			Name = "idlekickadmins",
 			Parent = "server",
@@ -3625,7 +3615,7 @@ public class ConsoleGen
 			GetOveride = () => Server.idlekickadmins.ToString(),
 			SetOveride = (string str) => Server.idlekickadmins = str.ToInt(0)
 		};
-		command[362] = new ConsoleSystem.Command()
+		command[361] = new ConsoleSystem.Command()
 		{
 			Name = "idlekickmode",
 			Parent = "server",
@@ -3635,7 +3625,7 @@ public class ConsoleGen
 			GetOveride = () => Server.idlekickmode.ToString(),
 			SetOveride = (string str) => Server.idlekickmode = str.ToInt(0)
 		};
-		command[363] = new ConsoleSystem.Command()
+		command[362] = new ConsoleSystem.Command()
 		{
 			Name = "ip",
 			Parent = "server",
@@ -3645,7 +3635,7 @@ public class ConsoleGen
 			GetOveride = () => Server.ip.ToString(),
 			SetOveride = (string str) => Server.ip = str
 		};
-		command[364] = new ConsoleSystem.Command()
+		command[363] = new ConsoleSystem.Command()
 		{
 			Name = "ipqueriespermin",
 			Parent = "server",
@@ -3655,7 +3645,7 @@ public class ConsoleGen
 			GetOveride = () => Server.ipQueriesPerMin.ToString(),
 			SetOveride = (string str) => Server.ipQueriesPerMin = str.ToInt(0)
 		};
-		command[365] = new ConsoleSystem.Command()
+		command[364] = new ConsoleSystem.Command()
 		{
 			Name = "itemdespawn",
 			Parent = "server",
@@ -3665,7 +3655,7 @@ public class ConsoleGen
 			GetOveride = () => Server.itemdespawn.ToString(),
 			SetOveride = (string str) => Server.itemdespawn = str.ToFloat(0f)
 		};
-		command[366] = new ConsoleSystem.Command()
+		command[365] = new ConsoleSystem.Command()
 		{
 			Name = "level",
 			Parent = "server",
@@ -3675,7 +3665,7 @@ public class ConsoleGen
 			GetOveride = () => Server.level.ToString(),
 			SetOveride = (string str) => Server.level = str
 		};
-		command[367] = new ConsoleSystem.Command()
+		command[366] = new ConsoleSystem.Command()
 		{
 			Name = "levelurl",
 			Parent = "server",
@@ -3685,7 +3675,7 @@ public class ConsoleGen
 			GetOveride = () => Server.levelurl.ToString(),
 			SetOveride = (string str) => Server.levelurl = str
 		};
-		command[368] = new ConsoleSystem.Command()
+		command[367] = new ConsoleSystem.Command()
 		{
 			Name = "maxcommandpacketsize",
 			Parent = "server",
@@ -3695,7 +3685,7 @@ public class ConsoleGen
 			GetOveride = () => Server.maxcommandpacketsize.ToString(),
 			SetOveride = (string str) => Server.maxcommandpacketsize = str.ToInt(0)
 		};
-		command[369] = new ConsoleSystem.Command()
+		command[368] = new ConsoleSystem.Command()
 		{
 			Name = "maxcommandspersecond",
 			Parent = "server",
@@ -3705,7 +3695,7 @@ public class ConsoleGen
 			GetOveride = () => Server.maxcommandspersecond.ToString(),
 			SetOveride = (string str) => Server.maxcommandspersecond = str.ToInt(0)
 		};
-		command[370] = new ConsoleSystem.Command()
+		command[369] = new ConsoleSystem.Command()
 		{
 			Name = "maxpacketsize",
 			Parent = "server",
@@ -3715,7 +3705,7 @@ public class ConsoleGen
 			GetOveride = () => Server.maxpacketsize.ToString(),
 			SetOveride = (string str) => Server.maxpacketsize = str.ToInt(0)
 		};
-		command[371] = new ConsoleSystem.Command()
+		command[370] = new ConsoleSystem.Command()
 		{
 			Name = "maxpacketspersecond",
 			Parent = "server",
@@ -3725,7 +3715,7 @@ public class ConsoleGen
 			GetOveride = () => Server.maxpacketspersecond.ToString(),
 			SetOveride = (string str) => Server.maxpacketspersecond = str.ToInt(0)
 		};
-		command[372] = new ConsoleSystem.Command()
+		command[371] = new ConsoleSystem.Command()
 		{
 			Name = "maxplayers",
 			Parent = "server",
@@ -3735,7 +3725,7 @@ public class ConsoleGen
 			GetOveride = () => Server.maxplayers.ToString(),
 			SetOveride = (string str) => Server.maxplayers = str.ToInt(0)
 		};
-		ConsoleSystem.Command command1 = new ConsoleSystem.Command()
+		command[372] = new ConsoleSystem.Command()
 		{
 			Name = "maxreceivetime",
 			Parent = "server",
@@ -3745,8 +3735,7 @@ public class ConsoleGen
 			GetOveride = () => Server.maxreceivetime.ToString(),
 			SetOveride = (string str) => Server.maxreceivetime = str.ToFloat(0f)
 		};
-		command[373] = command1;
-		command1 = new ConsoleSystem.Command()
+		command[373] = new ConsoleSystem.Command()
 		{
 			Name = "maxrpcspersecond",
 			Parent = "server",
@@ -3756,8 +3745,7 @@ public class ConsoleGen
 			GetOveride = () => Server.maxrpcspersecond.ToString(),
 			SetOveride = (string str) => Server.maxrpcspersecond = str.ToInt(0)
 		};
-		command[374] = command1;
-		command1 = new ConsoleSystem.Command()
+		command[374] = new ConsoleSystem.Command()
 		{
 			Name = "maxtickspersecond",
 			Parent = "server",
@@ -3767,8 +3755,7 @@ public class ConsoleGen
 			GetOveride = () => Server.maxtickspersecond.ToString(),
 			SetOveride = (string str) => Server.maxtickspersecond = str.ToInt(0)
 		};
-		command[375] = command1;
-		command1 = new ConsoleSystem.Command()
+		command[375] = new ConsoleSystem.Command()
 		{
 			Name = "maxunack",
 			Parent = "server",
@@ -3778,8 +3765,7 @@ public class ConsoleGen
 			GetOveride = () => Server.maxunack.ToString(),
 			SetOveride = (string str) => Server.maxunack = str.ToInt(0)
 		};
-		command[376] = command1;
-		command1 = new ConsoleSystem.Command()
+		command[376] = new ConsoleSystem.Command()
 		{
 			Name = "meleearmor",
 			Parent = "server",
@@ -3790,8 +3776,7 @@ public class ConsoleGen
 			GetOveride = () => Server.meleearmor.ToString(),
 			SetOveride = (string str) => Server.meleearmor = str.ToFloat(0f)
 		};
-		command[377] = command1;
-		command1 = new ConsoleSystem.Command()
+		ConsoleSystem.Command command1 = new ConsoleSystem.Command()
 		{
 			Name = "meleedamage",
 			Parent = "server",
@@ -3802,7 +3787,7 @@ public class ConsoleGen
 			GetOveride = () => Server.meleedamage.ToString(),
 			SetOveride = (string str) => Server.meleedamage = str.ToFloat(0f)
 		};
-		command[378] = command1;
+		command[377] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "metabolismtick",
@@ -3813,7 +3798,7 @@ public class ConsoleGen
 			GetOveride = () => Server.metabolismtick.ToString(),
 			SetOveride = (string str) => Server.metabolismtick = str.ToFloat(0f)
 		};
-		command[379] = command1;
+		command[378] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "netcache",
@@ -3824,7 +3809,7 @@ public class ConsoleGen
 			GetOveride = () => Server.netcache.ToString(),
 			SetOveride = (string str) => Server.netcache = str.ToBool()
 		};
-		command[380] = command1;
+		command[379] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "netcachesize",
@@ -3835,7 +3820,7 @@ public class ConsoleGen
 			GetOveride = () => Server.netcachesize.ToString(),
 			SetOveride = (string str) => Server.netcachesize = str.ToInt(0)
 		};
-		command[381] = command1;
+		command[380] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "netlog",
@@ -3846,7 +3831,7 @@ public class ConsoleGen
 			GetOveride = () => Server.netlog.ToString(),
 			SetOveride = (string str) => Server.netlog = str.ToBool()
 		};
-		command[382] = command1;
+		command[381] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "official",
@@ -3857,7 +3842,7 @@ public class ConsoleGen
 			GetOveride = () => Server.official.ToString(),
 			SetOveride = (string str) => Server.official = str.ToBool()
 		};
-		command[383] = command1;
+		command[382] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "plantlightdetection",
@@ -3868,7 +3853,7 @@ public class ConsoleGen
 			GetOveride = () => Server.plantlightdetection.ToString(),
 			SetOveride = (string str) => Server.plantlightdetection = str.ToBool()
 		};
-		command[384] = command1;
+		command[383] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "planttick",
@@ -3879,7 +3864,7 @@ public class ConsoleGen
 			GetOveride = () => Server.planttick.ToString(),
 			SetOveride = (string str) => Server.planttick = str.ToFloat(0f)
 		};
-		command[385] = command1;
+		command[384] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "planttickscale",
@@ -3890,7 +3875,7 @@ public class ConsoleGen
 			GetOveride = () => Server.planttickscale.ToString(),
 			SetOveride = (string str) => Server.planttickscale = str.ToFloat(0f)
 		};
-		command[386] = command1;
+		command[385] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "playerserverfall",
@@ -3902,7 +3887,7 @@ public class ConsoleGen
 			GetOveride = () => Server.playerserverfall.ToString(),
 			SetOveride = (string str) => Server.playerserverfall = str.ToBool()
 		};
-		command[387] = command1;
+		command[386] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "playertimeout",
@@ -3913,7 +3898,7 @@ public class ConsoleGen
 			GetOveride = () => Server.playertimeout.ToString(),
 			SetOveride = (string str) => Server.playertimeout = str.ToInt(0)
 		};
-		command[388] = command1;
+		command[387] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "port",
@@ -3924,7 +3909,7 @@ public class ConsoleGen
 			GetOveride = () => Server.port.ToString(),
 			SetOveride = (string str) => Server.port = str.ToInt(0)
 		};
-		command[389] = command1;
+		command[388] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "printeyes",
@@ -3935,7 +3920,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(Server.printeyes(arg))
 		};
-		command[390] = command1;
+		command[389] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "printpos",
@@ -3946,7 +3931,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(Server.printpos(arg))
 		};
-		command[391] = command1;
+		command[390] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "printrot",
@@ -3957,7 +3942,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(Server.printrot(arg))
 		};
-		command[392] = command1;
+		command[391] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "pve",
@@ -3968,7 +3953,7 @@ public class ConsoleGen
 			GetOveride = () => Server.pve.ToString(),
 			SetOveride = (string str) => Server.pve = str.ToBool()
 		};
-		command[393] = command1;
+		command[392] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "queriespersecond",
@@ -3979,7 +3964,7 @@ public class ConsoleGen
 			GetOveride = () => Server.queriesPerSecond.ToString(),
 			SetOveride = (string str) => Server.queriesPerSecond = str.ToInt(0)
 		};
-		command[394] = command1;
+		command[393] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "queryport",
@@ -3990,7 +3975,7 @@ public class ConsoleGen
 			GetOveride = () => Server.queryport.ToString(),
 			SetOveride = (string str) => Server.queryport = str.ToInt(0)
 		};
-		command[395] = command1;
+		command[394] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "radiation",
@@ -4001,7 +3986,7 @@ public class ConsoleGen
 			GetOveride = () => Server.radiation.ToString(),
 			SetOveride = (string str) => Server.radiation = str.ToBool()
 		};
-		command[396] = command1;
+		command[395] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "readcfg",
@@ -4011,7 +3996,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => arg.ReplyWithObject(Server.readcfg(arg))
 		};
-		command[397] = command1;
+		command[396] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "respawnresetrange",
@@ -4022,7 +4007,7 @@ public class ConsoleGen
 			GetOveride = () => Server.respawnresetrange.ToString(),
 			SetOveride = (string str) => Server.respawnresetrange = str.ToFloat(0f)
 		};
-		command[398] = command1;
+		command[397] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "salt",
@@ -4033,7 +4018,7 @@ public class ConsoleGen
 			GetOveride = () => Server.salt.ToString(),
 			SetOveride = (string str) => Server.salt = str.ToInt(0)
 		};
-		command[399] = command1;
+		command[398] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "save",
@@ -4044,7 +4029,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.save(arg)
 		};
-		command[400] = command1;
+		command[399] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "savecachesize",
@@ -4055,7 +4040,7 @@ public class ConsoleGen
 			GetOveride = () => Server.savecachesize.ToString(),
 			SetOveride = (string str) => Server.savecachesize = str.ToInt(0)
 		};
-		command[401] = command1;
+		command[400] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "saveinterval",
@@ -4066,7 +4051,7 @@ public class ConsoleGen
 			GetOveride = () => Server.saveinterval.ToString(),
 			SetOveride = (string str) => Server.saveinterval = str.ToInt(0)
 		};
-		command[402] = command1;
+		command[401] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "schematime",
@@ -4077,7 +4062,7 @@ public class ConsoleGen
 			GetOveride = () => Server.schematime.ToString(),
 			SetOveride = (string str) => Server.schematime = str.ToFloat(0f)
 		};
-		command[403] = command1;
+		command[402] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "secure",
@@ -4088,7 +4073,7 @@ public class ConsoleGen
 			GetOveride = () => Server.secure.ToString(),
 			SetOveride = (string str) => Server.secure = str.ToBool()
 		};
-		command[404] = command1;
+		command[403] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "seed",
@@ -4099,7 +4084,7 @@ public class ConsoleGen
 			GetOveride = () => Server.seed.ToString(),
 			SetOveride = (string str) => Server.seed = str.ToInt(0)
 		};
-		command[405] = command1;
+		command[404] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "sendnetworkupdate",
@@ -4110,7 +4095,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.sendnetworkupdate(arg)
 		};
-		command[406] = command1;
+		command[405] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "setshowholstereditems",
@@ -4121,7 +4106,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.setshowholstereditems(arg)
 		};
-		command[407] = command1;
+		command[406] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "showholstereditems",
@@ -4133,7 +4118,7 @@ public class ConsoleGen
 			GetOveride = () => Server.showHolsteredItems.ToString(),
 			SetOveride = (string str) => Server.showHolsteredItems = str.ToBool()
 		};
-		command[408] = command1;
+		command[407] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "snapshot",
@@ -4144,7 +4129,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.snapshot(arg)
 		};
-		command[409] = command1;
+		command[408] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "stability",
@@ -4155,7 +4140,7 @@ public class ConsoleGen
 			GetOveride = () => Server.stability.ToString(),
 			SetOveride = (string str) => Server.stability = str.ToBool()
 		};
-		command[410] = command1;
+		command[409] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "start",
@@ -4166,7 +4151,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.start(arg)
 		};
-		command[411] = command1;
+		command[410] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "stats",
@@ -4177,7 +4162,7 @@ public class ConsoleGen
 			GetOveride = () => Server.stats.ToString(),
 			SetOveride = (string str) => Server.stats = str.ToBool()
 		};
-		command[412] = command1;
+		command[411] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "stop",
@@ -4188,7 +4173,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.stop(arg)
 		};
-		command[413] = command1;
+		command[412] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "tickrate",
@@ -4199,7 +4184,7 @@ public class ConsoleGen
 			GetOveride = () => Server.tickrate.ToString(),
 			SetOveride = (string str) => Server.tickrate = str.ToInt(0)
 		};
-		command[414] = command1;
+		command[413] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "updatebatch",
@@ -4210,7 +4195,7 @@ public class ConsoleGen
 			GetOveride = () => Server.updatebatch.ToString(),
 			SetOveride = (string str) => Server.updatebatch = str.ToInt(0)
 		};
-		command[415] = command1;
+		command[414] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "updatebatchspawn",
@@ -4221,7 +4206,7 @@ public class ConsoleGen
 			GetOveride = () => Server.updatebatchspawn.ToString(),
 			SetOveride = (string str) => Server.updatebatchspawn = str.ToInt(0)
 		};
-		command[416] = command1;
+		command[415] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "url",
@@ -4232,7 +4217,7 @@ public class ConsoleGen
 			GetOveride = () => Server.url.ToString(),
 			SetOveride = (string str) => Server.url = str
 		};
-		command[417] = command1;
+		command[416] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "worldsize",
@@ -4243,7 +4228,7 @@ public class ConsoleGen
 			GetOveride = () => Server.worldsize.ToString(),
 			SetOveride = (string str) => Server.worldsize = str.ToInt(0)
 		};
-		command[418] = command1;
+		command[417] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "woundingenabled",
@@ -4255,7 +4240,7 @@ public class ConsoleGen
 			GetOveride = () => Server.woundingenabled.ToString(),
 			SetOveride = (string str) => Server.woundingenabled = str.ToBool()
 		};
-		command[419] = command1;
+		command[418] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "writecfg",
@@ -4266,7 +4251,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Server.writecfg(arg)
 		};
-		command[420] = command1;
+		command[419] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "fill_groups",
@@ -4276,7 +4261,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Spawn.fill_groups(arg)
 		};
-		command[421] = command1;
+		command[420] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "fill_individuals",
@@ -4286,7 +4271,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Spawn.fill_individuals(arg)
 		};
-		command[422] = command1;
+		command[421] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "fill_populations",
@@ -4296,7 +4281,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Spawn.fill_populations(arg)
 		};
-		command[423] = command1;
+		command[422] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "max_density",
@@ -4307,7 +4292,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.max_density.ToString(),
 			SetOveride = (string str) => Spawn.max_density = str.ToFloat(0f)
 		};
-		command[424] = command1;
+		command[423] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "max_rate",
@@ -4318,7 +4303,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.max_rate.ToString(),
 			SetOveride = (string str) => Spawn.max_rate = str.ToFloat(0f)
 		};
-		command[425] = command1;
+		command[424] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "min_density",
@@ -4329,7 +4314,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.min_density.ToString(),
 			SetOveride = (string str) => Spawn.min_density = str.ToFloat(0f)
 		};
-		command[426] = command1;
+		command[425] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "min_rate",
@@ -4340,7 +4325,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.min_rate.ToString(),
 			SetOveride = (string str) => Spawn.min_rate = str.ToFloat(0f)
 		};
-		command[427] = command1;
+		command[426] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "player_base",
@@ -4351,7 +4336,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.player_base.ToString(),
 			SetOveride = (string str) => Spawn.player_base = str.ToFloat(0f)
 		};
-		command[428] = command1;
+		command[427] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "player_scale",
@@ -4362,7 +4347,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.player_scale.ToString(),
 			SetOveride = (string str) => Spawn.player_scale = str.ToFloat(0f)
 		};
-		command[429] = command1;
+		command[428] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "report",
@@ -4372,7 +4357,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Spawn.report(arg)
 		};
-		command[430] = command1;
+		command[429] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "respawn_groups",
@@ -4383,7 +4368,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.respawn_groups.ToString(),
 			SetOveride = (string str) => Spawn.respawn_groups = str.ToBool()
 		};
-		command[431] = command1;
+		command[430] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "respawn_individuals",
@@ -4394,7 +4379,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.respawn_individuals.ToString(),
 			SetOveride = (string str) => Spawn.respawn_individuals = str.ToBool()
 		};
-		command[432] = command1;
+		command[431] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "respawn_populations",
@@ -4405,7 +4390,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.respawn_populations.ToString(),
 			SetOveride = (string str) => Spawn.respawn_populations = str.ToBool()
 		};
-		command[433] = command1;
+		command[432] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "scalars",
@@ -4415,7 +4400,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Spawn.scalars(arg)
 		};
-		command[434] = command1;
+		command[433] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "tick_individuals",
@@ -4426,7 +4411,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.tick_individuals.ToString(),
 			SetOveride = (string str) => Spawn.tick_individuals = str.ToFloat(0f)
 		};
-		command[435] = command1;
+		command[434] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "tick_populations",
@@ -4437,7 +4422,7 @@ public class ConsoleGen
 			GetOveride = () => Spawn.tick_populations.ToString(),
 			SetOveride = (string str) => Spawn.tick_populations = str.ToFloat(0f)
 		};
-		command[436] = command1;
+		command[435] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "accuracy",
@@ -4448,7 +4433,7 @@ public class ConsoleGen
 			GetOveride = () => Stability.accuracy.ToString(),
 			SetOveride = (string str) => Stability.accuracy = str.ToFloat(0f)
 		};
-		command[437] = command1;
+		command[436] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "collapse",
@@ -4459,7 +4444,7 @@ public class ConsoleGen
 			GetOveride = () => Stability.collapse.ToString(),
 			SetOveride = (string str) => Stability.collapse = str.ToFloat(0f)
 		};
-		command[438] = command1;
+		command[437] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "refresh_stability",
@@ -4469,7 +4454,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Stability.refresh_stability(arg)
 		};
-		command[439] = command1;
+		command[438] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "stabilityqueue",
@@ -4480,7 +4465,7 @@ public class ConsoleGen
 			GetOveride = () => Stability.stabilityqueue.ToString(),
 			SetOveride = (string str) => Stability.stabilityqueue = str.ToFloat(0f)
 		};
-		command[440] = command1;
+		command[439] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "strikes",
@@ -4491,7 +4476,7 @@ public class ConsoleGen
 			GetOveride = () => Stability.strikes.ToString(),
 			SetOveride = (string str) => Stability.strikes = str.ToInt(0)
 		};
-		command[441] = command1;
+		command[440] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "surroundingsqueue",
@@ -4502,7 +4487,7 @@ public class ConsoleGen
 			GetOveride = () => Stability.surroundingsqueue.ToString(),
 			SetOveride = (string str) => Stability.surroundingsqueue = str.ToFloat(0f)
 		};
-		command[442] = command1;
+		command[441] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "verbose",
@@ -4513,7 +4498,7 @@ public class ConsoleGen
 			GetOveride = () => Stability.verbose.ToString(),
 			SetOveride = (string str) => Stability.verbose = str.ToInt(0)
 		};
-		command[443] = command1;
+		command[442] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "call",
@@ -4523,7 +4508,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Supply.call(arg)
 		};
-		command[444] = command1;
+		command[443] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "drop",
@@ -4533,7 +4518,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Supply.drop(arg)
 		};
-		command[445] = command1;
+		command[444] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "fixeddelta",
@@ -4544,7 +4529,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Time.fixeddelta.ToString(),
 			SetOveride = (string str) => ConVar.Time.fixeddelta = str.ToFloat(0f)
 		};
-		command[446] = command1;
+		command[445] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "maxdelta",
@@ -4555,7 +4540,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Time.maxdelta.ToString(),
 			SetOveride = (string str) => ConVar.Time.maxdelta = str.ToFloat(0f)
 		};
-		command[447] = command1;
+		command[446] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "pausewhileloading",
@@ -4566,7 +4551,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Time.pausewhileloading.ToString(),
 			SetOveride = (string str) => ConVar.Time.pausewhileloading = str.ToBool()
 		};
-		command[448] = command1;
+		command[447] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "timescale",
@@ -4577,7 +4562,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Time.timescale.ToString(),
 			SetOveride = (string str) => ConVar.Time.timescale = str.ToFloat(0f)
 		};
-		command[449] = command1;
+		command[448] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "boat_corpse_seconds",
@@ -4588,7 +4573,7 @@ public class ConsoleGen
 			GetOveride = () => vehicle.boat_corpse_seconds.ToString(),
 			SetOveride = (string str) => vehicle.boat_corpse_seconds = str.ToFloat(0f)
 		};
-		command[450] = command1;
+		command[449] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "swapseats",
@@ -4598,7 +4583,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => vehicle.swapseats(arg)
 		};
-		command[451] = command1;
+		command[450] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "attack",
@@ -4609,7 +4594,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Vis.attack.ToString(),
 			SetOveride = (string str) => ConVar.Vis.attack = str.ToBool()
 		};
-		command[452] = command1;
+		command[451] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "damage",
@@ -4620,7 +4605,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Vis.damage.ToString(),
 			SetOveride = (string str) => ConVar.Vis.damage = str.ToBool()
 		};
-		command[453] = command1;
+		command[452] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "hitboxes",
@@ -4631,7 +4616,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Vis.hitboxes.ToString(),
 			SetOveride = (string str) => ConVar.Vis.hitboxes = str.ToBool()
 		};
-		command[454] = command1;
+		command[453] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "lineofsight",
@@ -4642,7 +4627,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Vis.lineofsight.ToString(),
 			SetOveride = (string str) => ConVar.Vis.lineofsight = str.ToBool()
 		};
-		command[455] = command1;
+		command[454] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "protection",
@@ -4653,7 +4638,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Vis.protection.ToString(),
 			SetOveride = (string str) => ConVar.Vis.protection = str.ToBool()
 		};
-		command[456] = command1;
+		command[455] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "sense",
@@ -4664,7 +4649,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Vis.sense.ToString(),
 			SetOveride = (string str) => ConVar.Vis.sense = str.ToBool()
 		};
-		command[457] = command1;
+		command[456] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "triggers",
@@ -4675,7 +4660,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Vis.triggers.ToString(),
 			SetOveride = (string str) => ConVar.Vis.triggers = str.ToBool()
 		};
-		command[458] = command1;
+		command[457] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "weakspots",
@@ -4686,7 +4671,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.Vis.weakspots.ToString(),
 			SetOveride = (string str) => ConVar.Vis.weakspots = str.ToBool()
 		};
-		command[459] = command1;
+		command[458] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "clouds",
@@ -4696,7 +4681,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Weather.clouds(arg)
 		};
-		command[460] = command1;
+		command[459] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "fog",
@@ -4706,7 +4691,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Weather.fog(arg)
 		};
-		command[461] = command1;
+		command[460] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "rain",
@@ -4716,7 +4701,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Weather.rain(arg)
 		};
-		command[462] = command1;
+		command[461] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "wind",
@@ -4726,7 +4711,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Weather.wind(arg)
 		};
-		command[463] = command1;
+		command[462] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "print_approved_skins",
@@ -4736,7 +4721,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => Workshop.print_approved_skins(arg)
 		};
-		command[464] = command1;
+		command[463] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "cache",
@@ -4747,7 +4732,7 @@ public class ConsoleGen
 			GetOveride = () => ConVar.World.cache.ToString(),
 			SetOveride = (string str) => ConVar.World.cache = str.ToBool()
 		};
-		command[465] = command1;
+		command[464] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "enabled",
@@ -4758,7 +4743,7 @@ public class ConsoleGen
 			GetOveride = () => XMas.enabled.ToString(),
 			SetOveride = (string str) => XMas.enabled = str.ToBool()
 		};
-		command[466] = command1;
+		command[465] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "giftsperplayer",
@@ -4769,7 +4754,7 @@ public class ConsoleGen
 			GetOveride = () => XMas.giftsPerPlayer.ToString(),
 			SetOveride = (string str) => XMas.giftsPerPlayer = str.ToInt(0)
 		};
-		command[467] = command1;
+		command[466] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "refill",
@@ -4779,7 +4764,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => XMas.refill(arg)
 		};
-		command[468] = command1;
+		command[467] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "spawnattempts",
@@ -4790,7 +4775,7 @@ public class ConsoleGen
 			GetOveride = () => XMas.spawnAttempts.ToString(),
 			SetOveride = (string str) => XMas.spawnAttempts = str.ToInt(0)
 		};
-		command[469] = command1;
+		command[468] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "spawnrange",
@@ -4801,7 +4786,7 @@ public class ConsoleGen
 			GetOveride = () => XMas.spawnRange.ToString(),
 			SetOveride = (string str) => XMas.spawnRange = str.ToFloat(0f)
 		};
-		command[470] = command1;
+		command[469] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "endtest",
@@ -4811,7 +4796,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => cui.endtest(arg)
 		};
-		command[471] = command1;
+		command[470] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "test",
@@ -4821,7 +4806,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => cui.test(arg)
 		};
-		command[472] = command1;
+		command[471] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "dump",
@@ -4831,7 +4816,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => DiagnosticsConSys.dump(arg)
 		};
-		command[473] = command1;
+		command[472] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "ip",
@@ -4842,7 +4827,7 @@ public class ConsoleGen
 			GetOveride = () => RCon.Ip.ToString(),
 			SetOveride = (string str) => RCon.Ip = str
 		};
-		command[474] = command1;
+		command[473] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "port",
@@ -4853,7 +4838,7 @@ public class ConsoleGen
 			GetOveride = () => RCon.Port.ToString(),
 			SetOveride = (string str) => RCon.Port = str.ToInt(0)
 		};
-		command[475] = command1;
+		command[474] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "print",
@@ -4865,7 +4850,7 @@ public class ConsoleGen
 			GetOveride = () => RCon.Print.ToString(),
 			SetOveride = (string str) => RCon.Print = str.ToBool()
 		};
-		command[476] = command1;
+		command[475] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "web",
@@ -4877,7 +4862,7 @@ public class ConsoleGen
 			GetOveride = () => RCon.Web.ToString(),
 			SetOveride = (string str) => RCon.Web = str.ToBool()
 		};
-		command[477] = command1;
+		command[476] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "decayseconds",
@@ -4889,7 +4874,7 @@ public class ConsoleGen
 			GetOveride = () => HackableLockedCrate.decaySeconds.ToString(),
 			SetOveride = (string str) => HackableLockedCrate.decaySeconds = str.ToFloat(0f)
 		};
-		command[478] = command1;
+		command[477] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "requiredhackseconds",
@@ -4901,7 +4886,7 @@ public class ConsoleGen
 			GetOveride = () => HackableLockedCrate.requiredHackSeconds.ToString(),
 			SetOveride = (string str) => HackableLockedCrate.requiredHackSeconds = str.ToFloat(0f)
 		};
-		command[479] = command1;
+		command[478] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "population",
@@ -4913,7 +4898,7 @@ public class ConsoleGen
 			GetOveride = () => Horse.Population.ToString(),
 			SetOveride = (string str) => Horse.Population = str.ToFloat(0f)
 		};
-		command[480] = command1;
+		command[479] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "outsidedecayminutes",
@@ -4925,7 +4910,7 @@ public class ConsoleGen
 			GetOveride = () => HotAirBalloon.outsidedecayminutes.ToString(),
 			SetOveride = (string str) => HotAirBalloon.outsidedecayminutes = str.ToFloat(0f)
 		};
-		command[481] = command1;
+		command[480] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "population",
@@ -4937,7 +4922,7 @@ public class ConsoleGen
 			GetOveride = () => HotAirBalloon.population.ToString(),
 			SetOveride = (string str) => HotAirBalloon.population = str.ToFloat(0f)
 		};
-		command[482] = command1;
+		command[481] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "serviceceiling",
@@ -4948,7 +4933,7 @@ public class ConsoleGen
 			GetOveride = () => HotAirBalloon.serviceCeiling.ToString(),
 			SetOveride = (string str) => HotAirBalloon.serviceCeiling = str.ToFloat(0f)
 		};
-		command[483] = command1;
+		command[482] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "backtracking",
@@ -4959,7 +4944,7 @@ public class ConsoleGen
 			GetOveride = () => IOEntity.backtracking.ToString(),
 			SetOveride = (string str) => IOEntity.backtracking = str.ToInt(0)
 		};
-		command[484] = command1;
+		command[483] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "framebudgetms",
@@ -4970,7 +4955,7 @@ public class ConsoleGen
 			GetOveride = () => IOEntity.framebudgetms.ToString(),
 			SetOveride = (string str) => IOEntity.framebudgetms = str.ToFloat(0f)
 		};
-		command[485] = command1;
+		command[484] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "responsetime",
@@ -4981,7 +4966,7 @@ public class ConsoleGen
 			GetOveride = () => IOEntity.responsetime.ToString(),
 			SetOveride = (string str) => IOEntity.responsetime = str.ToFloat(0f)
 		};
-		command[486] = command1;
+		command[485] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "outsidedecayminutes",
@@ -4993,7 +4978,7 @@ public class ConsoleGen
 			GetOveride = () => MiniCopter.outsidedecayminutes.ToString(),
 			SetOveride = (string str) => MiniCopter.outsidedecayminutes = str.ToFloat(0f)
 		};
-		command[487] = command1;
+		command[486] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "population",
@@ -5005,7 +4990,7 @@ public class ConsoleGen
 			GetOveride = () => MiniCopter.population.ToString(),
 			SetOveride = (string str) => MiniCopter.population = str.ToFloat(0f)
 		};
-		command[488] = command1;
+		command[487] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "outsidedecayminutes",
@@ -5017,7 +5002,7 @@ public class ConsoleGen
 			GetOveride = () => MotorRowboat.outsidedecayminutes.ToString(),
 			SetOveride = (string str) => MotorRowboat.outsidedecayminutes = str.ToFloat(0f)
 		};
-		command[489] = command1;
+		command[488] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "population",
@@ -5029,7 +5014,7 @@ public class ConsoleGen
 			GetOveride = () => MotorRowboat.population.ToString(),
 			SetOveride = (string str) => MotorRowboat.population = str.ToFloat(0f)
 		};
-		command[490] = command1;
+		command[489] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "update",
@@ -5039,7 +5024,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => note.update(arg)
 		};
-		command[491] = command1;
+		command[490] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "sleeperhostiledelay",
@@ -5051,7 +5036,7 @@ public class ConsoleGen
 			GetOveride = () => NPCAutoTurret.sleeperhostiledelay.ToString(),
 			SetOveride = (string str) => NPCAutoTurret.sleeperhostiledelay = str.ToFloat(0f)
 		};
-		command[492] = command1;
+		command[491] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "forcebirthday",
@@ -5062,7 +5047,7 @@ public class ConsoleGen
 			GetOveride = () => PlayerInventory.forceBirthday.ToString(),
 			SetOveride = (string str) => PlayerInventory.forceBirthday = str.ToBool()
 		};
-		command[493] = command1;
+		command[492] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "acceptinvite",
@@ -5072,7 +5057,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.acceptinvite(arg)
 		};
-		command[494] = command1;
+		command[493] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "addtoteam",
@@ -5082,7 +5067,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.addtoteam(arg)
 		};
-		command[495] = command1;
+		command[494] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "fakeinvite",
@@ -5092,7 +5077,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.fakeinvite(arg)
 		};
-		command[496] = command1;
+		command[495] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "kickmember",
@@ -5102,7 +5087,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.kickmember(arg)
 		};
-		command[497] = command1;
+		command[496] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "leaveteam",
@@ -5112,7 +5097,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.leaveteam(arg)
 		};
-		command[498] = command1;
+		command[497] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "maxteamsize",
@@ -5123,7 +5108,7 @@ public class ConsoleGen
 			GetOveride = () => RelationshipManager.maxTeamSize.ToString(),
 			SetOveride = (string str) => RelationshipManager.maxTeamSize = str.ToInt(0)
 		};
-		command[499] = command1;
+		command[498] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "promote",
@@ -5133,7 +5118,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.promote(arg)
 		};
-		command[500] = command1;
+		command[499] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "rejectinvite",
@@ -5143,7 +5128,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.rejectinvite(arg)
 		};
-		command[501] = command1;
+		command[500] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "sendinvite",
@@ -5153,7 +5138,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.sendinvite(arg)
 		};
-		command[502] = command1;
+		command[501] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "sleeptoggle",
@@ -5163,7 +5148,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.sleeptoggle(arg)
 		};
-		command[503] = command1;
+		command[502] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "trycreateteam",
@@ -5173,7 +5158,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => RelationshipManager.trycreateteam(arg)
 		};
-		command[504] = command1;
+		command[503] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "rhibpopulation",
@@ -5185,7 +5170,7 @@ public class ConsoleGen
 			GetOveride = () => RHIB.rhibpopulation.ToString(),
 			SetOveride = (string str) => RHIB.rhibpopulation = str.ToFloat(0f)
 		};
-		command[505] = command1;
+		command[504] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "ai_dormant",
@@ -5197,7 +5182,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.ai_dormant.ToString(),
 			SetOveride = (string str) => AiManager.ai_dormant = str.ToBool()
 		};
-		command[506] = command1;
+		command[505] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "ai_dormant_max_wakeup_per_tick",
@@ -5209,7 +5194,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.ai_dormant_max_wakeup_per_tick.ToString(),
 			SetOveride = (string str) => AiManager.ai_dormant_max_wakeup_per_tick = str.ToInt(0)
 		};
-		command[507] = command1;
+		command[506] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "ai_htn_animal_tick_budget",
@@ -5221,7 +5206,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.ai_htn_animal_tick_budget.ToString(),
 			SetOveride = (string str) => AiManager.ai_htn_animal_tick_budget = str.ToFloat(0f)
 		};
-		command[508] = command1;
+		command[507] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "ai_htn_player_junkpile_tick_budget",
@@ -5233,7 +5218,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.ai_htn_player_junkpile_tick_budget.ToString(),
 			SetOveride = (string str) => AiManager.ai_htn_player_junkpile_tick_budget = str.ToFloat(0f)
 		};
-		command[509] = command1;
+		command[508] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "ai_htn_player_tick_budget",
@@ -5245,7 +5230,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.ai_htn_player_tick_budget.ToString(),
 			SetOveride = (string str) => AiManager.ai_htn_player_tick_budget = str.ToFloat(0f)
 		};
-		command[510] = command1;
+		command[509] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "ai_htn_use_agency_tick",
@@ -5257,7 +5242,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.ai_htn_use_agency_tick.ToString(),
 			SetOveride = (string str) => AiManager.ai_htn_use_agency_tick = str.ToBool()
 		};
-		command[511] = command1;
+		command[510] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "ai_to_player_distance_wakeup_range",
@@ -5269,7 +5254,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.ai_to_player_distance_wakeup_range.ToString(),
 			SetOveride = (string str) => AiManager.ai_to_player_distance_wakeup_range = str.ToFloat(0f)
 		};
-		command[512] = command1;
+		command[511] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "nav_disable",
@@ -5281,7 +5266,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.nav_disable.ToString(),
 			SetOveride = (string str) => AiManager.nav_disable = str.ToBool()
 		};
-		command[513] = command1;
+		command[512] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "nav_obstacles_carve_state",
@@ -5293,7 +5278,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.nav_obstacles_carve_state.ToString(),
 			SetOveride = (string str) => AiManager.nav_obstacles_carve_state = str.ToInt(0)
 		};
-		command[514] = command1;
+		command[513] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "nav_wait",
@@ -5305,7 +5290,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.nav_wait.ToString(),
 			SetOveride = (string str) => AiManager.nav_wait = str.ToBool()
 		};
-		command[515] = command1;
+		command[514] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "pathfindingiterationsperframe",
@@ -5317,7 +5302,7 @@ public class ConsoleGen
 			GetOveride = () => AiManager.pathfindingIterationsPerFrame.ToString(),
 			SetOveride = (string str) => AiManager.pathfindingIterationsPerFrame = str.ToInt(0)
 		};
-		command[516] = command1;
+		command[515] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "cover_point_sample_step_height",
@@ -5329,7 +5314,7 @@ public class ConsoleGen
 			GetOveride = () => CoverPointVolume.cover_point_sample_step_height.ToString(),
 			SetOveride = (string str) => CoverPointVolume.cover_point_sample_step_height = str.ToFloat(0f)
 		};
-		command[517] = command1;
+		command[516] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "cover_point_sample_step_size",
@@ -5341,7 +5326,7 @@ public class ConsoleGen
 			GetOveride = () => CoverPointVolume.cover_point_sample_step_size.ToString(),
 			SetOveride = (string str) => CoverPointVolume.cover_point_sample_step_size = str.ToFloat(0f)
 		};
-		command[518] = command1;
+		command[517] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "alltarget",
@@ -5353,7 +5338,7 @@ public class ConsoleGen
 			GetOveride = () => SamSite.alltarget.ToString(),
 			SetOveride = (string str) => SamSite.alltarget = str.ToBool()
 		};
-		command[519] = command1;
+		command[518] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "staticrepairseconds",
@@ -5365,7 +5350,7 @@ public class ConsoleGen
 			GetOveride = () => SamSite.staticrepairseconds.ToString(),
 			SetOveride = (string str) => SamSite.staticrepairseconds = str.ToFloat(0f)
 		};
-		command[520] = command1;
+		command[519] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "altitudeaboveterrain",
@@ -5376,7 +5361,7 @@ public class ConsoleGen
 			GetOveride = () => SantaSleigh.altitudeAboveTerrain.ToString(),
 			SetOveride = (string str) => SantaSleigh.altitudeAboveTerrain = str.ToFloat(0f)
 		};
-		command[521] = command1;
+		command[520] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "desiredaltitude",
@@ -5387,7 +5372,7 @@ public class ConsoleGen
 			GetOveride = () => SantaSleigh.desiredAltitude.ToString(),
 			SetOveride = (string str) => SantaSleigh.desiredAltitude = str.ToFloat(0f)
 		};
-		command[522] = command1;
+		command[521] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "drop",
@@ -5397,7 +5382,7 @@ public class ConsoleGen
 			Variable = false,
 			Call = (ConsoleSystem.Arg arg) => SantaSleigh.drop(arg)
 		};
-		command[523] = command1;
+		command[522] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "population",
@@ -5409,7 +5394,7 @@ public class ConsoleGen
 			GetOveride = () => Stag.Population.ToString(),
 			SetOveride = (string str) => Stag.Population = str.ToFloat(0f)
 		};
-		command[524] = command1;
+		command[523] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "population",
@@ -5421,7 +5406,7 @@ public class ConsoleGen
 			GetOveride = () => Wolf.Population.ToString(),
 			SetOveride = (string str) => Wolf.Population = str.ToFloat(0f)
 		};
-		command[525] = command1;
+		command[524] = command1;
 		command1 = new ConsoleSystem.Command()
 		{
 			Name = "population",
@@ -5433,7 +5418,7 @@ public class ConsoleGen
 			GetOveride = () => Zombie.Population.ToString(),
 			SetOveride = (string str) => Zombie.Population = str.ToFloat(0f)
 		};
-		command[526] = command1;
+		command[525] = command1;
 		ConsoleGen.All = command;
 	}
 

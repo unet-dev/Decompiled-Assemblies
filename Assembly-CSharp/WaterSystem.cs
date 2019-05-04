@@ -268,7 +268,7 @@ public class WaterSystem : MonoBehaviour
 
 		public float Amplitude;
 
-		public TextAsset PerlinNoiseData;
+		public Texture2D PerlinNoise;
 
 		public WaterGerstner.WaveSettings GerstnerWaves;
 

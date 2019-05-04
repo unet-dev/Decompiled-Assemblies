@@ -34,10 +34,6 @@ public class SimpleFlare : BaseMonoBehaviour, IClientComponent
 
 	private List<BasePlayer> players;
 
-	private Renderer myRenderer;
-
-	private static MaterialPropertyBlock block;
-
 	public float dotMin = -1f;
 
 	public float dotMax = -1f;

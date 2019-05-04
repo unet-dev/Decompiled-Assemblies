@@ -103,6 +103,7 @@ public class CoverageQueries : MonoBehaviour
 			if (this.resultTexture != null)
 			{
 				RenderTexture.active = null;
+				this.resultTexture.Release();
 				UnityEngine.Object.DestroyImmediate(this.resultTexture);
 				this.resultTexture = null;
 			}

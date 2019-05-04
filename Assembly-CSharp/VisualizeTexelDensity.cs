@@ -182,6 +182,7 @@ public class VisualizeTexelDensity : MonoBehaviour
 		if (this.texelDensityRT != null)
 		{
 			Graphics.SetRenderTarget(null);
+			this.texelDensityRT.Release();
 			UnityEngine.Object.DestroyImmediate(this.texelDensityRT);
 			this.texelDensityRT = null;
 		}

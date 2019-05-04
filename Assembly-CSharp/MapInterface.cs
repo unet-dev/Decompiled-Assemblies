@@ -12,10 +12,6 @@ public class MapInterface : SingletonComponent<MapInterface>
 
 	public ScrollRectEx scrollRect;
 
-	public PaintableImageGrid paintGrid;
-
-	public UIPaintBox paintBox;
-
 	public Toggle showGridToggle;
 
 	public Button FocusButton;
@@ -27,6 +23,8 @@ public class MapInterface : SingletonComponent<MapInterface>
 	public UnityEngine.CanvasGroup CanvasGroup;
 
 	public bool followingPlayer = true;
+
+	public bool DebugStayOpen;
 
 	public MapInterface()
 	{

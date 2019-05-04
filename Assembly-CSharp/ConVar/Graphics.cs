@@ -125,6 +125,19 @@ namespace ConVar
 		}
 
 		[ClientVar]
+		public static bool itemskinunload
+		{
+			get
+			{
+				return WorkshopSkin.AllowUnload;
+			}
+			set
+			{
+				WorkshopSkin.AllowUnload = value;
+			}
+		}
+
+		[ClientVar]
 		public static float lodbias
 		{
 			get

@@ -29,20 +29,26 @@ public class ItemModProjectileSpawn : ItemModProjectile
 				string str = this.createOnImpact.resourcePath;
 				Vector3 vector3 = new Vector3();
 				Quaternion quaternion = new Quaternion();
-				BaseEntity hitPositionWorld = gameManager.CreateEntity(str, vector3, quaternion, true);
-				if (hitPositionWorld)
+				BaseEntity baseEntity = gameManager.CreateEntity(str, vector3, quaternion, true);
+				if (baseEntity)
 				{
-					hitPositionWorld.transform.position = info.HitPositionWorld + (info.HitNormalWorld * 0.1f);
-					hitPositionWorld.transform.rotation = Quaternion.LookRotation(info.HitNormalWorld);
-					if (!GamePhysics.LineOfSight(info.HitPositionWorld, hitPositionWorld.transform.position, 2162688, 0f))
+					Vector3 hitPositionWorld = info.HitPositionWorld;
+					Vector3 hitNormalWorld = info.HitNormalWorld.normalized;
+					Vector3 vector31 = hitPositionWorld + (hitNormalWorld * 0.1f);
+					if (!GamePhysics.LineOfSight(hitPositionWorld, vector31, 2162688, 0f))
 					{
-						hitPositionWorld.transform.position = info.HitPositionWorld;
+						baseEntity.transform.position = hitPositionWorld;
 					}
-					hitPositionWorld.Spawn();
+					else
+					{
+						baseEntity.transform.position = vector31;
+					}
+					baseEntity.transform.rotation = Quaternion.LookRotation(hitNormalWorld);
+					baseEntity.Spawn();
 					if (this.spreadAngle > 0f)
 					{
-						Vector3 modifiedAimConeDirection = AimConeUtil.GetModifiedAimConeDirection(this.spreadAngle, info.HitNormalWorld, true);
-						hitPositionWorld.SetVelocity(modifiedAimConeDirection * UnityEngine.Random.Range(1f, 3f));
+						Vector3 modifiedAimConeDirection = AimConeUtil.GetModifiedAimConeDirection(this.spreadAngle, hitNormalWorld, true);
+						baseEntity.SetVelocity(modifiedAimConeDirection * UnityEngine.Random.Range(1f, 3f));
 					}
 				}
 			}

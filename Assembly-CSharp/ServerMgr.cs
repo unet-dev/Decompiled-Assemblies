@@ -407,13 +407,13 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 			Network.Net.sv.Kick(packet.connection, string.Concat("Wrong Steam Beta: Requires '", str, "' branch!"));
 			return;
 		}
-		if (packet.connection.protocol > 2163)
+		if (packet.connection.protocol > 2164)
 		{
-			DebugEx.Log(string.Concat(new object[] { "Kicking ", packet.connection, " - their protocol is ", packet.connection.protocol, " not ", 2163 }), StackTraceLogType.None);
+			DebugEx.Log(string.Concat(new object[] { "Kicking ", packet.connection, " - their protocol is ", packet.connection.protocol, " not ", 2164 }), StackTraceLogType.None);
 			Network.Net.sv.Kick(packet.connection, "Wrong Connection Protocol: Server update required!");
 			return;
 		}
-		if (packet.connection.protocol >= 2163)
+		if (packet.connection.protocol >= 2164)
 		{
 			packet.connection.token = packet.read.BytesWithSize();
 			if (packet.connection.token != null && (int)packet.connection.token.Length >= 1)
@@ -424,7 +424,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 			Network.Net.sv.Kick(packet.connection, "Invalid Token");
 			return;
 		}
-		DebugEx.Log(string.Concat(new object[] { "Kicking ", packet.connection, " - their protocol is ", packet.connection.protocol, " not ", 2163 }), StackTraceLogType.None);
+		DebugEx.Log(string.Concat(new object[] { "Kicking ", packet.connection, " - their protocol is ", packet.connection.protocol, " not ", 2164 }), StackTraceLogType.None);
 		Network.Net.sv.Kick(packet.connection, "Wrong Connection Protocol: Client update required!");
 	}
 
@@ -991,7 +991,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 			IpAddress = pAddress,
 			GamePort = (ushort)Network.Net.sv.port,
 			Secure = ConVar.Server.secure,
-			VersionString = 2163.ToString()
+			VersionString = 2164.ToString()
 		};
 		if (!this.useQueryPort)
 		{
@@ -1158,7 +1158,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 				str = "strst";
 			}
 			string str1 = string.Format("born{0}", Epoch.FromDateTime(SaveRestore.SaveCreatedTime));
-			object[] count = new object[] { ConVar.Server.maxplayers, BasePlayer.activePlayerList.Count, 2163, null, null, null, null, null };
+			object[] count = new object[] { ConVar.Server.maxplayers, BasePlayer.activePlayerList.Count, 2164, null, null, null, null, null };
 			count[3] = (ConVar.Server.pve ? ",pve" : string.Empty);
 			count[4] = this.AssemblyHash;
 			count[5] = SingletonComponent<ServerMgr>.Instance.connectionQueue.Queued;

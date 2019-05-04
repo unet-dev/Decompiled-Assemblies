@@ -80,7 +80,8 @@ namespace Rust.Workshop.Import
 			}
 			importVersion3.Interface.LoadingBar.Text = "Loading..";
 			importVersion3.Interface.LoadingBar.SubText = "Reading Textures";
-			yield return importVersion3.StartCoroutine(skin.FromFolder(item.Id, item.Directory, null));
+			yield return importVersion3.StartCoroutine(skin.LoadIcon(item.Id, item.Directory, null));
+			yield return importVersion3.StartCoroutine(skin.LoadAssets(item.Id, item.Directory, null));
 			importVersion3.Interface.LoadingBar.Active = false;
 			OnImportFinished();
 		}

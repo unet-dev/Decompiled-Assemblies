@@ -110,7 +110,7 @@ namespace ConVar
 			basePlayer.OnAttacked(hitInfo);
 		}
 
-		[ServerVar(Help="respawn all puzzles from their prefabs")]
+		[ServerVar(EditorOnly=true, Help="respawn all puzzles from their prefabs")]
 		public static void puzzleprefabrespawn(ConsoleSystem.Arg arg)
 		{
 			foreach (BaseNetworkable list in BaseNetworkable.serverEntities.Where<BaseNetworkable>((BaseNetworkable x) => {

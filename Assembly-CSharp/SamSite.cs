@@ -59,9 +59,9 @@ public class SamSite : ContainerIOEntity
 
 	private Item ammoItem;
 
-	private float lockOnTime;
+	public float lockOnTime;
 
-	private float lastTargetVisibleTime;
+	public float lastTargetVisibleTime;
 
 	public Transform[] tubes;
 
@@ -69,7 +69,7 @@ public class SamSite : ContainerIOEntity
 
 	private int firedCount;
 
-	private float nextBurstTime;
+	public float nextBurstTime;
 
 	static SamSite()
 	{

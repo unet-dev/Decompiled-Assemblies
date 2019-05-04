@@ -448,7 +448,7 @@ namespace ConVar
 			if (str.Length == 0)
 			{
 				empty = string.Concat(empty, "hostname: ", ConVar.Server.hostname, "\n");
-				averagePing = 2163;
+				averagePing = 2164;
 				empty = string.Concat(empty, "version : ", averagePing.ToString(), " secure (secure mode enabled, connected to Steam3)\n");
 				empty = string.Concat(empty, "map     : ", ConVar.Server.level, "\n");
 				empty = string.Concat(new object[] { empty, "players : ", BasePlayer.activePlayerList.Count<BasePlayer>(), " (", ConVar.Server.maxplayers, " max) (", SingletonComponent<ServerMgr>.Instance.connectionQueue.Queued, " queued) (", SingletonComponent<ServerMgr>.Instance.connectionQueue.Joining, " joining)\n\n" });

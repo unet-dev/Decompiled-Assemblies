@@ -24,15 +24,31 @@ namespace Rust.Workshop
 
 		public Sprite sprite;
 
+		public int references;
+
 		public Skinnable Skinnable;
 
 		public Material[] Materials;
 
 		public Material[] DefaultMaterials;
 
+		public List<Texture> Textures;
+
 		public Action OnLoaded;
 
 		public Action OnIconLoaded;
+
+		public bool AssetsLoaded
+		{
+			get;
+			internal set;
+		}
+
+		public bool AssetsRequested
+		{
+			get;
+			set;
+		}
 
 		public bool IconLoaded
 		{
@@ -40,10 +56,10 @@ namespace Rust.Workshop
 			internal set;
 		}
 
-		public bool Loaded
+		public bool IconRequested
 		{
 			get;
-			internal set;
+			set;
 		}
 
 		public Skin()
@@ -90,14 +106,31 @@ namespace Rust.Workshop
 			this.manifest = JsonConvert.DeserializeObject<Skin.Manifest>(this.manifestContent);
 		}
 
-		public IEnumerator FromFolder(ulong workshopId, DirectoryInfo directory = null, AssetBundle bundle = null)
+		private bool IsSkinnable(string name)
+		{
+			if (name.Contains("PlayerSkin"))
+			{
+				return false;
+			}
+			if (name.StartsWith("Female."))
+			{
+				return false;
+			}
+			if (name.StartsWith("Male."))
+			{
+				return false;
+			}
+			return true;
+		}
+
+		public IEnumerator LoadAssets(ulong workshopId, DirectoryInfo directory = null, AssetBundle bundle = null)
 		{
 			// 
-			// Current member / type: System.Collections.IEnumerator Rust.Workshop.Skin::FromFolder(System.UInt64,System.IO.DirectoryInfo,UnityEngine.AssetBundle)
+			// Current member / type: System.Collections.IEnumerator Rust.Workshop.Skin::LoadAssets(System.UInt64,System.IO.DirectoryInfo,UnityEngine.AssetBundle)
 			// File path: D:\GameServers\Rust\RustDedicated_Data\Managed\Rust.Workshop.dll
 			// 
 			// Product version: 2019.1.118.0
-			// Exception in: System.Collections.IEnumerator FromFolder(System.UInt64,System.IO.DirectoryInfo,UnityEngine.AssetBundle)
+			// Exception in: System.Collections.IEnumerator LoadAssets(System.UInt64,System.IO.DirectoryInfo,UnityEngine.AssetBundle)
 			// 
 			// Invalid state value
 			//    at ..( , Queue`1 , ILogicalConstruct ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\LogicFlow\YieldGuardedBlocksBuilder.cs:line 203
@@ -123,21 +156,119 @@ namespace Rust.Workshop
 
 		}
 
-		private bool IsSkinnable(string name)
+		public IEnumerator LoadIcon(ulong workshopId, DirectoryInfo directory = null, AssetBundle bundle = null)
 		{
-			if (name.Contains("PlayerSkin"))
+			Skin skin = null;
+			AssetBundleRequest assetBundleRequest;
+			TimeWarning.BeginSample("Skin.LoadIcon");
+			if (bundle != null)
 			{
-				return false;
+				TimeWarning.BeginSample("ManifestName");
+				skin.manifestName = string.Concat("Assets/Skins/", workshopId, "/manifest.txt");
+				TimeWarning.EndSample();
+				TimeWarning.BeginSample("LoadAssetAsync");
+				assetBundleRequest = bundle.LoadAssetAsync<TextAsset>(skin.manifestName);
+				TimeWarning.EndSample();
+				TimeWarning.EndSample();
+				yield return assetBundleRequest;
+				TimeWarning.BeginSample("Skin.LoadIcon");
+				TimeWarning.BeginSample("AssetBundleRequest");
+				skin.manifestAsset = assetBundleRequest.asset as TextAsset;
+				TimeWarning.EndSample();
+				if (skin.manifestAsset != null)
+				{
+					TimeWarning.BeginSample("TextAsset");
+					skin.manifestContent = skin.manifestAsset.text;
+					TimeWarning.EndSample();
+				}
+				assetBundleRequest = null;
 			}
-			if (name.StartsWith("Female."))
+			if (skin.manifestContent == null && directory != null)
 			{
-				return false;
+				TimeWarning.BeginSample("ManifestName");
+				skin.manifestName = string.Concat(directory.FullName, "/manifest.txt");
+				TimeWarning.EndSample();
+				TimeWarning.BeginSample("File.Exists");
+				bool flag = File.Exists(skin.manifestName);
+				TimeWarning.EndSample();
+				if (flag)
+				{
+					TimeWarning.EndSample();
+					yield return Global.Runner.StartCoroutine(Parallel.Coroutine(new Action(skin.LoadManifestFromFile)));
+					TimeWarning.BeginSample("Skin.LoadIcon");
+				}
 			}
-			if (name.StartsWith("Male."))
+			if (skin.manifestContent != null)
 			{
-				return false;
+				TimeWarning.EndSample();
+				yield return Global.Runner.StartCoroutine(Parallel.Coroutine(new Action(skin.DeserializeManifest)));
+				TimeWarning.BeginSample("Skin.LoadIcon");
 			}
-			return true;
+			if (skin.manifest == null)
+			{
+				UnityEngine.Debug.LogWarning(string.Concat("Invalid skin manifest: ", skin.manifestName));
+				TimeWarning.EndSample();
+				yield break;
+			}
+			TimeWarning.BeginSample("Skinnable.FindForItem");
+			skin.Skinnable = Skinnable.FindForItem(skin.manifest.ItemType);
+			TimeWarning.EndSample();
+			if (bundle != null)
+			{
+				TimeWarning.BeginSample("IconName");
+				skin.iconName = string.Concat("Assets/Skins/", workshopId, "/icon.png");
+				TimeWarning.EndSample();
+				TimeWarning.BeginSample("LoadAssetAsync");
+				assetBundleRequest = bundle.LoadAssetAsync<Sprite>(skin.iconName);
+				TimeWarning.EndSample();
+				TimeWarning.EndSample();
+				yield return assetBundleRequest;
+				TimeWarning.BeginSample("Skin.LoadIcon");
+				TimeWarning.BeginSample("AssetBundleRequest");
+				Sprite sprite = assetBundleRequest.asset as Sprite;
+				TimeWarning.EndSample();
+				if (sprite != null)
+				{
+					TimeWarning.BeginSample("Sprite");
+					skin.sprite = sprite;
+					TimeWarning.EndSample();
+				}
+				assetBundleRequest = null;
+			}
+			if (skin.sprite == null && directory != null)
+			{
+				TimeWarning.BeginSample("IconName");
+				skin.iconName = string.Concat(directory.FullName, "/icon.png");
+				TimeWarning.EndSample();
+				TimeWarning.BeginSample("File.Exists");
+				bool flag1 = File.Exists(skin.iconName);
+				TimeWarning.EndSample();
+				if (flag1)
+				{
+					TimeWarning.BeginSample("AsyncTextureLoad.Invoke");
+					AsyncTextureLoad asyncTextureLoad = new AsyncTextureLoad(skin.iconName, false, false, true, false);
+					TimeWarning.EndSample();
+					TimeWarning.EndSample();
+					yield return asyncTextureLoad;
+					TimeWarning.BeginSample("Skin.LoadIcon");
+					TimeWarning.BeginSample("AsyncTextureLoad.Texture");
+					Texture2D texture2D = asyncTextureLoad.texture;
+					TimeWarning.EndSample();
+					TimeWarning.BeginSample("Sprite");
+					skin.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 512f, 512f), Vector3.zero);
+					TimeWarning.EndSample();
+					asyncTextureLoad = null;
+				}
+			}
+			if (skin.sprite != null)
+			{
+				skin.IconLoaded = true;
+				if (skin.OnIconLoaded != null)
+				{
+					skin.OnIconLoaded();
+				}
+			}
+			TimeWarning.EndSample();
 		}
 
 		private void LoadManifestFromFile()
@@ -183,6 +314,39 @@ namespace Rust.Workshop
 				}
 			}
 			TimeWarning.EndSample();
+		}
+
+		public void UnloadAssets()
+		{
+			if (this.Materials != null)
+			{
+				for (int i = 0; i < (int)this.Materials.Length; i++)
+				{
+					Material materials = this.Materials[i];
+					if (materials != null)
+					{
+						UnityEngine.Object.DestroyImmediate(materials, true);
+					}
+				}
+				this.Materials = null;
+			}
+			if (this.DefaultMaterials != null)
+			{
+				this.DefaultMaterials = null;
+			}
+			if (this.Textures != null)
+			{
+				for (int j = 0; j < this.Textures.Count; j++)
+				{
+					Texture item = this.Textures[j];
+					if (item != null)
+					{
+						UnityEngine.Object.DestroyImmediate(item, true);
+					}
+				}
+				this.Textures.Clear();
+			}
+			this.AssetsLoaded = false;
 		}
 
 		private void UpdateTextureMetadata(Texture2D texture, string textureName, bool anisoFiltering, bool trilinearFiltering)

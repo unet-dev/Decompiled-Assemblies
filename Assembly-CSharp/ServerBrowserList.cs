@@ -24,7 +24,7 @@ public class ServerBrowserList : BaseMonoBehaviour
 
 	static ServerBrowserList()
 	{
-		ServerBrowserList.VersionTag = string.Concat("v", 2163);
+		ServerBrowserList.VersionTag = string.Concat("v", 2164);
 	}
 
 	public ServerBrowserList()

@@ -32,7 +32,7 @@ public static class World
 			{
 				return string.Concat(World.Name, ".map");
 			}
-			return string.Concat(new object[] { World.Name.Replace(" ", "").ToLower(), ".", World.Size, ".", World.Seed, ".", 177, ".map" });
+			return string.Concat(new object[] { World.Name.Replace(" ", "").ToLower(), ".", World.Size, ".", World.Seed, ".", 178, ".map" });
 		}
 	}
 
@@ -74,9 +74,9 @@ public static class World
 		{
 			if (World.CanLoadFromUrl())
 			{
-				return string.Concat(new object[] { World.Name, ".", 177, ".sav" });
+				return string.Concat(new object[] { World.Name, ".", 178, ".sav" });
 			}
-			return string.Concat(new object[] { World.Name.Replace(" ", "").ToLower(), ".", World.Size, ".", World.Seed, ".", 177, ".sav" });
+			return string.Concat(new object[] { World.Name.Replace(" ", "").ToLower(), ".", World.Size, ".", World.Seed, ".", 178, ".sav" });
 		}
 	}
 
@@ -152,7 +152,7 @@ public static class World
 	public static void CleanupOldFiles()
 	{
 		Regex regex = new Regex("proceduralmap\\.[0-9]+\\.[0-9]+\\.[0-9]+\\.map");
-		Regex regex1 = new Regex(string.Concat("\\.[0-9]+\\.[0-9]+\\.", 177, "\\.map"));
+		Regex regex1 = new Regex(string.Concat("\\.[0-9]+\\.[0-9]+\\.", 178, "\\.map"));
 		foreach (string str in Directory.GetFiles(World.MapFolderName, "*.map").Where<string>((string path) => {
 			if (!regex.IsMatch(path))
 			{
@@ -301,7 +301,7 @@ public static class World
 
 	private static string SeedIdentifier()
 	{
-		return string.Concat(SystemInfo.deviceUniqueIdentifier, "_", 177);
+		return string.Concat(SystemInfo.deviceUniqueIdentifier, "_", 178);
 	}
 
 	public static IEnumerator Spawn(float deltaTime, Action<string> statusFunction = null)

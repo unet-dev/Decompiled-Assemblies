@@ -223,7 +223,7 @@ public class OcclusionCulling : MonoBehaviour
 		OcclusionCulling.staticSet = new OcclusionCulling.BufferSet();
 		OcclusionCulling.dynamicSet = new OcclusionCulling.BufferSet();
 		OcclusionCulling.gridSet = new OcclusionCulling.BufferSet();
-		OcclusionCulling.supportedDeviceTypes = new GraphicsDeviceType[] { typeof(<PrivateImplementationDetails>).GetField("82BEEBBCC8BD8731B58FAE2B7BF8B77906BBF7D2").FieldHandle };
+		OcclusionCulling.supportedDeviceTypes = new GraphicsDeviceType[] { GraphicsDeviceType.Direct3D11 };
 		OcclusionCulling._enabled = false;
 		OcclusionCulling._safeMode = false;
 		OcclusionCulling._debugShow = OcclusionCulling.DebugFilter.Off;
@@ -1462,6 +1462,7 @@ public class OcclusionCulling : MonoBehaviour
 			if (this.resultTexture != null)
 			{
 				RenderTexture.active = null;
+				this.resultTexture.Release();
 				UnityEngine.Object.DestroyImmediate(this.resultTexture);
 				this.resultTexture = null;
 			}

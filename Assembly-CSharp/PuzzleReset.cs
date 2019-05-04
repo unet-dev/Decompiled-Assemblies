@@ -46,7 +46,7 @@ public class PuzzleReset : FacepunchBehaviour
 				Vis.Entities<IOEntity>(vector31, 0.5f, list, 1235288065, QueryTriggerInteraction.Ignore);
 				foreach (IOEntity oEntity in list)
 				{
-					if (!oEntity.IsRootEntity())
+					if (!oEntity.IsRootEntity() || !oEntity.isServer)
 					{
 						continue;
 					}
@@ -134,7 +134,7 @@ public class PuzzleReset : FacepunchBehaviour
 	{
 		if (!this.PassesResetCheck())
 		{
-			base.Invoke(new Action(this.TimedReset), 30f);
+			base.Invoke(new Action(this.TimedReset), 1f);
 			return;
 		}
 		this.DoReset();

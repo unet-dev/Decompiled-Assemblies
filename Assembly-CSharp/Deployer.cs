@@ -58,7 +58,7 @@ public class Deployer : HeldEntity
 		}
 		Ray ray = msg.read.Ray();
 		uint num = msg.read.UInt32();
-		if (Interface.CallHook("CanDeployItem", msg.player, deployable) != null)
+		if (Interface.CallHook("CanDeployItem", msg.player, this, num) != null)
 		{
 			return;
 		}

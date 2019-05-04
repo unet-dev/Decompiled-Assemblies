@@ -16,9 +16,9 @@ namespace Oxide.Game.Rust
 
 			public const string Branch = "master";
 
-			public const string Commit = "7b109fd";
+			public const string Commit = "a656648";
 
-			public const string Sha = "7b109fdcc5f6b303792ccf272efcf7bf4286991c";
+			public const string Sha = "a6566487c6bf74d311c9d74b02c2a6610be4d6c1";
 
 			public const string Commits = "1";
 
