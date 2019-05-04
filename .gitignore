@@ -1,3 +1,8 @@
 *.dll
+*.csproj
+*.sln
 obj/*
 bin/*
+
+!/packages/*/lib/*.dll
+!/packages/*/lib/*/*.dll
