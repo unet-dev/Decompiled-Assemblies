@@ -18,8 +18,9 @@ public class WaterSystem : MonoBehaviour
 
 	public WaterSystem.RenderingSettings Rendering = new WaterSystem.RenderingSettings();
 
-	[HideInInspector]
-	public WaterGerstner.Wave[] GerstnerWaves;
+	private WaterGerstner.PrecomputedWave[] precomputedWaves = new WaterGerstner.PrecomputedWave[] { WaterGerstner.PrecomputedWave.Default, WaterGerstner.PrecomputedWave.Default, WaterGerstner.PrecomputedWave.Default, WaterGerstner.PrecomputedWave.Default, WaterGerstner.PrecomputedWave.Default, WaterGerstner.PrecomputedWave.Default };
+
+	private WaterGerstner.PrecomputedShoreWaves precomputedShoreWaves = WaterGerstner.PrecomputedShoreWaves.Default;
 
 	private static WaterSystem instance;
 
@@ -61,6 +62,26 @@ public class WaterSystem : MonoBehaviour
 		private set;
 	}
 
+	public WaterGerstner.PrecomputedShoreWaves PrecomputedShoreWaves
+	{
+		get
+		{
+			return this.precomputedShoreWaves;
+		}
+	}
+
+	public WaterGerstner.PrecomputedWave[] PrecomputedWaves
+	{
+		get
+		{
+			return this.precomputedWaves;
+		}
+	}
+
+	public float ShoreWavesRcpFadeDistance { get; private set; } = 0.04f;
+
+	public float TerrainRcpFadeDistance { get; private set; } = 0.1f;
+
 	public static HashSet<WaterBody> WaterBodies
 	{
 		get;
@@ -97,11 +118,6 @@ public class WaterSystem : MonoBehaviour
 		WaterSystem.Dynamics = (WaterSystem.Dynamics != null ? WaterSystem.Dynamics : base.GetComponent<WaterDynamics>());
 	}
 
-	public void GenerateWaves()
-	{
-		this.GerstnerWaves = WaterGerstner.SetupWaves(this.Simulation.Wind, this.Simulation.GerstnerWaves);
-	}
-
 	public static float GetHeight(Vector3 pos)
 	{
 		float single;
@@ -121,31 +137,36 @@ public class WaterSystem : MonoBehaviour
 		float single = (TerrainMeta.WaterMap != null ? TerrainMeta.WaterMap.GetHeightFast(posUV) : 0f);
 		float single1 = (WaterSystem.Instance != null ? WaterSystem.Ocean.Transform.position.y : 0f);
 		terrainHeight = (TerrainMeta.HeightMap != null ? TerrainMeta.HeightMap.GetHeight(pos) : 0f);
-		if (WaterSystem.instance != null && WaterSystem.instance.GerstnerWaves != null && (double)single <= (double)single1 + 0.01)
+		if (WaterSystem.instance != null && (double)single <= (double)single1 + 0.01)
 		{
+			Vector3 vector3 = (TerrainTexturing.Instance != null ? TerrainTexturing.Instance.GetCoarseVectorToShore(posUV) : Vector3.zero);
 			float single2 = Mathf.Clamp01(Mathf.Abs(single1 - terrainHeight) * 0.1f);
-			single = WaterGerstner.SampleHeight(WaterSystem.instance.GerstnerWaves, pos) * single2;
+			single = WaterGerstner.SampleHeight(WaterSystem.instance, pos, vector3) * single2;
 		}
 		return single;
 	}
 
-	public static void GetHeight(Vector2[] pos, Vector2[] posUV, float[] terrainHeight, float[] waterHeight)
+	public static void GetHeight(Vector2[] pos, Vector2[] posUV, Vector3[] shore, float[] terrainHeight, float[] waterHeight)
 	{
 		Debug.Assert((int)pos.Length == (int)posUV.Length);
+		Debug.Assert((int)pos.Length == (int)shore.Length);
 		Debug.Assert((int)pos.Length == (int)terrainHeight.Length);
 		Debug.Assert((int)pos.Length == (int)waterHeight.Length);
 		float single = (WaterSystem.Instance != null ? WaterSystem.Ocean.Transform.position.y : 0f);
-		bool flag = (WaterSystem.instance == null ? false : WaterSystem.instance.GerstnerWaves != null);
-		if (flag)
+		if (TerrainTexturing.Instance != null)
 		{
-			WaterGerstner.SampleHeightArray(WaterSystem.instance.GerstnerWaves, pos, waterHeight);
+			TerrainTexturing.Instance.GetCoarseVectorToShoreArray(posUV, shore);
+		}
+		if (WaterSystem.instance != null)
+		{
+			WaterGerstner.SampleHeightArray(WaterSystem.instance, pos, shore, waterHeight);
 		}
 		for (int i = 0; i < (int)pos.Length; i++)
 		{
 			Vector2 vector2 = posUV[i];
 			terrainHeight[i] = (TerrainMeta.HeightMap != null ? TerrainMeta.HeightMap.GetHeightFast(vector2) : 0f);
 			float single1 = (TerrainMeta.WaterMap != null ? TerrainMeta.WaterMap.GetHeightFast(vector2) : 0f);
-			if (!flag || (double)single1 > (double)single + 0.01)
+			if (!(WaterSystem.instance != null) || (double)single1 > (double)single + 0.01)
 			{
 				waterHeight[i] = single1;
 			}
@@ -187,12 +208,16 @@ public class WaterSystem : MonoBehaviour
 
 	private void Update()
 	{
-		this.UpdateWaveTime();
+		this.UpdateWaves();
 	}
 
-	private void UpdateWaveTime()
+	private void UpdateWaves()
 	{
 		WaterSystem.WaveTime = (this.ProgressTime ? Time.realtimeSinceStartup : WaterSystem.WaveTime);
+		WaterGerstner.UpdatePrecomputedWaves(this.Simulation.OpenSeaWaves, ref this.precomputedWaves);
+		WaterGerstner.UpdatePrecomputedShoreWaves(this.Simulation.ShoreWaves, ref this.precomputedShoreWaves);
+		this.ShoreWavesRcpFadeDistance = 1f / this.Simulation.ShoreWavesFadeDistance;
+		this.TerrainRcpFadeDistance = 1f / this.Simulation.TerrainFadeDistance;
 	}
 
 	[Serializable]
@@ -270,17 +295,30 @@ public class WaterSystem : MonoBehaviour
 
 		public Texture2D PerlinNoise;
 
-		public WaterGerstner.WaveSettings GerstnerWaves;
+		public WaterGerstner.WaveParams[] OpenSeaWaves;
+
+		public WaterGerstner.ShoreWaveParams ShoreWaves;
+
+		[Range(0.1f, 250f)]
+		public float ShoreWavesFadeDistance;
+
+		[Range(0.1f, 250f)]
+		public float TerrainFadeDistance;
+
+		[Range(0.001f, 1f)]
+		public float OpenSeaCrestFoamThreshold;
+
+		[Range(0.001f, 1f)]
+		public float ShoreCrestFoamThreshold;
+
+		[Range(0.001f, 1f)]
+		public float ShoreCrestFoamFarThreshold;
+
+		[Range(0.1f, 250f)]
+		public float ShoreCrestFoamFadeDistance;
 
 		public SimulationSettings()
 		{
 		}
-	}
-
-	public struct WaveSample
-	{
-		public Vector3 position;
-
-		public Vector3 normal;
 	}
 }

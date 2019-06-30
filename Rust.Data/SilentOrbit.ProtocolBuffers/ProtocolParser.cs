@@ -114,7 +114,7 @@ namespace SilentOrbit.ProtocolBuffers
 		public static float ReadSingle(Stream stream)
 		{
 			stream.Read(ProtocolParser.staticBuffer, 0, 4);
-			return ProtocolParser.staticBuffer.ReadFloat(0);
+			return ProtocolParser.staticBuffer.ReadUnsafe<float>(0);
 		}
 
 		public static void ReadSkipVarInt(Stream stream)
@@ -356,7 +356,7 @@ namespace SilentOrbit.ProtocolBuffers
 
 		public static void WriteSingle(Stream stream, float f)
 		{
-			ProtocolParser.staticBuffer.WriteFloat(f, 0);
+			ProtocolParser.staticBuffer.WriteUnsafe<float>(f, 0);
 			stream.Write(ProtocolParser.staticBuffer, 0, 4);
 		}
 

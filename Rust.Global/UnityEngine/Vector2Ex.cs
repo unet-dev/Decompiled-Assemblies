@@ -5,6 +5,16 @@ namespace UnityEngine
 {
 	public static class Vector2Ex
 	{
+		public static float Length(float x, float y)
+		{
+			return Mathf.Sqrt(x * x + y * y);
+		}
+
+		public static float Length(Vector2 vec)
+		{
+			return Mathf.Sqrt(vec.x * vec.x + vec.y * vec.y);
+		}
+
 		public static Vector2 Parse(string p)
 		{
 			string[] strArrays = p.Split(new char[] { ' ' });

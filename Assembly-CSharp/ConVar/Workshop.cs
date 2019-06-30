@@ -1,5 +1,4 @@
-using Facepunch.Steamworks;
-using Rust;
+using Steamworks;
 using System;
 
 namespace ConVar
@@ -14,25 +13,30 @@ namespace ConVar
 		[ServerVar]
 		public static void print_approved_skins(ConsoleSystem.Arg arg)
 		{
-			if (Rust.Global.SteamServer != null && Rust.Global.SteamServer.Inventory.Definitions != null)
+			if (!SteamServer.IsValid)
 			{
-				TextTable textTable = new TextTable();
-				textTable.AddColumn("name");
-				textTable.AddColumn("itemshortname");
-				textTable.AddColumn("workshopid");
-				textTable.AddColumn("workshopdownload");
-				Facepunch.Steamworks.Inventory.Definition[] definitions = Rust.Global.SteamServer.Inventory.Definitions;
-				for (int i = 0; i < (int)definitions.Length; i++)
-				{
-					Facepunch.Steamworks.Inventory.Definition definition = definitions[i];
-					string name = definition.Name;
-					string stringProperty = definition.GetStringProperty("itemshortname");
-					string str = definition.GetStringProperty("workshopid");
-					string stringProperty1 = definition.GetStringProperty("workshopdownload");
-					textTable.AddRow(new string[] { name, stringProperty, str, stringProperty1 });
-				}
-				arg.ReplyWith(textTable.ToString());
+				return;
 			}
+			if (SteamInventory.Definitions == null)
+			{
+				return;
+			}
+			TextTable textTable = new TextTable();
+			textTable.AddColumn("name");
+			textTable.AddColumn("itemshortname");
+			textTable.AddColumn("workshopid");
+			textTable.AddColumn("workshopdownload");
+			InventoryDef[] definitions = SteamInventory.Definitions;
+			for (int i = 0; i < (int)definitions.Length; i++)
+			{
+				InventoryDef inventoryDef = definitions[i];
+				string name = inventoryDef.Name;
+				string property = inventoryDef.GetProperty("itemshortname");
+				string str = inventoryDef.GetProperty("workshopid");
+				string property1 = inventoryDef.GetProperty("workshopdownload");
+				textTable.AddRow(new string[] { name, property, str, property1 });
+			}
+			arg.ReplyWith(textTable.ToString());
 		}
 	}
 }

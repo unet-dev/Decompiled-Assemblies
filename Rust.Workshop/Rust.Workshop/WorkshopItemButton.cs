@@ -1,17 +1,17 @@
-using Facepunch.Steamworks;
 using Rust.UI;
+using Steamworks.Ugc;
 using System;
 using System.Linq;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Rust.Workshop
 {
 	internal class WorkshopItemButton : MonoBehaviour
 	{
-		public Text Name;
+		public TextMeshProUGUI Name;
 
-		public Text Description;
+		public TextMeshProUGUI Description;
 
 		public HttpImage Icon;
 
@@ -25,31 +25,46 @@ namespace Rust.Workshop
 
 		public GameObject ItemDownloading;
 
-		private Facepunch.Steamworks.Workshop.Item Item;
-
-		protected WorkshopInterface Interface
-		{
-			get
-			{
-				return base.GetComponentInParent<WorkshopInterface>();
-			}
-		}
+		private Steamworks.Ugc.Item? Item;
 
 		public WorkshopItemButton()
 		{
 		}
 
-		internal void Init(Facepunch.Steamworks.Workshop.Item item)
+		internal void Init(Steamworks.Ugc.Item item)
 		{
+			string previewImageUrl;
 			bool flag;
-			this.Item = item;
+			string description;
+			string title;
+			this.Item = new Steamworks.Ugc.Item?(item);
 			if (this.Name)
 			{
-				this.Name.text = this.Item.Title;
+				TextMeshProUGUI name = this.Name;
+				ref Nullable nullablePointer = ref this.Item;
+				if (nullablePointer.HasValue)
+				{
+					title = nullablePointer.GetValueOrDefault().Title;
+				}
+				else
+				{
+					title = null;
+				}
+				name.text = title;
 			}
 			if (this.Description)
 			{
-				this.Description.text = this.Item.Description;
+				TextMeshProUGUI textMeshProUGUI = this.Description;
+				ref Nullable nullablePointer1 = ref this.Item;
+				if (nullablePointer1.HasValue)
+				{
+					description = nullablePointer1.GetValueOrDefault().Description;
+				}
+				else
+				{
+					description = null;
+				}
+				textMeshProUGUI.text = description;
 			}
 			if (this.OldIndicator != null)
 			{
@@ -62,43 +77,72 @@ namespace Rust.Workshop
 			}
 			if (this.Icon != null)
 			{
-				this.Icon.Load(item.PreviewImageUrl);
+				HttpImage icon = this.Icon;
+				ref Nullable nullablePointer2 = ref this.Item;
+				if (nullablePointer2.HasValue)
+				{
+					previewImageUrl = nullablePointer2.GetValueOrDefault().PreviewImageUrl;
+				}
+				else
+				{
+					previewImageUrl = null;
+				}
+				icon.Load(previewImageUrl);
 			}
 			this.Update();
 		}
 
 		public void OpenWebpage()
 		{
-			UnityEngine.Application.OpenURL(this.Item.Url);
+			if (!this.Item.HasValue)
+			{
+				return;
+			}
+			UnityEngine.Application.OpenURL(this.Item.Value.Url);
 		}
 
 		public void StartEditing()
 		{
-			this.Interface.StartEditing(this.Item);
+			if (!this.Item.HasValue)
+			{
+				return;
+			}
+			base.SendMessageUpwards("StartEditingItem", this.Item.Value, SendMessageOptions.RequireReceiver);
 		}
 
 		public void StartViewing()
 		{
-			this.Interface.StartViewing(this.Item);
+			if (!this.Item.HasValue)
+			{
+				return;
+			}
+			base.SendMessageUpwards("StartViewingItem", this.Item.Value, SendMessageOptions.RequireReceiver);
 		}
 
 		public void Update()
 		{
-			if (this.Item == null)
+			Steamworks.Ugc.Item value;
+			if (!this.Item.HasValue)
 			{
 				return;
 			}
 			if (this.ItemDownloaded)
 			{
-				this.ItemDownloaded.SetActive(this.Item.Installed);
+				GameObject itemDownloaded = this.ItemDownloaded;
+				value = this.Item.Value;
+				itemDownloaded.SetActive(value.IsInstalled);
 			}
 			if (this.ItemDownloadPending)
 			{
-				this.ItemDownloadPending.SetActive(this.Item.Downloading);
+				GameObject itemDownloadPending = this.ItemDownloadPending;
+				value = this.Item.Value;
+				itemDownloadPending.SetActive(value.IsDownloadPending);
 			}
 			if (this.ItemDownloading)
 			{
-				this.ItemDownloading.SetActive(this.Item.Downloading);
+				GameObject itemDownloading = this.ItemDownloading;
+				value = this.Item.Value;
+				itemDownloading.SetActive(value.IsDownloading);
 			}
 		}
 	}

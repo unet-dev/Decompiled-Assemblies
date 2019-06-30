@@ -1,4 +1,3 @@
-using Facepunch.Steamworks;
 using Newtonsoft.Json;
 using System;
 
@@ -68,7 +67,7 @@ namespace Rust.Workshop
 			{
 				get
 				{
-					return Inventory.PriceCategoryToFloat(this.price_category);
+					return 0f;
 				}
 			}
 

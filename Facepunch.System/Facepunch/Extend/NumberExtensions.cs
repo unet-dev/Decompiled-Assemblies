@@ -129,17 +129,17 @@ namespace Facepunch.Extend
 			}
 			if (num < 60)
 			{
-				return string.Format("{1} minutes, {0} seconds", new object[] { s % (long)60, num, num1, num2, num3 });
+				return string.Format("{1} minutes", new object[] { s % (long)60, num, num1, num2, num3 });
 			}
 			if (num1 < 48)
 			{
-				return string.Format("{2} hours and {1} minutes", new object[] { s % (long)60, num % 60, num1, num2, num3 });
+				return string.Format("{2} hours", new object[] { s % (long)60, num % 60, num1, num2, num3 });
 			}
-			if (num2 >= 7)
+			if (num2 >= 2)
 			{
-				return string.Format("{3} days, {2} hours and {1} minutes", new object[] { s % (long)60, num % 60, num1 % 24, num2, num3 });
+				return string.Format("{3} days", new object[] { s % (long)60, num % 60, num1 % 24, num2, num3 });
 			}
-			return string.Format("{3} days, {2} hours and {1} minutes", new object[] { s % (long)60, num % 60, num1 % 24, num2 % 7, num3 });
+			return string.Format("{3} days, {2} hours", new object[] { s % (long)60, num % 60, num1 % 24, num2 % 7, num3 });
 		}
 	}
 }

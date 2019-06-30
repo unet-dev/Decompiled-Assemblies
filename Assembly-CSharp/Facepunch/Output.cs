@@ -35,7 +35,7 @@ namespace Facepunch
 			{
 				return;
 			}
-			if (log.StartsWith("[Physics.PhysX] RigidBody::setRigidBodyFlag"))
+			if (log.StartsWith("Kinematic body only supports Speculative Continuous collision detection"))
 			{
 				return;
 			}

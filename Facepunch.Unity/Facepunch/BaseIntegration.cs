@@ -124,7 +124,7 @@ namespace Facepunch
 
 		public virtual bool ShouldReportException(string message, string stackTrace, LogType type)
 		{
-			if (message.StartsWith("[Physics.PhysX] RigidBody::setRigidBodyFlag"))
+			if (UnityEngine.Application.isEditor)
 			{
 				return false;
 			}

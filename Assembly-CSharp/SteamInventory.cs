@@ -1,19 +1,16 @@
 using ConVar;
-using Facepunch.Steamworks;
 using Network;
-using Rust;
+using Steamworks;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 public class SteamInventory : EntityComponent<BasePlayer>
 {
-	private Facepunch.Steamworks.Inventory.Item[] Items;
+	private InventoryItem[] Items;
 
 	public SteamInventory()
 	{
@@ -25,10 +22,10 @@ public class SteamInventory : EntityComponent<BasePlayer>
 		{
 			return false;
 		}
-		Facepunch.Steamworks.Inventory.Item[] items = this.Items;
+		InventoryItem[] items = this.Items;
 		for (int i = 0; i < (int)items.Length; i++)
 		{
-			if (items[i].DefinitionId == itemid)
+			if (items[i].DefId == itemid)
 			{
 				return true;
 			}
@@ -48,7 +45,7 @@ public class SteamInventory : EntityComponent<BasePlayer>
 			else
 			{
 				UnityEngine.Assertions.Assert.IsTrue(player.isServer, "SV_RPC Message is using a clientside player!");
-				if (ConVar.Global.developer > 2)
+				if (Global.developer > 2)
 				{
 					UnityEngine.Debug.Log(string.Concat("SV_RPCMessage: ", player, " - UpdateSteamInventory "));
 				}
@@ -87,45 +84,27 @@ public class SteamInventory : EntityComponent<BasePlayer>
 		return flag;
 	}
 
-	private IEnumerator ProcessInventoryResult(Facepunch.Steamworks.Inventory.Result result)
-	{
-		SteamInventory items = null;
-		float single = 0f;
-		while (result.IsPending)
-		{
-			single += 1f;
-			yield return CoroutineEx.waitForSeconds(1f);
-			if (single <= 30f)
-			{
-				continue;
-			}
-			object[] objArray = new object[] { items.baseEntity.displayName };
-			UnityEngine.Debug.LogFormat("Steam Inventory result timed out for {0}", objArray);
-		}
-		if (result.Items != null)
-		{
-			items.Items = result.Items;
-		}
-		result.Dispose();
-	}
-
 	[FromOwner]
 	[RPC_Server]
-	private void UpdateSteamInventory(BaseEntity.RPCMessage msg)
+	private async Task UpdateSteamInventory(BaseEntity.RPCMessage msg)
 	{
-		MemoryStream memoryStream = msg.read.MemoryStreamWithSize();
-		if (memoryStream == null)
+		byte[] numArray = msg.read.BytesWithSize();
+		if (numArray != null)
+		{
+			InventoryResult? nullable = await Steamworks.SteamInventory.DeserializeAsync(numArray, -1);
+			if (!nullable.HasValue)
+			{
+				UnityEngine.Debug.LogWarning("UpdateSteamInventory: result is null");
+			}
+			else if (base.gameObject)
+			{
+				this.Items = nullable.Value.GetItems(false);
+				nullable.Value.Dispose();
+			}
+		}
+		else
 		{
 			UnityEngine.Debug.LogWarning("UpdateSteamInventory: Data is null");
-			return;
 		}
-		Facepunch.Steamworks.Inventory.Result result = Rust.Global.SteamServer.Inventory.Deserialize(memoryStream.GetBuffer(), (int)memoryStream.Length);
-		if (result == null)
-		{
-			UnityEngine.Debug.LogWarning("UpdateSteamInventory: result is null");
-			return;
-		}
-		base.StopAllCoroutines();
-		base.StartCoroutine(this.ProcessInventoryResult(result));
 	}
 }

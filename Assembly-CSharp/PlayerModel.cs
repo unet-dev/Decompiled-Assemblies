@@ -189,6 +189,8 @@ public class PlayerModel : ListComponent<PlayerModel>
 		SitShootingGeneric = 10,
 		SitMinicopter_Pilot = 11,
 		SitMinicopter_Passenger = 12,
+		ArcadeLeft = 13,
+		ArcadeRight = 14,
 		Standing = 128
 	}
 }

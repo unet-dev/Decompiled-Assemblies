@@ -78,7 +78,6 @@ namespace Facepunch.Network.Raknet
 				return false;
 			}
 			this.write = new StreamWrite(this, this.peer);
-			this.read = new StreamRead(this, this.peer);
 			this.connectedAddress = strURL;
 			this.connectedPort = port;
 			this.ServerName = "";
@@ -140,7 +139,6 @@ namespace Facepunch.Network.Raknet
 				this.peer = null;
 			}
 			this.write = null;
-			this.read = null;
 			this.connectedAddress = "";
 			this.connectedPort = 0;
 			base.Connection = null;
@@ -198,43 +196,44 @@ namespace Facepunch.Network.Raknet
 
 		protected void HandleMessage()
 		{
-			this.read.Start(base.Connection);
+			base.read.Start(this.peer.RawData(), this.peer.incomingBytesUnread);
+			base.Decrypt(base.Connection, base.read);
 			if (this.IsRecording)
 			{
-				int num = this.read.unread;
-				int num1 = this.read.position;
-				this.read.Position = (long)0;
-				this.read.Read(Facepunch.Network.Raknet.Client.ReusableBytes, 0, num);
-				this.read.Position = (long)num1;
-				this.recordWriter.Write(num);
+				int unread = base.read.Unread;
+				long position = base.read.Position;
+				base.read.Position = (long)0;
+				base.read.Read(Facepunch.Network.Raknet.Client.ReusableBytes, 0, unread);
+				base.read.Position = position;
+				this.recordWriter.Write(unread);
 				this.recordWriter.Write((long)this.recordTime.Elapsed.TotalMilliseconds);
-				this.recordWriter.Write(Facepunch.Network.Raknet.Client.ReusableBytes, 0, num);
+				this.recordWriter.Write(Facepunch.Network.Raknet.Client.ReusableBytes, 0, unread);
 				this.recordWriter.Write('\0');
 				this.recordWriter.Write('\0');
 			}
-			byte num2 = this.read.PacketID();
-			if (this.HandleRaknetPacket(num2))
+			byte num = base.read.PacketID();
+			if (this.HandleRaknetPacket(num))
 			{
 				return;
 			}
-			num2 = (byte)(num2 - 140);
+			num = (byte)(num - 140);
 			if (!this.IsPlaying && this.peer.incomingGUID != base.Connection.guid)
 			{
-				this.IncomingStats.Add("Error", "WrongGuid", this.read.Length);
+				this.IncomingStats.Add("Error", "WrongGuid", base.read.Length);
 				return;
 			}
 			if (!this.IsPlaying && base.Connection == null)
 			{
-				UnityEngine.Debug.LogWarning(string.Concat(new object[] { "[CLIENT] Ignoring message ", (Message.Type)num2, " ", num2, " clientConnection is null" }));
+				UnityEngine.Debug.LogWarning(string.Concat(new object[] { "[CLIENT] Ignoring message ", (Message.Type)num, " ", num, " clientConnection is null" }));
 				return;
 			}
-			if (num2 > 23)
+			if (num > 23)
 			{
 				UnityEngine.Debug.LogWarning(string.Concat("Invalid Packet (higher than ", Message.Type.EntityFlags, ")"));
-				this.Disconnect(string.Concat(new object[] { "Invalid Packet (", num2, ") ", this.peer.incomingBytes, "b" }), true);
+				this.Disconnect(string.Concat(new object[] { "Invalid Packet (", num, ") ", this.peer.incomingBytes, "b" }), true);
 				return;
 			}
-			Message message = base.StartMessage((Message.Type)num2, base.Connection);
+			Message message = base.StartMessage((Message.Type)num, base.Connection);
 			if (this.callbackHandler != null)
 			{
 				try
@@ -279,7 +278,7 @@ namespace Facepunch.Network.Raknet
 						Console.WriteLine("Multiple PacketType.CONNECTION_REQUEST_ACCEPTED");
 					}
 					base.Connection.guid = this.peer.incomingGUID;
-					this.IncomingStats.Add("Unconnected", "RequestAccepted", this.read.Length);
+					this.IncomingStats.Add("Unconnected", "RequestAccepted", base.read.Length);
 					return true;
 				}
 				case 17:
@@ -290,7 +289,7 @@ namespace Facepunch.Network.Raknet
 				case 18:
 				case 19:
 				{
-					this.IncomingStats.Add("Unconnected", "Unhandled", this.read.Length);
+					this.IncomingStats.Add("Unconnected", "Unhandled", base.read.Length);
 					if (base.Connection == null || this.peer.incomingGUID == base.Connection.guid)
 					{
 						UnityEngine.Debug.LogWarning(string.Concat("Unhandled Raknet packet ", type));
@@ -334,7 +333,7 @@ namespace Facepunch.Network.Raknet
 				}
 				default:
 				{
-					this.IncomingStats.Add("Unconnected", "Unhandled", this.read.Length);
+					this.IncomingStats.Add("Unconnected", "Unhandled", base.read.Length);
 					if (base.Connection == null || this.peer.incomingGUID == base.Connection.guid)
 					{
 						UnityEngine.Debug.LogWarning(string.Concat("Unhandled Raknet packet ", type));
@@ -366,47 +365,30 @@ namespace Facepunch.Network.Raknet
 			this.recordWriter.Write('\0');
 		}
 
-		private bool PlaybackPacket()
+		private unsafe bool PlaybackPacket()
 		{
-			if (this.PlayingFinished)
-			{
-				return false;
-			}
-			long position = this.playbackReader.BaseStream.Position;
-			int num = this.playbackReader.ReadInt32();
-			long num1 = this.playbackReader.ReadInt64();
-			if (num1 > this.playbackTime)
-			{
-				this.playbackReader.BaseStream.Position = position;
-				return false;
-			}
-			byte[] numArray = this.playbackReader.ReadBytes(num);
-			if (this.playbackReader.ReadChar() != 0)
-			{
-				UnityEngine.Debug.LogWarning("Invalid sequence in demo");
-				this.StopPlayback();
-				return false;
-			}
-			if (this.playbackReader.ReadChar() != 0)
-			{
-				UnityEngine.Debug.LogWarning("Invalid sequence in demo");
-				this.StopPlayback();
-				return false;
-			}
-			DemoPeer demoPeer = (DemoPeer)this.peer;
-			try
-			{
-				this.PlaybackStats.Packets++;
-				this.lastPlayedPacketTime = num1;
-				demoPeer.Packet = numArray;
-				demoPeer.SetReadPos(0);
-				this.HandleMessage();
-			}
-			finally
-			{
-				demoPeer.Packet = null;
-			}
-			return this.IsPlaying;
+			// 
+			// Current member / type: System.Boolean Facepunch.Network.Raknet.Client::PlaybackPacket()
+			// File path: D:\GameServers\Rust\RustDedicated_Data\Managed\Facepunch.Raknet.dll
+			// 
+			// Product version: 2019.1.118.0
+			// Exception in: System.Boolean PlaybackPacket()
+			// 
+			// Specified argument was out of the range of valid values.
+			// Parameter name: Target of array indexer expression is not an array.
+			//    at ..() in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Ast\Expressions\ArrayIndexerExpression.cs:line 129
+			//    at ..() in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Ast\Expressions\UnaryExpression.cs:line 109
+			//    at ..() in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Ast\Expressions\UnaryExpression.cs:line 95
+			//    at Telerik.JustDecompiler.Decompiler.ExpressionDecompilerStep.() in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\ExpressionDecompilerStep.cs:line 143
+			//    at Telerik.JustDecompiler.Decompiler.ExpressionDecompilerStep.(DecompilationContext ,  ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\ExpressionDecompilerStep.cs:line 73
+			//    at ..(MethodBody ,  , ILanguage ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DecompilationPipeline.cs:line 88
+			//    at ..(MethodBody , ILanguage ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DecompilationPipeline.cs:line 70
+			//    at Telerik.JustDecompiler.Decompiler.Extensions.( , ILanguage , MethodBody , DecompilationContext& ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\Extensions.cs:line 95
+			//    at Telerik.JustDecompiler.Decompiler.Extensions.(MethodBody , ILanguage , DecompilationContext& ,  ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\Extensions.cs:line 58
+			//    at ..(ILanguage , MethodDefinition ,  ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\WriterContextServices\BaseWriterContextService.cs:line 117
+			// 
+			// mailto: JustDecompilePublicFeedback@telerik.com
+
 		}
 
 		public override byte[] StartPlayback(string filename)
@@ -434,7 +416,6 @@ namespace Facepunch.Network.Raknet
 			}
 			this.peer = new DemoPeer();
 			this.write = new StreamWrite(this, this.peer);
-			this.read = new StreamRead(this, this.peer);
 			this.PlaybackStats = new Network.Client.PlaybackStatsData();
 			this.playbackTimer = Stopwatch.StartNew();
 			return numArray;
@@ -470,7 +451,6 @@ namespace Facepunch.Network.Raknet
 			}
 			this.peer = null;
 			this.write = null;
-			this.read = null;
 			this.PlaybackStats.DemoLength = TimeSpan.FromMilliseconds((double)this.lastPlayedPacketTime);
 			this.PlaybackStats.TotalTime = this.playbackTimer.Elapsed;
 		}

@@ -1,6 +1,7 @@
 using ConVar;
 using Facepunch;
 using Facepunch.Network.Raknet;
+using Facepunch.Utility;
 using Network;
 using Oxide.Core;
 using Rust;
@@ -13,8 +14,8 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Bootstrap : SingletonComponent<Bootstrap>
 {
@@ -24,11 +25,13 @@ public class Bootstrap : SingletonComponent<Bootstrap>
 
 	public string messageString = "Loading...";
 
+	public CanvasGroup BootstrapUiCanvas;
+
 	public GameObject errorPanel;
 
-	public Text errorText;
+	public TextMeshProUGUI errorText;
 
-	public Text statusText;
+	public TextMeshProUGUI statusText;
 
 	public static bool isPresent
 	{
@@ -156,15 +159,19 @@ public class Bootstrap : SingletonComponent<Bootstrap>
 		Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 		UnityEngine.Application.targetFrameRate = 256;
 		UnityEngine.Time.fixedDeltaTime = 0.0625f;
-		UnityEngine.Time.maximumDeltaTime = 0.5f;
+		UnityEngine.Time.maximumDeltaTime = 0.125f;
 	}
 
 	private IEnumerator Start()
 	{
 		Bootstrap bootstrap = null;
+		int num;
 		Bootstrap.WriteToLog("Bootstrap Startup");
+		ExceptionReporter.InitializeFromUrl("https://83df169465e84da091c1a3cd2fbffeee:3671b903f9a840ecb68411cf946ab9b6@sentry.io/51080");
+		num = (!Facepunch.Utility.CommandLine.Full.Contains("-official") ? 0 : (int)Facepunch.Utility.CommandLine.Full.Contains("+official"));
+		ExceptionReporter.Disabled = num == 0;
 		Bootstrap.WriteToLog(SystemInfoGeneralText.currentInfo);
-		Texture.SetGlobalAnisotropicFilteringLimits(1, 16);
+		UnityEngine.Texture.SetGlobalAnisotropicFilteringLimits(1, 16);
 		yield return bootstrap.StartCoroutine(Bootstrap.LoadingUpdate("Loading Bundles"));
 		FileSystem.Backend = new AssetBundleBackend("Bundles/Bundles");
 		if (FileSystem.Backend.isError)

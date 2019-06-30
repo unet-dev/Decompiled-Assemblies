@@ -70,7 +70,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 
 		public IPlayer FindPlayerByObj(object obj)
 		{
-			return this.connectedPlayers.Values.FirstOrDefault<RustPlayer>((RustPlayer p) => p.Object == obj);
+			return this.connectedPlayers.Values.FirstOrDefault<RustPlayer>((RustPlayer p) => (object)p.Object == (object)obj);
 		}
 
 		public IEnumerable<IPlayer> FindPlayers(string partialNameOrId)
@@ -89,7 +89,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 		internal void Initialize()
 		{
 			Utility.DatafileToProto<Dictionary<string, RustPlayerManager.PlayerRecord>>("oxide.covalence", true);
-			this.playerData = ProtoStorage.Load<Dictionary<string, RustPlayerManager.PlayerRecord>>(new string[] { "oxide.covalence" }) ?? new Dictionary<string, RustPlayerManager.PlayerRecord>();
+			this.playerData = ProtoStorage.Load<Dictionary<string, RustPlayerManager.PlayerRecord>>(new String[] { "oxide.covalence" }) ?? new Dictionary<string, RustPlayerManager.PlayerRecord>();
 			this.allPlayers = new Dictionary<string, RustPlayer>();
 			this.connectedPlayers = new Dictionary<string, RustPlayer>();
 			foreach (KeyValuePair<string, RustPlayerManager.PlayerRecord> playerDatum in this.playerData)
@@ -133,7 +133,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 
 		internal void SavePlayerData()
 		{
-			ProtoStorage.Save<IDictionary<string, RustPlayerManager.PlayerRecord>>(this.playerData, new string[] { "oxide.covalence" });
+			ProtoStorage.Save<IDictionary<string, RustPlayerManager.PlayerRecord>>(this.playerData, new String[] { "oxide.covalence" });
 		}
 
 		[ProtoContract(ImplicitFields=ImplicitFields.AllFields)]

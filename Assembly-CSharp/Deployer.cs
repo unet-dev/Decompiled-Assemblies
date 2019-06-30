@@ -146,6 +146,7 @@ public class Deployer : HeldEntity
 		{
 			return;
 		}
+		Item ownerItem = base.GetOwnerItem();
 		ItemModDeployable modDeployable = this.GetModDeployable();
 		GameManager gameManager = GameManager.server;
 		string str = modDeployable.entityPrefab.resourcePath;
@@ -154,6 +155,7 @@ public class Deployer : HeldEntity
 		BaseEntity baseEntity1 = gameManager.CreateEntity(str, vector3, quaternion, true);
 		if (baseEntity1 != null)
 		{
+			baseEntity1.skinID = ownerItem.skin;
 			baseEntity1.SetParent(baseEntity, baseEntity.GetSlotAnchorName(deployable.slot), false, false);
 			baseEntity1.OwnerID = ownerPlayer.userID;
 			baseEntity1.OnDeployed(baseEntity);

@@ -1,13 +1,13 @@
 using Rust;
 using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ProtectionValue : MonoBehaviour, IClothingChanged
 {
 	public CanvasGroup @group;
 
-	public Text text;
+	public TextMeshProUGUI text;
 
 	public DamageType damageType;
 

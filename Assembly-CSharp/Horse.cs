@@ -15,7 +15,6 @@ public class Horse : BaseAnimalNPC
 
 	static Horse()
 	{
-		Horse.Population = 2f;
 	}
 
 	public Horse()
@@ -25,6 +24,11 @@ public class Horse : BaseAnimalNPC
 	public override string Categorize()
 	{
 		return "Horse";
+	}
+
+	public override void ServerInit()
+	{
+		base.ServerInit();
 	}
 
 	public override bool WantsToEat(BaseEntity best)

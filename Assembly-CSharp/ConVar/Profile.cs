@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace ConVar
 {
@@ -7,6 +8,14 @@ namespace ConVar
 	{
 		public Profile()
 		{
+		}
+
+		private static void NeedProfileFolder()
+		{
+			if (!Directory.Exists("profile"))
+			{
+				Directory.CreateDirectory("profile");
+			}
 		}
 
 		[ClientVar]

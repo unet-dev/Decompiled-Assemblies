@@ -93,7 +93,7 @@ namespace Oxide.Game.Rust.Libraries
 			{
 				obj = "Unknown";
 			}
-			ServerUsers.Set(num, ServerUsers.UserGroup.Banned, (string)obj, reason);
+			ServerUsers.Set(num, ServerUsers.UserGroup.Banned, obj, reason);
 			ServerUsers.Save();
 			if (basePlayer != null && this.IsConnected(basePlayer))
 			{
@@ -373,13 +373,13 @@ namespace Oxide.Game.Rust.Libraries
 
 		public void Message(BasePlayer player, string message, string prefix, ulong userId = 0L, params object[] args)
 		{
-			if (string.IsNullOrEmpty(message))
+			if (String.IsNullOrEmpty(message))
 			{
 				return;
 			}
-			message = (args.Length != 0 ? string.Format(Formatter.ToUnity(message), args) : Formatter.ToUnity(message));
-			string str = (prefix != null ? string.Concat(prefix, " ", message) : message);
-			player.SendConsoleCommand("chat.add", new object[] { userId, str, 1 });
+			message = (args.Length != 0 ? String.Format(Formatter.ToUnity(message), args) : Formatter.ToUnity(message));
+			string str = (prefix != null ? String.Concat(prefix, " ", message) : message);
+			player.SendConsoleCommand("chat.add", new Object[] { userId, str, 1 });
 		}
 
 		public void Message(BasePlayer player, string message, ulong userId = 0L)
@@ -404,7 +404,7 @@ namespace Oxide.Game.Rust.Libraries
 
 		public void Rename(BasePlayer player, string name)
 		{
-			name = (string.IsNullOrEmpty(name.Trim()) ? player.displayName : name);
+			name = (String.IsNullOrEmpty(name.Trim()) ? player.displayName : name);
 			player.net.connection.username = name;
 			player.displayName = name;
 			player._name = name;

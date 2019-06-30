@@ -52,6 +52,8 @@ namespace Rust
 
 		public const int DismountCheck = 1486946561;
 
+		public const int AIPlacement = 278986753;
+
 		public static class Client
 		{
 			public const int Melee = 1269916417;
@@ -61,6 +63,8 @@ namespace Rust
 			public const int PlayerUse = 229731073;
 
 			public const int PlayerMovement = 1537286401;
+
+			public const int PlayerStepDetection = 455155969;
 
 			public const int Footstep = 10551297;
 		}

@@ -1,4 +1,5 @@
 using ConVar;
+using Facepunch;
 using Network;
 using Oxide.Core;
 using System;
@@ -82,7 +83,7 @@ public class Recycler : StorageContainer
 		{
 			return true;
 		}
-		newItem.Drop(base.transform.position + new Vector3(0f, 2f, 0f), base.GetInheritedDropVelocity() + (base.transform.forward * 2f), new Quaternion());
+		newItem.Drop(base.transform.position + new Vector3(0f, 2f, 0f), this.GetInheritedDropVelocity() + (base.transform.forward * 2f), new Quaternion());
 		return false;
 	}
 
@@ -173,6 +174,21 @@ public class Recycler : StorageContainer
 							Item item = ItemManager.CreateByName("scrap", blueprint, (ulong)0);
 							this.MoveItemToOutput(item);
 						}
+					}
+					if (!string.IsNullOrEmpty(slot.info.Blueprint.RecycleStat))
+					{
+						List<BasePlayer> list = Facepunch.Pool.GetList<BasePlayer>();
+						Vis.Entities<BasePlayer>(base.transform.position, 3f, list, 131072, QueryTriggerInteraction.Collide);
+						foreach (BasePlayer basePlayer in list)
+						{
+							if (!basePlayer.IsAlive() || basePlayer.IsSleeping() || !(basePlayer.inventory.loot.entitySource == this))
+							{
+								continue;
+							}
+							basePlayer.stats.Add(slot.info.Blueprint.RecycleStat, num, Stats.Steam);
+							basePlayer.stats.Save();
+						}
+						Facepunch.Pool.FreeList<BasePlayer>(ref list);
 					}
 					slot.UseItem(num);
 					List<ItemAmount>.Enumerator enumerator = slot.info.Blueprint.ingredients.GetEnumerator();

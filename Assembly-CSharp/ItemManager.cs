@@ -14,6 +14,8 @@ public class ItemManager
 
 	public static Dictionary<int, ItemDefinition> itemDictionary;
 
+	public static Dictionary<string, ItemDefinition> itemDictionaryByName;
+
 	public static List<ItemBlueprint> bpList;
 
 	public static int[] defaultBlueprints;
@@ -111,20 +113,22 @@ public class ItemManager
 
 	public static ItemDefinition FindItemDefinition(int itemID)
 	{
-		ItemDefinition itemDefinition = null;
-		ItemManager.itemDictionary.TryGetValue(itemID, out itemDefinition);
-		return itemDefinition;
+		ItemDefinition itemDefinition;
+		ItemManager.Initialize();
+		if (ItemManager.itemDictionary.TryGetValue(itemID, out itemDefinition))
+		{
+			return itemDefinition;
+		}
+		return null;
 	}
 
 	public static ItemDefinition FindItemDefinition(string shortName)
 	{
+		ItemDefinition itemDefinition;
 		ItemManager.Initialize();
-		for (int i = 0; i < ItemManager.itemList.Count; i++)
+		if (ItemManager.itemDictionaryByName.TryGetValue(shortName, out itemDefinition))
 		{
-			if (ItemManager.itemList[i].shortname == shortName)
-			{
-				return ItemManager.itemList[i];
-			}
+			return itemDefinition;
 		}
 		return null;
 	}
@@ -178,12 +182,14 @@ public class ItemManager
 			return x.userCraftable;
 		}).ToList<ItemBlueprint>();
 		Dictionary<int, ItemDefinition> nums = new Dictionary<int, ItemDefinition>();
+		Dictionary<string, ItemDefinition> strs = new Dictionary<string, ItemDefinition>(StringComparer.OrdinalIgnoreCase);
 		foreach (ItemDefinition itemDefinition in list)
 		{
 			itemDefinition.Initialize(list);
 			if (!nums.ContainsKey(itemDefinition.itemid))
 			{
 				nums.Add(itemDefinition.itemid, itemDefinition);
+				strs.Add(itemDefinition.shortname, itemDefinition);
 			}
 			else
 			{
@@ -217,6 +223,7 @@ public class ItemManager
 		ItemManager.itemList = list;
 		ItemManager.bpList = itemBlueprints;
 		ItemManager.itemDictionary = nums;
+		ItemManager.itemDictionaryByName = strs;
 	}
 
 	public static void InvalidateWorkshopSkinCache()

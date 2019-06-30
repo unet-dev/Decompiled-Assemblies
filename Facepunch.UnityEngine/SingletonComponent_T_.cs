@@ -14,7 +14,7 @@ where T : MonoBehaviour
 	{
 	}
 
-	public override void Clear()
+	public override void SingletonClear()
 	{
 		if (SingletonComponent<T>.Instance == this)
 		{
@@ -22,7 +22,7 @@ where T : MonoBehaviour
 		}
 	}
 
-	public override void Setup()
+	public override void SingletonSetup()
 	{
 		if (SingletonComponent<T>.Instance != this)
 		{

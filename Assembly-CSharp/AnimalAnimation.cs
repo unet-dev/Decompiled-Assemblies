@@ -11,6 +11,8 @@ public class AnimalAnimation : MonoBehaviour, IClientComponent
 
 	public Transform[] Feet;
 
+	public SoundDefinition saddleMovementSoundDef;
+
 	[ReadOnly]
 	public string BaseFolder;
 

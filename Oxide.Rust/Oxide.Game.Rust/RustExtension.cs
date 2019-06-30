@@ -44,7 +44,7 @@ namespace Oxide.Game.Rust
 		{
 			get
 			{
-				return new string[] { "ApexAI", "ApexShared", "Facepunch.Network", "Facepunch.Steamworks", "Facepunch.System", "Facepunch.UnityEngine", "NewAssembly", "Rust.Data", "Rust.Global", "Rust.Workshop", "Rust.World", "System.Drawing", "UnityEngine.AIModule", "UnityEngine.AssetBundleModule", "UnityEngine.CoreModule", "UnityEngine.GridModule", "UnityEngine.ImageConversionModule", "UnityEngine.Networking", "UnityEngine.PhysicsModule", "UnityEngine.TerrainModule", "UnityEngine.TerrainPhysicsModule", "UnityEngine.UI", "UnityEngine.UIModule", "UnityEngine.UIElementsModule", "UnityEngine.UnityWebRequestAudioModule", "UnityEngine.UnityWebRequestModule", "UnityEngine.UnityWebRequestTextureModule", "UnityEngine.UnityWebRequestWWWModule", "UnityEngine.VehiclesModule", "UnityEngine.WebModule" };
+				return new String[] { "ApexAI", "ApexShared", "Facepunch.Network", "Facepunch.Steamworks", "Facepunch.System", "Facepunch.UnityEngine", "NewAssembly", "Rust.Data", "Rust.Global", "Rust.Workshop", "Rust.World", "System.Drawing", "UnityEngine.AIModule", "UnityEngine.AssetBundleModule", "UnityEngine.CoreModule", "UnityEngine.GridModule", "UnityEngine.ImageConversionModule", "UnityEngine.Networking", "UnityEngine.PhysicsModule", "UnityEngine.TerrainModule", "UnityEngine.TerrainPhysicsModule", "UnityEngine.UI", "UnityEngine.UIModule", "UnityEngine.UIElementsModule", "UnityEngine.UnityWebRequestAudioModule", "UnityEngine.UnityWebRequestModule", "UnityEngine.UnityWebRequestTextureModule", "UnityEngine.UnityWebRequestWWWModule", "UnityEngine.VehiclesModule", "UnityEngine.WebModule" };
 			}
 		}
 
@@ -76,7 +76,7 @@ namespace Oxide.Game.Rust
 		{
 			get
 			{
-				return new string[] { "Assembly-CSharp", "Assembly-CSharp-firstpass", "DestMath", "Facepunch.Network", "Facepunch.System", "Facepunch.UnityEngine", "mscorlib", "Oxide.Core", "Oxide.Rust", "RustBuild", "Rust.Data", "Rust.Global", "System", "System.Core", "UnityEngine" };
+				return new String[] { "Assembly-CSharp", "Assembly-CSharp-firstpass", "DestMath", "Facepunch.Network", "Facepunch.System", "Facepunch.UnityEngine", "mscorlib", "Oxide.Core", "Oxide.Rust", "RustBuild", "Rust.Data", "Rust.Global", "System", "System.Core", "UnityEngine" };
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace Oxide.Game.Rust
 		{
 			get
 			{
-				return new string[] { "ConVar", "Dest", "Facepunch", "Network", "Oxide.Game.Rust.Cui", "ProtoBuf", "PVT", "Rust", "Steamworks", "System.Collections", "System.Security.Cryptography", "System.Text", "UnityEngine" };
+				return new String[] { "ConVar", "Dest", "Facepunch", "Network", "Oxide.Game.Rust.Cui", "ProtoBuf", "PVT", "Rust", "Steamworks", "System.Collections", "System.Security.Cryptography", "System.Text", "UnityEngine" };
 			}
 		}
 
@@ -94,7 +94,7 @@ namespace Oxide.Game.Rust
 			RustExtension.AssemblyName = RustExtension.Assembly.GetName();
 			RustExtension.AssemblyVersion = new VersionNumber(RustExtension.AssemblyName.Version.Major, RustExtension.AssemblyName.Version.Minor, RustExtension.AssemblyName.Version.Build);
 			RustExtension.AssemblyAuthors = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(RustExtension.Assembly, typeof(AssemblyCompanyAttribute), false)).Company;
-			RustExtension.Filter = new string[] { "alphamapResolution is clamped to the range of", "AngryAnt Behave version", "Floating point textures aren't supported on this device", "HDR RenderTexture format is not supported on this platform.", "Image Effects are not supported on this platform.", "Missing projectileID", "Motion vectors not supported on a platform that does not support", "The image effect Main Camera", "The image effect effect -", "Unable to find shaders", "Unsupported encoding: 'utf8'", "Warning, null renderer for ScaleRenderer!", "[AmplifyColor]", "[AmplifyOcclusion]", "[CoverageQueries] Disabled due to unsupported", "[CustomProbe]", "[Manifest] URI IS", "[SpawnHandler] populationCounts" };
+			RustExtension.Filter = new String[] { "alphamapResolution is clamped to the range of", "AngryAnt Behave version", "Floating point textures aren't supported on this device", "HDR RenderTexture format is not supported on this platform.", "Image Effects are not supported on this platform.", "Missing projectileID", "Motion vectors not supported on a platform that does not support", "The image effect Main Camera", "The image effect effect -", "Unable to find shaders", "Unsupported encoding: 'utf8'", "Warning, null renderer for ScaleRenderer!", "[AmplifyColor]", "[AmplifyOcclusion]", "[CoverageQueries] Disabled due to unsupported", "[CustomProbe]", "[Manifest] URI IS", "[SpawnHandler] populationCounts" };
 		}
 
 		public RustExtension(ExtensionManager manager) : base(manager)
@@ -103,7 +103,7 @@ namespace Oxide.Game.Rust
 
 		private static void HandleLog(string message, string stackTrace, UnityEngine.LogType logType)
 		{
-			if (!string.IsNullOrEmpty(message) && !RustExtension.Filter.Any<string>(new Func<string, bool>(message.Contains)))
+			if (!String.IsNullOrEmpty(message) && !RustExtension.Filter.Any<string>(new Func<string, bool>(message.Contains)))
 			{
 				Interface.Oxide.RootLogger.HandleMessage(message, stackTrace, logType.ToLogType());
 			}

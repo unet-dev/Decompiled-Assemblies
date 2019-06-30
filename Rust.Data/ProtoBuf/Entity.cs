@@ -155,6 +155,9 @@ namespace ProtoBuf
 		public EggHunt eggHunt;
 
 		[NonSerialized]
+		public ArcadeMachine arcadeMachine;
+
+		[NonSerialized]
 		public bool createdThisFrame;
 
 		public bool ShouldPool = true;
@@ -761,6 +764,18 @@ namespace ProtoBuf
 			else
 			{
 				instance.eggHunt = this.eggHunt.Copy();
+			}
+			if (this.arcadeMachine == null)
+			{
+				instance.arcadeMachine = null;
+			}
+			else if (instance.arcadeMachine != null)
+			{
+				this.arcadeMachine.CopyTo(instance.arcadeMachine);
+			}
+			else
+			{
+				instance.arcadeMachine = this.arcadeMachine.Copy();
 			}
 			instance.createdThisFrame = this.createdThisFrame;
 		}
@@ -1619,6 +1634,23 @@ namespace ProtoBuf
 							continue;
 						}
 					}
+					case 51:
+					{
+						if (key.WireType != Wire.LengthDelimited)
+						{
+							continue;
+						}
+						if (instance.arcadeMachine != null)
+						{
+							ArcadeMachine.DeserializeLengthDelimited(stream, instance.arcadeMachine, isDelta);
+							continue;
+						}
+						else
+						{
+							instance.arcadeMachine = ArcadeMachine.DeserializeLengthDelimited(stream);
+							continue;
+						}
+					}
 					default:
 					{
 						if (field == 100)
@@ -2473,6 +2505,23 @@ namespace ProtoBuf
 						else
 						{
 							instance.eggHunt = EggHunt.DeserializeLengthDelimited(stream);
+							continue;
+						}
+					}
+					case 51:
+					{
+						if (key.WireType != Wire.LengthDelimited)
+						{
+							continue;
+						}
+						if (instance.arcadeMachine != null)
+						{
+							ArcadeMachine.DeserializeLengthDelimited(stream, instance.arcadeMachine, isDelta);
+							continue;
+						}
+						else
+						{
+							instance.arcadeMachine = ArcadeMachine.DeserializeLengthDelimited(stream);
 							continue;
 						}
 					}
@@ -3338,6 +3387,23 @@ namespace ProtoBuf
 							continue;
 						}
 					}
+					case 51:
+					{
+						if (key.WireType != Wire.LengthDelimited)
+						{
+							continue;
+						}
+						if (instance.arcadeMachine != null)
+						{
+							ArcadeMachine.DeserializeLengthDelimited(stream, instance.arcadeMachine, isDelta);
+							continue;
+						}
+						else
+						{
+							instance.arcadeMachine = ArcadeMachine.DeserializeLengthDelimited(stream);
+							continue;
+						}
+					}
 					default:
 					{
 						if (field == 100)
@@ -3643,6 +3709,11 @@ namespace ProtoBuf
 			{
 				instance.eggHunt.ResetToPool();
 				instance.eggHunt = null;
+			}
+			if (instance.arcadeMachine != null)
+			{
+				instance.arcadeMachine.ResetToPool();
+				instance.arcadeMachine = null;
 			}
 			instance.createdThisFrame = false;
 			Pool.Free<Entity>(ref instance);
@@ -4132,6 +4203,16 @@ namespace ProtoBuf
 				ProtocolParser.WriteUInt32(stream, length24);
 				stream.Write(memoryStream.GetBuffer(), 0, (int)length24);
 			}
+			if (instance.arcadeMachine != null)
+			{
+				stream.WriteByte(154);
+				stream.WriteByte(3);
+				memoryStream.SetLength((long)0);
+				ArcadeMachine.Serialize(memoryStream, instance.arcadeMachine);
+				uint num24 = (uint)memoryStream.Length;
+				ProtocolParser.WriteUInt32(stream, num24);
+				stream.Write(memoryStream.GetBuffer(), 0, (int)num24);
+			}
 			stream.WriteByte(160);
 			stream.WriteByte(6);
 			ProtocolParser.WriteBool(stream, instance.createdThisFrame);
@@ -4616,6 +4697,16 @@ namespace ProtoBuf
 				uint length24 = (uint)memoryStream.Length;
 				ProtocolParser.WriteUInt32(stream, length24);
 				stream.Write(memoryStream.GetBuffer(), 0, (int)length24);
+			}
+			if (instance.arcadeMachine != null)
+			{
+				stream.WriteByte(154);
+				stream.WriteByte(3);
+				memoryStream.SetLength((long)0);
+				ArcadeMachine.SerializeDelta(memoryStream, instance.arcadeMachine, previous.arcadeMachine);
+				uint num24 = (uint)memoryStream.Length;
+				ProtocolParser.WriteUInt32(stream, num24);
+				stream.Write(memoryStream.GetBuffer(), 0, (int)num24);
 			}
 			stream.WriteByte(160);
 			stream.WriteByte(6);

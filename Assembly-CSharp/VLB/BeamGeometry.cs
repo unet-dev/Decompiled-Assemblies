@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 
 namespace VLB
@@ -125,7 +124,7 @@ namespace VLB
 			return GraphicsSettings.renderPipelineAsset != null;
 		}
 
-		private void OnBeginCameraRendering(Camera cam)
+		private void OnBeginCameraRendering(ScriptableRenderContext context, Camera cam)
 		{
 			this.UpdateCameraRelatedProperties(cam);
 		}
@@ -143,7 +142,7 @@ namespace VLB
 		{
 			if (BeamGeometry.IsUsingCustomRenderPipeline())
 			{
-				RenderPipeline.beginCameraRendering -= new Action<Camera>(this.OnBeginCameraRendering);
+				RenderPipelineManager.beginCameraRendering -= new Action<ScriptableRenderContext, Camera>(this.OnBeginCameraRendering);
 			}
 		}
 
@@ -151,7 +150,7 @@ namespace VLB
 		{
 			if (BeamGeometry.IsUsingCustomRenderPipeline())
 			{
-				RenderPipeline.beginCameraRendering += new Action<Camera>(this.OnBeginCameraRendering);
+				RenderPipelineManager.beginCameraRendering += new Action<ScriptableRenderContext, Camera>(this.OnBeginCameraRendering);
 			}
 		}
 

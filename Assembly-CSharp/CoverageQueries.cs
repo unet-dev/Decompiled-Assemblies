@@ -226,11 +226,11 @@ public class CoverageQueries : MonoBehaviour
 			public void Reset()
 			{
 				this.passed = 0;
-				this.coverage = 1f;
-				this.smoothCoverage = 1f;
-				this.weightedCoverage = 1f;
-				this.weightedSmoothCoverage = 1f;
-				this.originOccluded = false;
+				this.coverage = 0f;
+				this.smoothCoverage = 0f;
+				this.weightedCoverage = 0f;
+				this.weightedSmoothCoverage = 0f;
+				this.originOccluded = true;
 				this.frame = -1;
 				this.originVisibility = 0f;
 				this.originSmoothVisibility = 0f;

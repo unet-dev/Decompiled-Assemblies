@@ -1,10 +1,11 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SteamUserButton : MonoBehaviour
 {
-	public Text steamName;
+	public TextMeshProUGUI steamName;
 
 	public RawImage avatar;
 

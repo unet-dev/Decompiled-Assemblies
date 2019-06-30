@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,7 @@ public class TweakUIDropdown : MonoBehaviour
 
 	public Button Right;
 
-	public Text Current;
+	public TextMeshProUGUI Current;
 
 	public Image BackgroundImage;
 

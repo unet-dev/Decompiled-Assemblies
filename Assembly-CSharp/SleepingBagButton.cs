@@ -1,5 +1,6 @@
 using ProtoBuf;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,9 +8,9 @@ public class SleepingBagButton : MonoBehaviour
 {
 	public GameObject timerInfo;
 
-	public Text BagName;
+	public TextMeshProUGUI BagName;
 
-	public Text LockTime;
+	public TextMeshProUGUI LockTime;
 
 	internal Button button;
 

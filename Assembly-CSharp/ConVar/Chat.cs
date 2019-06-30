@@ -118,7 +118,7 @@ namespace ConVar
 				return;
 			}
 			str = str.EscapeRichText();
-			if (Interface.CallHook("IOnPlayerChat", arg) != null)
+			if (Interface.CallHook("IOnPlayerChat", arg, str) != null)
 			{
 				return;
 			}

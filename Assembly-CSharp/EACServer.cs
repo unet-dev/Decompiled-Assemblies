@@ -233,14 +233,19 @@ public class EACServer
 
 	public static void OnMessageReceived(Message message)
 	{
+		byte[] numArray;
+		int num;
 		if (!EACServer.connection2client.ContainsKey(message.connection))
 		{
 			Debug.LogError(string.Concat("EAC network packet from invalid connection: ", message.connection.userid));
 			return;
 		}
 		EasyAntiCheat.Server.Hydra.Client client = EACServer.GetClient(message.connection);
-		MemoryStream memoryStream = message.read.MemoryStreamWithSize();
-		EACServer.easyAntiCheat.PushNetworkMessage(client, memoryStream.GetBuffer(), (int)memoryStream.Length);
+		if (!message.read.TemporaryBytesWithSize(out numArray, out num))
+		{
+			return;
+		}
+		EACServer.easyAntiCheat.PushNetworkMessage(client, numArray, num);
 	}
 
 	public static void OnStartLoading(Connection connection)

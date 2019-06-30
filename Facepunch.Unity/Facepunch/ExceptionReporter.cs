@@ -106,7 +106,7 @@ namespace Facepunch
 			ExceptionReporter.LastReportTime.Reset();
 			ExceptionReporter.LastReportTime.Start();
 			ExceptionReporter._reportsSentCounter++;
-			if (type == LogType.Exception && message == "NullReferenceException: Object reference not set to an instance of an object.")
+			if (type == LogType.Exception && message.Contains("NullReferenceException"))
 			{
 				string[] strArrays = stackTrace.Split(new char[] { '\n' });
 				message = string.Concat("NullReferenceException: ", strArrays[0]);
@@ -116,6 +116,22 @@ namespace Facepunch
 
 		public static void SendReport(string exception, string stacktrace)
 		{
+			if (string.IsNullOrEmpty(ExceptionReporter.Host))
+			{
+				return;
+			}
+			if (string.IsNullOrEmpty(ExceptionReporter.ProjectId))
+			{
+				return;
+			}
+			if (string.IsNullOrEmpty(ExceptionReporter.PublicKey))
+			{
+				return;
+			}
+			if (string.IsNullOrEmpty(ExceptionReporter.SecretKey))
+			{
+				return;
+			}
 			Report report = new Report()
 			{
 				release = BuildInfo.Current.Scm.ChangeId,

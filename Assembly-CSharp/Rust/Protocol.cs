@@ -4,9 +4,9 @@ namespace Rust
 {
 	public static class Protocol
 	{
-		public const int network = 2164;
+		public const int network = 2177;
 
-		public const int save = 178;
+		public const int save = 179;
 
 		public const int report = 1;
 
@@ -18,7 +18,7 @@ namespace Rust
 		{
 			get
 			{
-				return string.Concat(new object[] { 2164, ".", 178, ".", 1 });
+				return string.Concat(new object[] { 2177, ".", 179, ".", 1 });
 			}
 		}
 	}

@@ -2,15 +2,14 @@ using ConVar;
 using EasyAntiCheat.Server.Cerberus;
 using EasyAntiCheat.Server.Hydra;
 using Facepunch;
-using Facepunch.Math;
-using Facepunch.Steamworks;
 using Ionic.Crc;
 using Network;
 using Network.Visibility;
 using Oxide.Core;
-using Oxide.Core.Configuration;
 using ProtoBuf;
 using Rust;
+using Steamworks;
+using Steamworks.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,7 +19,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using UnityEngine;
 
 public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
@@ -131,11 +129,10 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 		using (timeWarning = TimeWarning.New("Steamworks.GameServer.Shutdown", 0.1f))
 		{
-			if (Rust.Global.SteamServer != null)
+			if (SteamServer.IsValid)
 			{
 				UnityEngine.Debug.Log("Steamworks Shutting Down");
-				Rust.Global.SteamServer.Dispose();
-				Rust.Global.SteamServer = null;
+				SteamServer.Shutdown();
 				UnityEngine.Debug.Log("Okay");
 			}
 		}
@@ -169,19 +166,6 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		baseEntity.Spawn();
 	}
 
-	private static void DebugPrintSteamCallback(object obj)
-	{
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.AppendLine(string.Concat("<color=#88dd88>", obj.GetType().Name, "</color>"));
-		FieldInfo[] fields = obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-		for (int i = 0; i < (int)fields.Length; i++)
-		{
-			FieldInfo fieldInfo = fields[i];
-			stringBuilder.AppendLine(string.Concat(new string[] { "  <color=#aaaaaa>", fieldInfo.Name, ":</color>\t <color=#fffff>", fieldInfo.GetValue(obj).ToString(), "</color>" }));
-		}
-		UnityEngine.Debug.Log(stringBuilder.ToString());
-	}
-
 	private void DoHeartbeat()
 	{
 		ItemManager.Heartbeat();
@@ -189,15 +173,15 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 
 	private void DoTick()
 	{
-		if (Rust.Global.SteamServer != null)
+		if (SteamServer.IsValid)
 		{
 			Interface.CallHook("OnTick");
-			Rust.Global.SteamServer.Update();
+			SteamServer.RunCallbacks();
 		}
 		RCon.Update();
 		for (int i = 0; i < Network.Net.sv.connections.Count; i++)
 		{
-			Connection item = Network.Net.sv.connections[i];
+			Network.Connection item = Network.Net.sv.connections[i];
 			if (!item.isAuthenticated && item.GetSecondsConnected() >= (float)ConVar.Server.authtimeout)
 			{
 				Network.Net.sv.Kick(item, "Authentication Timed Out");
@@ -245,12 +229,33 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		return spawnPoint1;
 	}
 
+	public static string GamemodeDesc()
+	{
+		return "The default Rust survival gamemode";
+	}
+
+	public static string GamemodeImage()
+	{
+		return "https://files.facepunch.com/garry/3c96c182-ab06-40ff-b66e-f4a510053ca4.png";
+	}
+
+	public static string GamemodeName()
+	{
+		return "rust";
+	}
+
+	public static string GamemodeTitle()
+	{
+		return "Rust: Survival Mode";
+	}
+
+	public static string GamemodeUrl()
+	{
+		return "https://rust.facepunch.com";
+	}
+
 	public void Initialize(bool loadSave = true, string saveFile = "", bool allowOutOfDateSaves = false, bool skipInitialSpawn = false)
 	{
-		if (!ConVar.Server.official)
-		{
-			ExceptionReporter.Disabled = true;
-		}
 		this.persistance = new UserPersistance(ConVar.Server.rootFolder);
 		this.SpawnMapEntities();
 		if (SingletonComponent<SpawnHandler>.Instance)
@@ -282,7 +287,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		this.auth = base.GetComponent<ConnectionAuth>();
 	}
 
-	public void JoinGame(Connection connection)
+	public void JoinGame(Network.Connection connection)
 	{
 		using (Approval url = Facepunch.Pool.Get<Approval>())
 		{
@@ -334,11 +339,11 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		this.CloseConnection();
 	}
 
-	public void OnDisconnected(string strReason, Connection connection)
+	public void OnDisconnected(string strReason, Network.Connection connection)
 	{
 		this.connectionQueue.RemoveConnection(connection);
 		ConnectionAuth.OnDisconnect(connection);
-		Rust.Global.SteamServer.Auth.EndSession(connection.userid);
+		SteamServer.EndSession(connection.userid);
 		EACServer.OnLeaveGame(connection);
 		BasePlayer basePlayer = connection.player as BasePlayer;
 		if (basePlayer)
@@ -348,7 +353,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	public static void OnEnterVisibility(Connection connection, Group group)
+	public static void OnEnterVisibility(Network.Connection connection, Group group)
 	{
 		if (!Network.Net.sv.IsConnected())
 		{
@@ -364,12 +369,12 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 
 	private void OnGiveUserInformation(Message packet)
 	{
-		if (packet.connection.state != Connection.State.Unconnected)
+		if (packet.connection.state != Network.Connection.State.Unconnected)
 		{
 			Network.Net.sv.Kick(packet.connection, "Invalid connection state");
 			return;
 		}
-		packet.connection.state = Connection.State.Connecting;
+		packet.connection.state = Network.Connection.State.Connecting;
 		if (packet.read.UInt8() != 228)
 		{
 			Network.Net.sv.Kick(packet.connection, "Invalid Connection Protocol");
@@ -397,7 +402,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 		string empty = string.Empty;
 		string str = ConVar.Server.branch;
-		if (packet.read.unread >= 4)
+		if (packet.read.Unread >= 4)
 		{
 			empty = packet.read.String();
 		}
@@ -407,13 +412,13 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 			Network.Net.sv.Kick(packet.connection, string.Concat("Wrong Steam Beta: Requires '", str, "' branch!"));
 			return;
 		}
-		if (packet.connection.protocol > 2164)
+		if (packet.connection.protocol > 2177)
 		{
-			DebugEx.Log(string.Concat(new object[] { "Kicking ", packet.connection, " - their protocol is ", packet.connection.protocol, " not ", 2164 }), StackTraceLogType.None);
+			DebugEx.Log(string.Concat(new object[] { "Kicking ", packet.connection, " - their protocol is ", packet.connection.protocol, " not ", 2177 }), StackTraceLogType.None);
 			Network.Net.sv.Kick(packet.connection, "Wrong Connection Protocol: Server update required!");
 			return;
 		}
-		if (packet.connection.protocol >= 2164)
+		if (packet.connection.protocol >= 2177)
 		{
 			packet.connection.token = packet.read.BytesWithSize();
 			if (packet.connection.token != null && (int)packet.connection.token.Length >= 1)
@@ -424,7 +429,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 			Network.Net.sv.Kick(packet.connection, "Invalid Token");
 			return;
 		}
-		DebugEx.Log(string.Concat(new object[] { "Kicking ", packet.connection, " - their protocol is ", packet.connection.protocol, " not ", 2164 }), StackTraceLogType.None);
+		DebugEx.Log(string.Concat(new object[] { "Kicking ", packet.connection, " - their protocol is ", packet.connection.protocol, " not ", 2177 }), StackTraceLogType.None);
 		Network.Net.sv.Kick(packet.connection, "Wrong Connection Protocol: Client update required!");
 	}
 
@@ -433,7 +438,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		ItemManager.InvalidateWorkshopSkinCache();
 	}
 
-	public static void OnLeaveVisibility(Connection connection, Group group)
+	public static void OnLeaveVisibility(Network.Connection connection, Group group)
 	{
 		if (!Network.Net.sv.IsConnected())
 		{
@@ -712,7 +717,23 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		baseEntity.SV_RPCMessage(num1, packet);
 	}
 
-	public bool OnUnconnectedMessage(int type, Read read, uint ip, int port)
+	private void OnSteamConnected()
+	{
+		UnityEngine.Debug.Log("SteamServer Connected");
+		base.Invoke("UpdateServerInformation", 1f);
+	}
+
+	private void OnSteamConnectionFailure(Result result, bool stilltrying)
+	{
+		UnityEngine.Debug.LogWarning(string.Format("SteamServer Connection Failure ({0})", result));
+	}
+
+	private void OnSteamServersDisconnected(Result result)
+	{
+		UnityEngine.Debug.LogWarning(string.Format("SteamServer Disconnected ({0})", result));
+	}
+
+	public bool OnUnconnectedMessage(int type, NetRead read, uint ip, int port)
 	{
 		if (this.useQueryPort)
 		{
@@ -762,38 +783,38 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 		this.NumQueriesLastSecond++;
 		read.Position = (long)0;
-		int num = read.unread;
-		if (num > 4096)
+		int unread = read.Unread;
+		if (unread > 4096)
 		{
 			return true;
 		}
-		if (this.queryBuffer.Capacity < num)
+		if (this.queryBuffer.Capacity < unread)
 		{
-			this.queryBuffer.Capacity = num;
+			this.queryBuffer.Capacity = unread;
 		}
-		int num1 = read.Read(this.queryBuffer.GetBuffer(), 0, num);
-		Rust.Global.SteamServer.Query.Handle(this.queryBuffer.GetBuffer(), num1, ip, (ushort)port);
+		int num = read.Read(this.queryBuffer.GetBuffer(), 0, unread);
+		SteamServer.HandleIncomingPacket(this.queryBuffer.GetBuffer(), num, ip, (ushort)port);
 		return true;
 	}
 
-	private void OnValidateAuthTicketResponse(ulong SteamId, ulong OwnerId, ServerAuth.Status Status)
+	private void OnValidateAuthTicketResponse(Steamworks.SteamId SteamId, Steamworks.SteamId OwnerId, AuthResponse Status)
 	{
 		if (Auth_Steam.ValidateConnecting(SteamId, OwnerId, Status))
 		{
 			return;
 		}
-		Connection str = Network.Net.sv.connections.FirstOrDefault<Connection>((Connection x) => x.userid == SteamId);
+		Network.Connection str = Network.Net.sv.connections.FirstOrDefault<Network.Connection>((Network.Connection x) => x.userid == SteamId);
 		if (str == null)
 		{
-			UnityEngine.Debug.LogWarning(string.Concat(new object[] { "Steam gave us a ", Status, " ticket response for unconnected id ", SteamId }));
+			UnityEngine.Debug.LogWarning(string.Format("Steam gave us a {0} ticket response for unconnected id {1}", Status, SteamId));
 			return;
 		}
-		if (Status == ServerAuth.Status.OK)
+		if (Status == AuthResponse.OK)
 		{
-			UnityEngine.Debug.LogWarning(string.Concat("Steam gave us a 'ok' ticket response for already connected id ", SteamId));
+			UnityEngine.Debug.LogWarning(string.Format("Steam gave us a 'ok' ticket response for already connected id {0}", SteamId));
 			return;
 		}
-		if (Status == ServerAuth.Status.VACCheckTimedOut)
+		if (Status == AuthResponse.VACCheckTimedOut)
 		{
 			return;
 		}
@@ -824,7 +845,10 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 
 	public void ProcessUnhandledPacket(Message packet)
 	{
-		UnityEngine.Debug.LogWarning(string.Concat("[SERVER][UNHANDLED] ", packet.type));
+		if (ConVar.Global.developer > 0)
+		{
+			UnityEngine.Debug.LogWarning(string.Concat("[SERVER][UNHANDLED] ", packet.type));
+		}
 		Network.Net.sv.Kick(packet.connection, "Sent Unhandled Message");
 	}
 
@@ -871,9 +895,9 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		{
 			if (i == iSeconds || i % 60 == 0 || i < 300 && i % 30 == 0 || i < 60 && i % 10 == 0 || i < 10)
 			{
-				object[] objArray1 = new object[] { 0, string.Concat("<color=#fff>SERVER</color> Restarting in ", i, " seconds!") };
+				object[] objArray1 = new object[] { 0, string.Format("<color=#fff>SERVER</color> Restarting in {0} seconds!", i) };
 				ConsoleNetwork.BroadcastToAllClients("chat.add", objArray1);
-				UnityEngine.Debug.Log(string.Concat("Restarting in ", i, " seconds"));
+				UnityEngine.Debug.Log(string.Format("Restarting in {0} seconds", i));
 			}
 			yield return CoroutineEx.waitForSeconds(1f);
 			j = i;
@@ -917,7 +941,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 			}
 			baseEntity.SpawnAsMapEntity();
 		}
-		DebugEx.Log(string.Concat("Map Spawned ", (int)baseEntityArray.Length, " entities"), StackTraceLogType.None);
+		DebugEx.Log(string.Format("Map Spawned {0} entities", (int)baseEntityArray.Length), StackTraceLogType.None);
 		baseEntityArray1 = baseEntityArray;
 		for (i = 0; i < (int)baseEntityArray1.Length; i++)
 		{
@@ -929,7 +953,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
-	private void SpawnNewPlayer(Connection connection)
+	private void SpawnNewPlayer(Network.Connection connection)
 	{
 		BasePlayer.SpawnPoint spawnPoint = ServerMgr.FindSpawnPoint();
 		BasePlayer player = GameManager.server.CreateEntity("assets/prefabs/player/player.prefab", spawnPoint.pos, spawnPoint.rot, true).ToPlayer();
@@ -955,7 +979,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		DebugEx.Log(string.Concat(new object[] { player.net.connection.ToString(), " joined [", player.net.connection.os, "/", player.net.connection.ownerid, "]" }), StackTraceLogType.None);
 	}
 
-	private bool SpawnPlayerSleeping(Connection connection)
+	private bool SpawnPlayerSleeping(Network.Connection connection)
 	{
 		BasePlayer basePlayer = BasePlayer.FindSleeping(connection.userid);
 		if (basePlayer == null)
@@ -976,7 +1000,7 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 
 	private void StartSteamServer()
 	{
-		if (Rust.Global.SteamServer != null)
+		if (SteamServer.IsValid)
 		{
 			return;
 		}
@@ -985,54 +1009,60 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		{
 			pAddress = IPAddress.Parse(ConVar.Server.ip);
 		}
-		Config.ForUnity(UnityEngine.Application.platform.ToString());
-		ServerInit serverInit = new ServerInit("rust", "Rust")
+		SteamServerInit steamServerInit = new SteamServerInit("rust", "Rust")
 		{
 			IpAddress = pAddress,
 			GamePort = (ushort)Network.Net.sv.port,
 			Secure = ConVar.Server.secure,
-			VersionString = 2164.ToString()
+			VersionString = 2177.ToString()
 		};
 		if (!this.useQueryPort)
 		{
-			serverInit.QueryShareGamePort();
+			steamServerInit = steamServerInit.WithQueryShareGamePort();
 		}
 		else
 		{
-			serverInit.QueryPort = (ushort)ConVar.Server.queryport;
+			steamServerInit.QueryPort = (ushort)ConVar.Server.queryport;
 		}
-		Rust.Global.SteamServer = new Facepunch.Steamworks.Server(Defines.appID, serverInit);
-		if (!Rust.Global.SteamServer.IsValid)
+		SteamServer.OnCallbackException = (Exception e) => {
+			UnityEngine.Debug.LogError(e.Message);
+			UnityEngine.Debug.LogError(e.StackTrace);
+		};
+		try
 		{
-			UnityEngine.Debug.LogWarning(string.Concat("Couldn't initialize Steam Server (", pAddress, ")"));
-			Rust.Global.SteamServer.Dispose();
-			Rust.Global.SteamServer = null;
+			SteamServer.Init(Rust.Defines.appID, steamServerInit);
+		}
+		catch (Exception exception1)
+		{
+			Exception exception = exception1;
+			UnityEngine.Debug.LogWarning(string.Concat("Couldn't initialize Steam Server (", exception.Message, ")"));
 			UnityEngine.Application.Quit();
 			return;
 		}
-		if (Facepunch.CommandLine.HasSwitch("-debugsteamcallbacks"))
-		{
-			Rust.Global.SteamServer.OnAnyCallback += new Action<object>(ServerMgr.DebugPrintSteamCallback);
-		}
-		Rust.Global.SteamServer.Auth.OnAuthChange = new Action<ulong, ulong, ServerAuth.Status>(this.OnValidateAuthTicketResponse);
-		Rust.Global.SteamServer.Inventory.OnDefinitionsUpdated += new Action(this.OnInventoryDefinitionsUpdated);
-		Rust.Global.SteamServer.LogOnAnonymous();
-		base.InvokeRepeating("UpdateServerInformation", 1f, 10f);
-		DebugEx.Log("Connected to Steam", StackTraceLogType.None);
+		SteamServer.OnValidateAuthTicketResponse += new Action<SteamId, SteamId, AuthResponse>(this.OnValidateAuthTicketResponse);
+		SteamServer.OnSteamServerConnectFailure += new Action<Result, bool>(this.OnSteamConnectionFailure);
+		SteamServer.OnSteamServersDisconnected += new Action<Result>(this.OnSteamServersDisconnected);
+		SteamServer.OnSteamServersConnected += new Action(this.OnSteamConnected);
+		Steamworks.SteamInventory.OnDefinitionsUpdated += new Action(this.OnInventoryDefinitionsUpdated);
+		SteamServer.DedicatedServer = true;
+		SteamServer.LogOnAnonymous();
+		base.InvokeRepeating("UpdateServerInformation", 2f, 30f);
+		base.InvokeRepeating("UpdateItemDefinitions", 10f, 3600f);
+		DebugEx.Log("SteamServer Initialized", StackTraceLogType.None);
 	}
 
 	private void SteamQueryResponse()
 	{
-		ServerQuery.Packet packet;
-		if (Rust.Global.SteamServer == null)
+		OutgoingPacket outgoingPacket;
+		if (!SteamServer.IsValid)
 		{
 			return;
 		}
 		using (TimeWarning timeWarning = TimeWarning.New("SteamGameServer.GetNextOutgoingPacket", 0.1f))
 		{
-			while (Rust.Global.SteamServer.Query.GetOutgoingPacket(out packet))
+			while (SteamServer.GetOutgoingPacket(out outgoingPacket))
 			{
-				Network.Net.sv.SendUnconnected(packet.Address, packet.Port, packet.Data, packet.Size);
+				Network.Net.sv.SendUnconnected(outgoingPacket.Address, outgoingPacket.Port, outgoingPacket.Data, outgoingPacket.Size);
 			}
 		}
 	}
@@ -1140,81 +1170,40 @@ public class ServerMgr : SingletonComponent<ServerMgr>, IServerCallback
 		}
 	}
 
+	private void UpdateItemDefinitions()
+	{
+		UnityEngine.Debug.Log("Checking for new Steam Item Definitions..");
+		Steamworks.SteamInventory.LoadItemDefinitions();
+	}
+
 	private void UpdateServerInformation()
 	{
-		if (Rust.Global.SteamServer == null)
-		{
-			return;
-		}
-		using (TimeWarning timeWarning = TimeWarning.New("UpdateServerInformation", 0.1f))
-		{
-			Rust.Global.SteamServer.ServerName = ConVar.Server.hostname;
-			Rust.Global.SteamServer.MaxPlayers = ConVar.Server.maxplayers;
-			Rust.Global.SteamServer.Passworded = false;
-			Rust.Global.SteamServer.MapName = World.Name;
-			string str = "stok";
-			if (this.Restarting)
-			{
-				str = "strst";
-			}
-			string str1 = string.Format("born{0}", Epoch.FromDateTime(SaveRestore.SaveCreatedTime));
-			object[] count = new object[] { ConVar.Server.maxplayers, BasePlayer.activePlayerList.Count, 2164, null, null, null, null, null };
-			count[3] = (ConVar.Server.pve ? ",pve" : string.Empty);
-			count[4] = this.AssemblyHash;
-			count[5] = SingletonComponent<ServerMgr>.Instance.connectionQueue.Queued;
-			count[6] = str;
-			count[7] = str1;
-			string str2 = string.Format("mp{0},cp{1},qp{5},v{2}{3},h{4},{6},{7}", count);
-			str2 = string.Concat(str2, ",oxide");
-			if (Interface.Oxide.Config.Options.Modded)
-			{
-				str2 = string.Concat(str2, ",modded");
-			}
-			Rust.Global.SteamServer.GameTags = str2;
-			if (ConVar.Server.description == null || ConVar.Server.description.Length <= 100)
-			{
-				Rust.Global.SteamServer.SetKey("description_0", ConVar.Server.description);
-				for (int i = 1; i < 16; i++)
-				{
-					Rust.Global.SteamServer.SetKey(string.Format("description_{0:00}", i), string.Empty);
-				}
-			}
-			else
-			{
-				string[] array = StringEx.SplitToChunks(ConVar.Server.description, 100).ToArray<string>();
-				for (int j = 0; j < 16; j++)
-				{
-					if (j >= (int)array.Length)
-					{
-						Rust.Global.SteamServer.SetKey(string.Format("description_{0:00}", j), string.Empty);
-					}
-					else
-					{
-						Rust.Global.SteamServer.SetKey(string.Format("description_{0:00}", j), array[j]);
-					}
-				}
-			}
-			Rust.Global.SteamServer.SetKey("hash", this.AssemblyHash);
-			Facepunch.Steamworks.Server steamServer = Rust.Global.SteamServer;
-			uint seed = World.Seed;
-			steamServer.SetKey("world.seed", seed.ToString());
-			Facepunch.Steamworks.Server server = Rust.Global.SteamServer;
-			seed = World.Size;
-			server.SetKey("world.size", seed.ToString());
-			Rust.Global.SteamServer.SetKey("pve", ConVar.Server.pve.ToString());
-			Rust.Global.SteamServer.SetKey("headerimage", ConVar.Server.headerimage);
-			Rust.Global.SteamServer.SetKey("url", ConVar.Server.url);
-			Facepunch.Steamworks.Server steamServer1 = Rust.Global.SteamServer;
-			int num = (int)UnityEngine.Time.realtimeSinceStartup;
-			steamServer1.SetKey("uptime", num.ToString());
-			Rust.Global.SteamServer.SetKey("gc_mb", Performance.report.memoryAllocations.ToString());
-			Rust.Global.SteamServer.SetKey("gc_cl", Performance.report.memoryCollections.ToString());
-			Rust.Global.SteamServer.SetKey("fps", Performance.report.frameRate.ToString());
-			Rust.Global.SteamServer.SetKey("fps_avg", Performance.report.frameRateAverage.ToString("0.00"));
-			Facepunch.Steamworks.Server server1 = Rust.Global.SteamServer;
-			num = BaseNetworkable.serverEntities.Count;
-			server1.SetKey("ent_cnt", num.ToString());
-			Rust.Global.SteamServer.SetKey("build", BuildInfo.Current.Scm.ChangeId);
-		}
+		// 
+		// Current member / type: System.Void ServerMgr::UpdateServerInformation()
+		// File path: D:\GameServers\Rust\RustDedicated_Data\Managed\Assembly-CSharp.dll
+		// 
+		// Product version: 2019.1.118.0
+		// Exception in: System.Void UpdateServerInformation()
+		// 
+		// Two paths with different stack states encountered.
+		//    at ..( ,  ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 139
+		//    at ..( , Int32[] ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 132
+		//    at ..( , Int32[] ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 128
+		//    at ..( , Int32[] ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 128
+		//    at ..( , Int32[] ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 128
+		//    at ..( , Int32[] ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 128
+		//    at ..( , Int32[] ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 128
+		//    at ..( , Int32[] ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 128
+		//    at ..( , Int32[] ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 128
+		//    at ..() in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 74
+		//    at ..(DecompilationContext ,  ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DefineUseAnalysis\StackUsageAnalysis.cs:line 56
+		//    at ..(MethodBody ,  , ILanguage ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DecompilationPipeline.cs:line 88
+		//    at ..(MethodBody , ILanguage ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\DecompilationPipeline.cs:line 70
+		//    at Telerik.JustDecompiler.Decompiler.Extensions.( , ILanguage , MethodBody , DecompilationContext& ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\Extensions.cs:line 95
+		//    at Telerik.JustDecompiler.Decompiler.Extensions.(MethodBody , ILanguage , DecompilationContext& ,  ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\Extensions.cs:line 58
+		//    at ..(ILanguage , MethodDefinition ,  ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\WriterContextServices\BaseWriterContextService.cs:line 117
+		// 
+		// mailto: JustDecompilePublicFeedback@telerik.com
+
 	}
 }

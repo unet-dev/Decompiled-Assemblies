@@ -19,6 +19,8 @@ public class BaseMountable : BaseCombatEntity
 
 	public bool canWieldItems = true;
 
+	public bool relativeViewAngles = true;
+
 	[Header("Mounting")]
 	public PlayerModel.MountPoses mountPose;
 
@@ -42,19 +44,12 @@ public class BaseMountable : BaseCombatEntity
 
 	public const float playerRadius = 0.5f;
 
-	public readonly static Vector3 DISMOUNT_POS_INVALID;
-
 	protected override float PositionTickRate
 	{
 		get
 		{
 			return 0.05f;
 		}
-	}
-
-	static BaseMountable()
-	{
-		BaseMountable.DISMOUNT_POS_INVALID = new Vector3(0f, 5000f, 0f);
 	}
 
 	public BaseMountable()
@@ -79,6 +74,7 @@ public class BaseMountable : BaseCombatEntity
 		}
 		if (!this.HasValidDismountPosition(player))
 		{
+			Debug.Log("no valid dismount");
 			return;
 		}
 		this.MountPlayer(player);
@@ -138,6 +134,7 @@ public class BaseMountable : BaseCombatEntity
 
 	public void DismountPlayer(BasePlayer player, bool lite = false)
 	{
+		Vector3 vector3;
 		if (this._mounted == null)
 		{
 			return;
@@ -150,42 +147,54 @@ public class BaseMountable : BaseCombatEntity
 		{
 			return;
 		}
+		BaseVehicle baseVehicle = this.VehicleParent();
 		if (lite)
 		{
 			this._mounted.DismountObject();
 			this._mounted = null;
 			base.SetFlag(BaseEntity.Flags.Busy, false, false, true);
+			if (baseVehicle != null)
+			{
+				baseVehicle.PlayerDismounted(player, this);
+			}
 			return;
 		}
-		Vector3 dismountPosition = this.GetDismountPosition(player);
-		if (dismountPosition == BaseMountable.DISMOUNT_POS_INVALID)
+		if (this.GetDismountPosition(player, out vector3) && base.Distance(vector3) <= 10f)
 		{
-			dismountPosition = player.transform.position;
 			this._mounted.DismountObject();
-			this._mounted.MovePosition(dismountPosition);
-			this._mounted.ClientRPCPlayer<Vector3>(null, this._mounted, "ForcePositionTo", dismountPosition);
-			BasePlayer basePlayer = this._mounted;
+			this._mounted.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+			this._mounted.MovePosition(vector3);
+			this._mounted.SendNetworkUpdateImmediate(false);
 			this._mounted = null;
-			Debug.LogWarning(string.Concat(new object[] { "Killing player due to invalid dismount point :", player.displayName, " / ", player.userID, " on obj : ", base.gameObject.name }));
-			basePlayer.Hurt(1000f, DamageType.Suicide, basePlayer, false);
 			base.SetFlag(BaseEntity.Flags.Busy, false, false, true);
+			if (baseVehicle != null)
+			{
+				baseVehicle.PlayerDismounted(player, this);
+			}
+			player.ForceUpdateTriggers(true, true, true);
+			if (!player.GetParentEntity())
+			{
+				player.ClientRPCPlayer<Vector3>(null, player, "ForcePositionTo", vector3);
+				Interface.CallHook("OnEntityDismounted", this, player);
+				return;
+			}
+			BaseEntity parentEntity = player.GetParentEntity();
+			player.ClientRPCPlayer<Vector3, uint>(null, player, "ForcePositionToParentOffset", parentEntity.transform.InverseTransformPoint(vector3), parentEntity.net.ID);
 			return;
 		}
+		vector3 = player.transform.position;
 		this._mounted.DismountObject();
-		this._mounted.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-		this._mounted.MovePosition(dismountPosition);
-		this._mounted.SendNetworkUpdateImmediate(false);
+		this._mounted.MovePosition(vector3);
+		this._mounted.ClientRPCPlayer<Vector3>(null, this._mounted, "ForcePositionTo", vector3);
+		BasePlayer basePlayer = this._mounted;
 		this._mounted = null;
+		Debug.LogWarning(string.Concat(new object[] { "Killing player due to invalid dismount point :", player.displayName, " / ", player.userID, " on obj : ", base.gameObject.name }));
+		basePlayer.Hurt(1000f, DamageType.Suicide, basePlayer, false);
 		base.SetFlag(BaseEntity.Flags.Busy, false, false, true);
-		player.ForceUpdateTriggers(true, true, true);
-		if (!player.GetParentEntity())
+		if (baseVehicle != null)
 		{
-			player.ClientRPCPlayer<Vector3>(null, player, "ForcePositionTo", dismountPosition);
-			Interface.CallHook("OnEntityDismounted", this, player);
-			return;
+			baseVehicle.PlayerDismounted(player, this);
 		}
-		BaseEntity parentEntity = player.GetParentEntity();
-		player.ClientRPCPlayer<Vector3, uint>(null, player, "ForcePositionToParentOffset", parentEntity.transform.InverseTransformPoint(dismountPosition), parentEntity.net.ID);
 	}
 
 	public Vector3 DismountVisCheckOrigin()
@@ -230,12 +239,12 @@ public class BaseMountable : BaseCombatEntity
 		return 0f;
 	}
 
-	public virtual Vector3 GetDismountPosition(BasePlayer player)
+	public virtual bool GetDismountPosition(BasePlayer player, out Vector3 res)
 	{
 		BaseVehicle baseVehicle = this.VehicleParent();
 		if (baseVehicle != null)
 		{
-			return baseVehicle.GetDismountPosition(player);
+			return baseVehicle.GetDismountPosition(player, out res);
 		}
 		int num = 0;
 		Transform[] transformArrays = this.dismountPositions;
@@ -244,12 +253,14 @@ public class BaseMountable : BaseCombatEntity
 			Transform transforms = transformArrays[i];
 			if (this.ValidDismountPosition(transforms.transform.position))
 			{
-				return transforms.transform.position;
+				res = transforms.transform.position;
+				return true;
 			}
 			num++;
 		}
 		Debug.LogWarning(string.Concat(new object[] { "Failed to find dismount position for player :", player.displayName, " / ", player.userID, " on obj : ", base.gameObject.name }));
-		return BaseMountable.DISMOUNT_POS_INVALID;
+		res = player.transform.position;
+		return false;
 	}
 
 	public BasePlayer GetMounted()

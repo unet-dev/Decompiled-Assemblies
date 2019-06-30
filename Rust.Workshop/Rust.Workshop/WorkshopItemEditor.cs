@@ -1,10 +1,12 @@
+using Facepunch;
 using Facepunch.Extend;
-using Facepunch.Steamworks;
 using Facepunch.Utility;
 using Rust;
 using Rust.UI;
 using Rust.Workshop.Editor;
 using Rust.Workshop.Import;
+using Steamworks;
+using Steamworks.Ugc;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +22,8 @@ namespace Rust.Workshop
 {
 	public class WorkshopItemEditor : SingletonComponent<WorkshopItemEditor>
 	{
+		public static Action<bool, string> OnLoading;
+
 		public Dropdown ItemTypeSelector;
 
 		public InputField ItemTitleLabel;
@@ -37,11 +42,9 @@ namespace Rust.Workshop
 
 		public int EditingMaterial;
 
-		internal GameObject AltPrefab
-		{
-			get;
-			set;
-		}
+		public GameObject item_position_a;
+
+		public GameObject item_position_b;
 
 		public string ChangeLog
 		{
@@ -132,11 +135,6 @@ namespace Rust.Workshop
 				UnityEngine.Object.Destroy(this.Prefab);
 				this.Prefab = null;
 			}
-			if (this.AltPrefab != null)
-			{
-				UnityEngine.Object.Destroy(this.AltPrefab);
-				this.AltPrefab = null;
-			}
 			if (this.ViewModel != null)
 			{
 				UnityEngine.Object.Destroy(this.ViewModel);
@@ -201,21 +199,13 @@ namespace Rust.Workshop
 
 		private void InitScene()
 		{
-			if (this.Skinnable.Category == Category.Deployable)
-			{
-				this.AltPrefab = Global.CreatePrefab(this.Skinnable.EntityPrefabName);
-				WorkshopItemEditor.RemoveLODs(this.AltPrefab);
-				this.AltPrefab.transform.position = this.Interface.item_position_b.transform.position;
-				this.AltPrefab.transform.rotation = this.Interface.item_position_b.transform.rotation;
-				this.AltPrefab.SetActive(true);
-				this.AltPrefab.AddComponent<DepthOfFieldFocusPoint>();
-				this.AltPrefab.BroadcastMessage("BuildRig", SendMessageOptions.DontRequireReceiver);
-				this.AltPrefab.BroadcastMessage("WorkshopMode", SendMessageOptions.DontRequireReceiver);
-				this.Skin.Apply(this.AltPrefab);
-			}
-			else
+			if (this.Skinnable.Category != Category.Deployable)
 			{
 				this.InitPlayerPreview((ulong)585364905, true);
+				if (this.Prefab != null)
+				{
+					this.Prefab.transform.position = new Vector3(0f, 500f, 0f);
+				}
 			}
 			if (this.Skinnable.ViewmodelPrefab)
 			{
@@ -270,6 +260,16 @@ namespace Rust.Workshop
 			this.ViewmodelControls.DoUpdate(this.ViewModel);
 		}
 
+		internal static void Loading(bool v1, string v2, string v3, float v4)
+		{
+			Action<bool, string> onLoading = WorkshopItemEditor.OnLoading;
+			if (onLoading == null)
+			{
+				return;
+			}
+			onLoading(v1, v2);
+		}
+
 		private bool LoadItemType(string[] tags)
 		{
 			string[] strArrays = tags;
@@ -294,8 +294,8 @@ namespace Rust.Workshop
 			this.ItemTypeSelector.@value = this.ItemTypeSelector.options.IndexOf(this.ItemTypeSelector.options.First<Dropdown.OptionData>((Dropdown.OptionData x) => x.text == this.Skinnable.Name));
 			this.Prefab = Global.CreatePrefab(this.Skinnable.EntityPrefabName);
 			WorkshopItemEditor.RemoveLODs(this.Prefab);
-			this.Prefab.transform.position = this.Interface.item_position_a.transform.position;
-			this.Prefab.transform.rotation = this.Interface.item_position_a.transform.rotation;
+			this.Prefab.transform.position = this.item_position_a.transform.position;
+			this.Prefab.transform.rotation = this.item_position_a.transform.rotation;
 			this.Prefab.SetActive(true);
 			this.Prefab.AddComponent<DepthOfFieldFocusPoint>();
 			this.Prefab.BroadcastMessage("BuildRig", SendMessageOptions.DontRequireReceiver);
@@ -307,7 +307,6 @@ namespace Rust.Workshop
 			}
 			this.Skin.Skinnable = this.Skinnable;
 			this.Skin.ReadDefaults();
-			this.Skin.Apply(this.Prefab);
 			return true;
 		}
 
@@ -344,30 +343,36 @@ namespace Rust.Workshop
 			this.InitScene();
 		}
 
-		internal void OpenItem(Facepunch.Steamworks.Workshop.Item item)
+		internal IEnumerator OpenItem(Item item)
 		{
-			if (!this.LoadItemType(item.Tags))
+			WorkshopItemEditor title = null;
+			if (!title.LoadItemType(item.Tags))
 			{
 				UnityEngine.Debug.Log(string.Concat("Couldn't LoadItemType (", string.Join(";", item.Tags), ")"));
-				this.ClearEditor();
-				this.Interface.OpenMenu();
-				return;
+				title.ClearEditor();
+				WorkshopItemEditor.Loading(false, "", "", 0f);
+				yield break;
 			}
-			base.GetComponentInChildren<WorkshopView>(true).UpdateFrom(item);
-			this.ItemTitle = item.Title;
-			this.ItemId = item.Id;
+			Task task = item.Owner.RequestInfoAsync(5000);
+			while (!task.IsCompleted)
+			{
+				yield return null;
+			}
+			title.GetComponentInChildren<WorkshopView>(true).UpdateFrom(item);
+			title.ItemTitle = item.Title;
+			title.ItemId = item.Id;
 			if (item.Tags.Contains<string>("version3"))
 			{
-				SingletonComponent<ImportVersion3>.Instance.DoImport(item, this.Skin, new Action(this.OnImportFinished));
-				return;
+				yield return title.StartCoroutine(SingletonComponent<ImportVersion3>.Instance.DoImport(item, title.Skin));
+				yield break;
 			}
 			if (item.Tags.Contains<string>("version2"))
 			{
-				SingletonComponent<ImportVersion2>.Instance.DoImport(item, this.Skin, new Action(this.OnImportFinished));
-				return;
+				yield return title.StartCoroutine(SingletonComponent<ImportVersion2>.Instance.DoImport(item, title.Skin));
+				yield break;
 			}
 			UnityEngine.Debug.Log(string.Concat("Unhandled Item version (", string.Join(";", item.Tags), ")"));
-			SingletonComponent<ImportVersion1>.Instance.DoImport(item, this.Skin, new Action(this.OnImportFinished));
+			yield return title.StartCoroutine(SingletonComponent<ImportVersion1>.Instance.DoImport(item, title.Skin));
 		}
 
 		public void RandomizePlayerPreview()
@@ -377,24 +382,9 @@ namespace Rust.Workshop
 
 		public static void RemoveLODs(GameObject prefab)
 		{
-			int i;
-			LODGroup[] componentsInChildren = prefab.GetComponentsInChildren<LODGroup>(true);
-			for (i = 0; i < (int)componentsInChildren.Length; i++)
-			{
-				UnityEngine.Object.DestroyImmediate(componentsInChildren[i]);
-			}
-			Renderer[] rendererArray = prefab.GetComponentsInChildren<Renderer>(true);
-			for (i = 0; i < (int)rendererArray.Length; i++)
-			{
-				Renderer renderer = rendererArray[i];
-				if (!(renderer is ParticleSystemRenderer) && WorkshopItemEditor.IsLesserLOD(renderer.name))
-				{
-					UnityEngine.Object.DestroyImmediate(renderer.gameObject);
-				}
-			}
 		}
 
-		internal void SetColor(string paramName, UnityEngine.Color val)
+		internal void SetColor(string paramName, Color val)
 		{
 			this.Skin.Materials[this.EditingMaterial].SetColor(paramName, val);
 		}
@@ -470,15 +460,17 @@ namespace Rust.Workshop
 			}
 		}
 
-		internal void StartEditingItem(Facepunch.Steamworks.Workshop.Item item)
+		public IEnumerator StartEditingItem(Item item)
 		{
-			this.Skin = null;
-			this.ClearEditor();
-			this.ShowEditor();
-			this.OpenItem(item);
+			WorkshopItemEditor workshopItemEditor = null;
+			workshopItemEditor.Skin = null;
+			workshopItemEditor.ClearEditor();
+			workshopItemEditor.ShowEditor();
+			yield return workshopItemEditor.StartCoroutine(workshopItemEditor.OpenItem(item));
+			workshopItemEditor.OnImportFinished();
 		}
 
-		internal void StartNewItem(string type = "TShirt")
+		public void StartNewItem(string type = "TShirt")
 		{
 			this.Skin = null;
 			this.ClearEditor();
@@ -487,18 +479,26 @@ namespace Rust.Workshop
 			this.ShowEditor();
 		}
 
-		internal void StartViewingItem(Facepunch.Steamworks.Workshop.Item item)
+		public IEnumerator StartViewingItem(Item item)
 		{
-			this.Skin = null;
-			this.ClearEditor();
-			this.HideEditor();
-			this.OpenItem(item);
+			WorkshopItemEditor workshopItemEditor = null;
+			workshopItemEditor.Skin = null;
+			workshopItemEditor.ClearEditor();
+			workshopItemEditor.HideEditor();
+			yield return workshopItemEditor.StartCoroutine(workshopItemEditor.OpenItem(item));
+			workshopItemEditor.OnImportFinished();
 		}
 
 		public void SwitchMaterial(int i)
 		{
 			this.EditingMaterial = i;
 			this.UpdateMaterialRows();
+		}
+
+		private void Update()
+		{
+			Facepunch.Input.Frame();
+			Facepunch.Input.Update();
 		}
 
 		private void UpdateMaterialRows()

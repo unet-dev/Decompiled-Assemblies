@@ -6,6 +6,13 @@ namespace UnityEngine
 {
 	public static class StringExtensions
 	{
+		public static string BBCodeToUnity(this string x)
+		{
+			x = x.Replace("[", "<");
+			x = x.Replace("]", ">");
+			return x;
+		}
+
 		public static Color ToColor(this string str)
 		{
 			Color color = new Color(1f, 1f, 1f, 1f);

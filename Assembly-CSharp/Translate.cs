@@ -44,6 +44,11 @@ public static class Translate
 			this.english = eng;
 		}
 
+		internal string GetWithParam(string param)
+		{
+			return string.Format(this.translated, param);
+		}
+
 		public bool IsValid()
 		{
 			return !string.IsNullOrEmpty(this.token);

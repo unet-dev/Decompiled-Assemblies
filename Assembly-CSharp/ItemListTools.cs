@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -42,7 +43,7 @@ public class ItemListTools : MonoBehaviour
 		{
 			GameObject str = UnityEngine.Object.Instantiate<GameObject>(this.categoryButton);
 			str.transform.SetParent(this.categoryButton.transform.parent, false);
-			str.GetComponentInChildren<Text>().text = itemCategories.First<ItemDefinition>().category.ToString();
+			str.GetComponentInChildren<TextMeshProUGUI>().text = itemCategories.First<ItemDefinition>().category.ToString();
 			Button componentInChildren = str.GetComponentInChildren<Button>();
 			ItemDefinition[] array = itemCategories.ToArray<ItemDefinition>();
 			componentInChildren.onClick.AddListener(() => {
@@ -92,7 +93,7 @@ public class ItemListTools : MonoBehaviour
 			}
 			GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.itemButton);
 			gameObject.transform.SetParent(this.itemButton.transform.parent, false);
-			gameObject.GetComponentInChildren<Text>().text = itemDefinition.displayName.translated;
+			gameObject.GetComponentInChildren<TextMeshProUGUI>().text = itemDefinition.displayName.translated;
 			gameObject.GetComponentInChildren<ItemButtonTools>().itemDef = itemDefinition;
 			gameObject.GetComponentInChildren<ItemButtonTools>().image.sprite = itemDefinition.iconSprite;
 		}

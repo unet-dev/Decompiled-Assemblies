@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Facepunch.UI
 {
@@ -9,13 +9,17 @@ namespace Facepunch.UI
 	{
 		public Vector3 WorldOffset;
 
-		protected UnityEngine.UI.Text Text;
+		public TextMeshProUGUI Text;
 
-		protected UnityEngine.UI.Image Image;
+		public TextMeshProUGUI Image;
+
+		public CanvasGroup @group;
 
 		public Gradient gradientNormal;
 
 		public Gradient gradientTeam;
+
+		public Color TeamColor;
 
 		public QueryVis visCheck;
 

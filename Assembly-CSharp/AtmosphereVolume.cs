@@ -10,7 +10,7 @@ public class AtmosphereVolume : MonoBehaviour
 
 	public float BoundsAttenuationDecay = 5f;
 
-	public FogSettings FogSettings = FogSettings.Default;
+	public FogSettings FogSettings;
 
 	public AtmosphereVolume()
 	{

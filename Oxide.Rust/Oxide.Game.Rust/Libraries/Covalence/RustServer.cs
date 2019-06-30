@@ -1,10 +1,10 @@
 using ConVar;
 using Facepunch;
-using Facepunch.Steamworks;
 using Oxide.Core;
 using Oxide.Core.Libraries.Covalence;
 using Oxide.Game.Rust.Libraries;
 using Rust;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -34,17 +34,17 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 						if (Oxide.Core.Utility.ValidateIPv4(ConVar.Server.ip) && !Oxide.Core.Utility.IsLocalIP(ConVar.Server.ip))
 						{
 							IPAddress.TryParse(ConVar.Server.ip, out RustServer.address);
-							Interface.Oxide.LogInfo(string.Format("IP address from command-line: {0}", RustServer.address), Array.Empty<object>());
+							Interface.Oxide.LogInfo(String.Format("IP address from command-line: {0}", RustServer.address), Array.Empty<object>());
 						}
-						else if (Rust.Global.SteamServer == null || !Rust.Global.SteamServer.IsValid || Rust.Global.SteamServer.PublicIp == null)
+						else if (!SteamServer.IsValid || SteamServer.PublicIp == null)
 						{
 							IPAddress.TryParse((new WebClient()).DownloadString("http://api.ipify.org"), out RustServer.address);
-							Interface.Oxide.LogInfo(string.Format("IP address from external API: {0}", RustServer.address), Array.Empty<object>());
+							Interface.Oxide.LogInfo(String.Format("IP address from external API: {0}", RustServer.address), Array.Empty<object>());
 						}
 						else
 						{
-							RustServer.address = Rust.Global.SteamServer.PublicIp;
-							Interface.Oxide.LogInfo(string.Format("IP address from Steam query: {0}", RustServer.address), Array.Empty<object>());
+							RustServer.address = SteamServer.PublicIp;
+							Interface.Oxide.LogInfo(String.Format("IP address from Steam query: {0}", RustServer.address), Array.Empty<object>());
 						}
 					}
 					any = RustServer.address;
@@ -168,7 +168,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 		{
 			if (!this.IsBanned(id))
 			{
-				ServerUsers.Set(ulong.Parse(id), ServerUsers.UserGroup.Banned, this.Name, reason);
+				ServerUsers.Set(UInt64.Parse(id), ServerUsers.UserGroup.Banned, this.Name, reason);
 				ServerUsers.Save();
 			}
 		}
@@ -199,13 +199,13 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 
 		public bool IsBanned(string id)
 		{
-			return ServerUsers.Is(ulong.Parse(id), ServerUsers.UserGroup.Banned);
+			return ServerUsers.Is(UInt64.Parse(id), ServerUsers.UserGroup.Banned);
 		}
 
 		public void Save()
 		{
 			ConVar.Server.save(null);
-			File.WriteAllText(string.Concat(ConVar.Server.GetServerFolder("cfg"), "/serverauto.cfg"), ConsoleSystem.SaveToConfigString(true));
+			File.WriteAllText(String.Concat(ConVar.Server.GetServerFolder("cfg"), "/serverauto.cfg"), ConsoleSystem.SaveToConfigString(true));
 			ServerUsers.Save();
 		}
 
@@ -213,7 +213,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 		{
 			if (this.IsBanned(id))
 			{
-				ServerUsers.Remove(ulong.Parse(id));
+				ServerUsers.Remove(UInt64.Parse(id));
 				ServerUsers.Save();
 			}
 		}

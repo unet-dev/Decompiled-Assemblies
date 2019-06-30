@@ -1,18 +1,20 @@
+using Facepunch;
 using System;
+using UnityEngine;
 
-public class ServerBrowserList : BaseMonoBehaviour
+public class ServerBrowserList : BaseMonoBehaviour, Facepunch.VirtualScroll.IDataSource
 {
 	public ServerBrowserCategory categoryButton;
 
 	public bool startActive;
 
-	public ServerBrowserItem itemTemplate;
+	public Transform listTransform;
 
 	public int refreshOrder;
 
 	public bool UseOfficialServers;
 
-	public ServerBrowserItem[] items;
+	public Facepunch.VirtualScroll VirtualScroll;
 
 	public ServerBrowserList.Rules[] rules;
 
@@ -24,10 +26,19 @@ public class ServerBrowserList : BaseMonoBehaviour
 
 	static ServerBrowserList()
 	{
-		ServerBrowserList.VersionTag = string.Concat("v", 2164);
+		ServerBrowserList.VersionTag = string.Concat("v", 2177);
 	}
 
 	public ServerBrowserList()
+	{
+	}
+
+	public int GetItemCount()
+	{
+		return 0;
+	}
+
+	public void SetItemData(int i, GameObject obj)
 	{
 	}
 

@@ -53,9 +53,10 @@ namespace Facepunch
 				Facepunch.Application.Manifest = Facepunch.Models.Manifest.FromJson(text);
 				Facepunch.Manifest.OnManifestLoaded(Facepunch.Application.Manifest);
 			}
-			catch (Exception exception)
+			catch (Exception exception1)
 			{
-				UnityEngine.Debug.LogException(exception);
+				Exception exception = exception1;
+				UnityEngine.Debug.LogWarning(string.Concat("Exception when reading manifest (", exception.Message, ")"));
 			}
 		}
 
@@ -63,24 +64,17 @@ namespace Facepunch
 		{
 			UnityEngine.Assertions.Assert.IsNotNull<Facepunch.Models.Manifest>(manifest);
 			Facepunch.Application.Integration.OnManifestFile(manifest);
-			if (!UnityEngine.Application.isEditor || !Facepunch.Application.Integration.RestrictEditorFunctionality)
+			if ((!UnityEngine.Application.isEditor || !Facepunch.Application.Integration.RestrictEditorFunctionality) && Facepunch.Application.Analytics == null && !string.IsNullOrEmpty(manifest.AnalyticUrl))
 			{
-				if (!string.IsNullOrEmpty(manifest.ExceptionReportingUrl))
+				if (string.IsNullOrEmpty(Facepunch.Application.Integration.UserId))
 				{
-					ExceptionReporter.InitializeFromUrl(manifest.ExceptionReportingUrl);
-				}
-				if (Facepunch.Application.Analytics == null && !string.IsNullOrEmpty(manifest.AnalyticUrl))
-				{
-					if (string.IsNullOrEmpty(Facepunch.Application.Integration.UserId))
+					if (Facepunch.Application.Integration.DebugOutput)
 					{
-						if (Facepunch.Application.Integration.DebugOutput)
-						{
-							UnityEngine.Debug.LogWarning("[Analytics] Skipping Analytics because userid is unset");
-						}
-						return;
+						UnityEngine.Debug.LogWarning("[Analytics] Skipping Analytics because userid is unset");
 					}
-					Facepunch.Application.Analytics = new Analytics(manifest.AnalyticUrl);
+					return;
 				}
+				Facepunch.Application.Analytics = new Analytics(manifest.AnalyticUrl);
 			}
 		}
 

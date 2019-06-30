@@ -1,12 +1,16 @@
 using Rust;
 using System;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace ConVar
 {
 	[Factory("gc")]
 	public class GC : ConsoleSystem
 	{
+		[ClientVar]
+		public static bool buffer_enabled;
+
 		private static int m_buffer;
 
 		[ClientVar]
@@ -22,8 +26,51 @@ namespace ConVar
 			}
 		}
 
+		[ClientVar]
+		[ServerVar]
+		public static bool enabled
+		{
+			get
+			{
+				return Rust.GC.Enabled;
+			}
+			set
+			{
+				Debug.LogWarning("Cannot set gc.enabled as it is read only");
+			}
+		}
+
+		[ClientVar]
+		[ServerVar]
+		public static bool incremental_enabled
+		{
+			get
+			{
+				return GarbageCollector.isIncremental;
+			}
+			set
+			{
+				Debug.LogWarning("Cannot set gc.incremental as it is read only");
+			}
+		}
+
+		[ClientVar]
+		[ServerVar]
+		public static int incremental_milliseconds
+		{
+			get
+			{
+				return (int)(GarbageCollector.incrementalTimeSliceNanoseconds / (long)1000000);
+			}
+			set
+			{
+				GarbageCollector.incrementalTimeSliceNanoseconds = (ulong)((long)1000000 * (long)Mathf.Max(value, 0));
+			}
+		}
+
 		static GC()
 		{
+			ConVar.GC.buffer_enabled = true;
 			ConVar.GC.m_buffer = 256;
 		}
 

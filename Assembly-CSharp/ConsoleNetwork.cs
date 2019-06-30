@@ -24,7 +24,7 @@ public static class ConsoleNetwork
 
 	internal static void OnClientCommand(Message packet)
 	{
-		if (packet.read.unread > ConVar.Server.maxcommandpacketsize)
+		if (packet.read.Unread > ConVar.Server.maxcommandpacketsize)
 		{
 			Debug.LogWarning("Dropping client command due to size");
 			return;

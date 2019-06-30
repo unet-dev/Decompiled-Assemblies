@@ -37,8 +37,8 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 			RustCommandSystem.RegisteredCommand registeredCommand;
 			Command.ChatCommand chatCommand;
 			Command.ConsoleCommand consoleCommand;
-			string[] strArrays = command.Split(new char[] { '.' });
-			string str = string.Concat(((int)strArrays.Length >= 2 ? strArrays[0].Trim() : "global"), ".", ((int)strArrays.Length >= 2 ? string.Join(".", strArrays.Skip<string>(1).ToArray<string>()) : strArrays[0].Trim()));
+			string[] strArray = command.Split(new Char[] { '.' });
+			string str = String.Concat(((int)strArray.Length >= 2 ? strArray[0].Trim() : "global"), ".", ((int)strArray.Length >= 2 ? String.Join(".", strArray.Skip<string>(1).ToArray<string>()) : strArray[0].Trim()));
 			if (this.registeredCommands.TryGetValue(command, out registeredCommand) && registeredCommand.Source.IsCorePlugin)
 			{
 				return false;
@@ -72,7 +72,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 		{
 			if (arg == null)
 			{
-				return new string[0];
+				return new String[0];
 			}
 			List<string> strs = new List<string>();
 			int num = 0;
@@ -109,10 +109,10 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 			object name3;
 			string str = command;
 			str = str.ToLowerInvariant().Trim();
-			string[] strArrays = str.Split(new char[] { '.' });
-			string str1 = ((int)strArrays.Length >= 2 ? strArrays[0].Trim() : "global");
-			string rustCommand = ((int)strArrays.Length >= 2 ? string.Join(".", strArrays.Skip<string>(1).ToArray<string>()) : strArrays[0].Trim());
-			string rustCommand1 = string.Concat(str1, ".", rustCommand);
+			string[] strArray = str.Split(new Char[] { '.' });
+			string str1 = ((int)strArray.Length >= 2 ? strArray[0].Trim() : "global");
+			string rustCommand = ((int)strArray.Length >= 2 ? String.Join(".", strArray.Skip<string>(1).ToArray<string>()) : strArray[0].Trim());
+			string rustCommand1 = String.Concat(str1, ".", rustCommand);
 			if (str1 == "global")
 			{
 				str = rustCommand;
@@ -141,7 +141,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 				{
 					obj2 = "an unknown plugin";
 				}
-				string str2 = (string)obj2;
+				string str2 = obj2;
 				if (plugin != null)
 				{
 					name3 = plugin.Name;
@@ -154,8 +154,8 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 				{
 					name3 = "An unknown plugin";
 				}
-				string str3 = (string)name3;
-				string str4 = string.Concat(new string[] { str3, " has replaced the '", str, "' command previously registered by ", str2 });
+				string str3 = name3;
+				string str4 = String.Concat(new String[] { str3, " has replaced the '", str, "' command previously registered by ", str2 });
 				Interface.Oxide.LogWarning(str4, Array.Empty<object>());
 				ConsoleSystem.Index.Server.Dict.Remove(rustCommand1);
 				if (str1 == "global")
@@ -179,7 +179,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 				{
 					obj1 = "an unknown plugin";
 				}
-				string str5 = (string)obj1;
+				string str5 = obj1;
 				if (plugin != null)
 				{
 					name2 = plugin.Name;
@@ -192,8 +192,8 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 				{
 					name2 = "An unknown plugin";
 				}
-				string str6 = (string)name2;
-				string str7 = string.Concat(new string[] { str6, " has replaced the '", str, "' chat command previously registered by ", str5 });
+				string str6 = name2;
+				string str7 = String.Concat(new String[] { str6, " has replaced the '", str, "' chat command previously registered by ", str5 });
 				Interface.Oxide.LogWarning(str7, Array.Empty<object>());
 				this.cmdlib.chatCommands.Remove(str);
 			}
@@ -216,7 +216,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 				{
 					obj = "an unknown plugin";
 				}
-				string str8 = (string)obj;
+				string str8 = obj;
 				if (plugin != null)
 				{
 					name1 = plugin.Name;
@@ -229,8 +229,8 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 				{
 					name1 = "An unknown plugin";
 				}
-				string str9 = (string)name1;
-				string str10 = string.Concat(new string[] { str9, " has replaced the '", rustCommand1, "' console command previously registered by ", str8 });
+				string str9 = name1;
+				string str10 = String.Concat(new String[] { str9, " has replaced the '", rustCommand1, "' console command previously registered by ", str8 });
 				Interface.Oxide.LogWarning(str10, Array.Empty<object>());
 				ConsoleSystem.Index.Server.Dict.Remove(consoleCommand.RustCommand.FullName);
 				if (str1 == "global")
@@ -256,8 +256,8 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 					{
 						name = "An unknown plugin";
 					}
-					string str11 = (string)name;
-					Interface.Oxide.LogError(string.Concat(str11, " tried to register the ", rustCommand1, " console variable as a command!"), Array.Empty<object>());
+					string str11 = name;
+					Interface.Oxide.LogError(String.Concat(str11, " tried to register the ", rustCommand1, " console variable as a command!"), Array.Empty<object>());
 					return;
 				}
 				originalCallback.OriginalCallback = command1.Call;
@@ -317,10 +317,10 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 			{
 				return;
 			}
-			string[] strArrays = command.Split(new char[] { '.' });
-			str = ((int)strArrays.Length >= 2 ? strArrays[0].Trim() : "global");
-			string originalCallback = ((int)strArrays.Length >= 2 ? string.Join(".", strArrays.Skip<string>(1).ToArray<string>()) : strArrays[0].Trim());
-			string originalRustCommand = string.Concat(str, ".", originalCallback);
+			string[] strArray = command.Split(new Char[] { '.' });
+			str = ((int)strArray.Length >= 2 ? strArray[0].Trim() : "global");
+			string originalCallback = ((int)strArray.Length >= 2 ? String.Join(".", strArray.Skip<string>(1).ToArray<string>()) : strArray[0].Trim());
+			string originalRustCommand = String.Concat(str, ".", originalCallback);
 			this.registeredCommands.Remove(command);
 			if (registeredCommand.OriginalCallback == null)
 			{

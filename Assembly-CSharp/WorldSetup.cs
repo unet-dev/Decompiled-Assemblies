@@ -57,7 +57,7 @@ public class WorldSetup : SingletonComponent<WorldSetup>
 		SingletonComponent[] singletonComponentArray = UnityEngine.Object.FindObjectsOfType<SingletonComponent>();
 		for (i = 0; i < (int)singletonComponentArray.Length; i++)
 		{
-			singletonComponentArray[i].Setup();
+			singletonComponentArray[i].SingletonSetup();
 		}
 		if (this.terrain)
 		{
@@ -157,9 +157,9 @@ public class WorldSetup : SingletonComponent<WorldSetup>
 			World.Cached = true;
 		}
 		timing1.End();
-		if (World.Cached && 8 != World.Serialization.Version)
+		if (World.Cached && 9 != World.Serialization.Version)
 		{
-			object[] version = new object[] { "World cache version mismatch: ", (uint)8, " != ", World.Serialization.Version };
+			object[] version = new object[] { "World cache version mismatch: ", (uint)9, " != ", World.Serialization.Version };
 			UnityEngine.Debug.LogWarning(string.Concat(version));
 			World.Serialization.Clear();
 			World.Cached = false;

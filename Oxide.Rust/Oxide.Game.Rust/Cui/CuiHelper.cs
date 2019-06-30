@@ -77,12 +77,12 @@ namespace Oxide.Game.Rust.Cui
 		public static string GetGuid()
 		{
 			Guid guid = Guid.NewGuid();
-			return guid.ToString().Replace("-", string.Empty);
+			return guid.ToString().Replace("-", String.Empty);
 		}
 
 		public static void SetColor(this ICuiColor elem, Color color)
 		{
-			elem.Color = string.Format("{0} {1} {2} {3}", new object[] { color.r, color.g, color.b, color.a });
+			elem.Color = String.Format("{0} {1} {2} {3}", new Object[] { color.r, color.g, color.b, color.a });
 		}
 
 		public static string ToJson(List<CuiElement> elements, bool format = false)

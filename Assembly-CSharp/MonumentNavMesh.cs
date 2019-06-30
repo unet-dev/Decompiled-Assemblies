@@ -17,14 +17,20 @@ public class MonumentNavMesh : FacepunchBehaviour, IServerComponent
 	[Tooltip("The default area associated with the NavMeshAgent index.")]
 	public string DefaultAreaName = "HumanNPC";
 
+	[Tooltip("How many cells to use squared")]
 	public int CellCount = 1;
 
+	[Tooltip("The size of each cell for async object gathering")]
 	public int CellSize = 80;
 
 	public int Height = 100;
 
 	public float NavmeshResolutionModifier = 0.5f;
 
+	[Tooltip("Use the bounds specified in editor instead of generating it from cellsize * cellcount")]
+	public bool overrideAutoBounds;
+
+	[Tooltip("Bounds which are auto calculated from CellSize * CellCount")]
 	public UnityEngine.Bounds Bounds;
 
 	public UnityEngine.AI.NavMeshData NavMeshData;
@@ -184,7 +190,10 @@ public class MonumentNavMesh : FacepunchBehaviour, IServerComponent
 		}
 		vector3.HasBuildOperationStarted = false;
 		vector3.Bounds.center = vector3.transform.position;
-		vector3.Bounds.size = new Vector3((float)(vector3.CellSize * vector3.CellCount), (float)vector3.Height, (float)(vector3.CellSize * vector3.CellCount));
+		if (!vector3.overrideAutoBounds)
+		{
+			vector3.Bounds.size = new Vector3((float)(vector3.CellSize * vector3.CellCount), (float)vector3.Height, (float)(vector3.CellSize * vector3.CellCount));
+		}
 		if (!AiManager.nav_wait)
 		{
 			vector3.StartCoroutine(vector3.CollectSourcesAsync(new Action(vector3.UpdateNavMeshAsync)));

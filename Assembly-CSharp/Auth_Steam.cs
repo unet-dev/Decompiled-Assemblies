@@ -1,6 +1,5 @@
-using Facepunch.Steamworks;
 using Network;
-using Rust;
+using Steamworks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,7 +18,7 @@ public static class Auth_Steam
 	public static IEnumerator Run(Connection connection)
 	{
 		connection.authStatus = "";
-		if (!Global.SteamServer.Auth.StartSession(connection.token, connection.userid))
+		if (!SteamServer.BeginAuthSession(connection.token, connection.userid))
 		{
 			ConnectionAuth.Reject(connection, "Steam Auth Failed");
 			yield break;
@@ -38,37 +37,37 @@ public static class Auth_Steam
 		if (connection.authStatus.Length == 0)
 		{
 			ConnectionAuth.Reject(connection, "Steam Auth Timeout");
-			Global.SteamServer.Auth.EndSession(connection.userid);
+			SteamServer.EndSession(connection.userid);
 			yield break;
 		}
 		if (connection.authStatus == "banned")
 		{
 			ConnectionAuth.Reject(connection, string.Concat("Auth: ", connection.authStatus));
-			Global.SteamServer.Auth.EndSession(connection.userid);
+			SteamServer.EndSession(connection.userid);
 			yield break;
 		}
 		if (connection.authStatus == "gamebanned")
 		{
 			ConnectionAuth.Reject(connection, string.Concat("Steam Auth: ", connection.authStatus));
-			Global.SteamServer.Auth.EndSession(connection.userid);
+			SteamServer.EndSession(connection.userid);
 			yield break;
 		}
 		if (connection.authStatus == "vacbanned")
 		{
 			ConnectionAuth.Reject(connection, string.Concat("Steam Auth: ", connection.authStatus));
-			Global.SteamServer.Auth.EndSession(connection.userid);
+			SteamServer.EndSession(connection.userid);
 			yield break;
 		}
 		if (connection.authStatus == "ok")
 		{
-			Global.SteamServer.UpdatePlayer(connection.userid, connection.username, 0);
+			SteamServer.UpdatePlayer(connection.userid, connection.username, 0);
 			yield break;
 		}
 		ConnectionAuth.Reject(connection, string.Concat("Steam Auth Error: ", connection.authStatus));
-		Global.SteamServer.Auth.EndSession(connection.userid);
+		SteamServer.EndSession(connection.userid);
 	}
 
-	public static bool ValidateConnecting(ulong steamid, ulong ownerSteamID, ServerAuth.Status response)
+	public static bool ValidateConnecting(SteamId steamid, SteamId ownerSteamID, AuthResponse response)
 	{
 		Connection str = Auth_Steam.waitingList.Find((Connection x) => x.userid == steamid);
 		if (str == null)
@@ -81,22 +80,22 @@ public static class Auth_Steam
 			str.authStatus = "banned";
 			return true;
 		}
-		if (response == ServerAuth.Status.OK)
+		if (response == AuthResponse.OK)
 		{
 			str.authStatus = "ok";
 			return true;
 		}
-		if (response == ServerAuth.Status.VACBanned)
+		if (response == AuthResponse.VACBanned)
 		{
 			str.authStatus = "vacbanned";
 			return true;
 		}
-		if (response == ServerAuth.Status.PublisherIssuedBan)
+		if (response == AuthResponse.PublisherIssuedBan)
 		{
 			str.authStatus = "gamebanned";
 			return true;
 		}
-		if (response == ServerAuth.Status.VACCheckTimedOut)
+		if (response == AuthResponse.VACCheckTimedOut)
 		{
 			str.authStatus = "ok";
 			return true;

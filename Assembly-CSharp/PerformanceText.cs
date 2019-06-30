@@ -1,10 +1,10 @@
 using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PerformanceText : MonoBehaviour
 {
-	public Text text;
+	public TextMeshProUGUI text;
 
 	public PerformanceText()
 	{

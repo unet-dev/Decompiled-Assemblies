@@ -1,4 +1,4 @@
-using Facepunch.Steamworks;
+using Steamworks.ServerList;
 using System;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ public class ServerHistory : MonoBehaviour
 
 	public GameObject panelList;
 
-	internal ServerList.Request Request;
+	internal History Request;
 
 	public ServerHistory()
 	{

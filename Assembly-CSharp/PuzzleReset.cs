@@ -10,6 +10,8 @@ public class PuzzleReset : FacepunchBehaviour
 
 	public IOEntity[] resetEnts;
 
+	public GameObject[] resetObjects;
+
 	public bool playersBlockReset;
 
 	public float playerDetectionRadius;
@@ -23,12 +25,17 @@ public class PuzzleReset : FacepunchBehaviour
 	[HideInInspector]
 	public Vector3[] resetPositions;
 
+	private float resetTimeElapsed;
+
+	private float resetTickTime = 10f;
+
 	public PuzzleReset()
 	{
 	}
 
 	public void DoReset()
 	{
+		int i;
 		IOEntity component = base.GetComponent<IOEntity>();
 		if (component != null)
 		{
@@ -38,7 +45,7 @@ public class PuzzleReset : FacepunchBehaviour
 		else if (this.resetPositions != null)
 		{
 			Vector3[] vector3Array = this.resetPositions;
-			for (int i = 0; i < (int)vector3Array.Length; i++)
+			for (i = 0; i < (int)vector3Array.Length; i++)
 			{
 				Vector3 vector3 = vector3Array[i];
 				Vector3 vector31 = base.transform.TransformPoint(vector3);
@@ -67,6 +74,15 @@ public class PuzzleReset : FacepunchBehaviour
 			spawnGroup.Spawn();
 		}
 		Facepunch.Pool.FreeList<SpawnGroup>(ref spawnGroups);
+		GameObject[] gameObjectArray = this.resetObjects;
+		for (i = 0; i < (int)gameObjectArray.Length; i++)
+		{
+			GameObject gameObject = gameObjectArray[i];
+			if (gameObject != null)
+			{
+				gameObject.SendMessage("OnPuzzleReset", SendMessageOptions.DontRequireReceiver);
+			}
+		}
 	}
 
 	public float GetResetSpacing()
@@ -76,25 +92,31 @@ public class PuzzleReset : FacepunchBehaviour
 
 	public bool PassesResetCheck()
 	{
-		if (!this.playersBlockReset)
+		bool flag;
+		if (this.playersBlockReset)
 		{
-			return true;
-		}
-		List<BasePlayer> list = Facepunch.Pool.GetList<BasePlayer>();
-		Vis.Entities<BasePlayer>(this.playerDetectionOrigin.position, this.playerDetectionRadius, list, 131072, QueryTriggerInteraction.Collide);
-		bool flag = true;
-		foreach (BasePlayer basePlayer in list)
-		{
-			if (basePlayer.IsSleeping() || !basePlayer.IsAlive() || basePlayer.IsNpc)
+			List<BasePlayer>.Enumerator enumerator = BasePlayer.activePlayerList.GetEnumerator();
+			try
 			{
-				continue;
+				while (enumerator.MoveNext())
+				{
+					BasePlayer current = enumerator.Current;
+					if (current.IsSleeping() || !current.IsAlive() || Vector3.Distance(current.transform.position, this.playerDetectionOrigin.position) >= this.playerDetectionRadius)
+					{
+						continue;
+					}
+					flag = false;
+					return flag;
+				}
+				return true;
 			}
-			flag = false;
-			Facepunch.Pool.FreeList<BasePlayer>(ref list);
+			finally
+			{
+				((IDisposable)enumerator).Dispose();
+			}
 			return flag;
 		}
-		Facepunch.Pool.FreeList<BasePlayer>(ref list);
-		return flag;
+		return true;
 	}
 
 	public static void ResetIOEntRecursive(IOEntity target, int resetIndex)
@@ -116,10 +138,24 @@ public class PuzzleReset : FacepunchBehaviour
 		}
 	}
 
+	public void ResetTick()
+	{
+		if (this.PassesResetCheck())
+		{
+			this.resetTimeElapsed += this.resetTickTime;
+		}
+		if (this.resetTimeElapsed > this.GetResetSpacing())
+		{
+			this.resetTimeElapsed = 0f;
+			this.DoReset();
+		}
+	}
+
 	public void ResetTimer()
 	{
-		base.CancelInvoke(new Action(this.TimedReset));
-		base.Invoke(new Action(this.TimedReset), this.GetResetSpacing());
+		this.resetTimeElapsed = 0f;
+		base.CancelInvoke(new Action(this.ResetTick));
+		base.InvokeRandomized(new Action(this.ResetTick), UnityEngine.Random.Range(0f, 1f), this.resetTickTime, 0.5f);
 	}
 
 	public void Start()
@@ -128,16 +164,5 @@ public class PuzzleReset : FacepunchBehaviour
 		{
 			this.ResetTimer();
 		}
-	}
-
-	public void TimedReset()
-	{
-		if (!this.PassesResetCheck())
-		{
-			base.Invoke(new Action(this.TimedReset), 1f);
-			return;
-		}
-		this.DoReset();
-		base.Invoke(new Action(this.TimedReset), this.GetResetSpacing());
 	}
 }

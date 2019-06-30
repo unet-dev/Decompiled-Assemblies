@@ -285,7 +285,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 			{
 				return;
 			}
-			this.player.ConsoleMessage(string.Format(Formatter.ToPlaintext(message), args));
+			this.player.ConsoleMessage(String.Format(Formatter.ToPlaintext(message), args));
 		}
 
 		public void Reply(string message)
@@ -310,7 +310,7 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 
 		public override string ToString()
 		{
-			return string.Concat(new string[] { "Covalence.RustPlayer[", this.Id, ", ", this.Name, "]" });
+			return String.Concat(new String[] { "Covalence.RustPlayer[", this.Id, ", ", this.Name, "]" });
 		}
 
 		public void Unban()

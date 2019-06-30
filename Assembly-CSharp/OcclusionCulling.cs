@@ -378,9 +378,8 @@ public class OcclusionCulling : MonoBehaviour
 
 	private RenderTexture CreateDepthTextureMip(string name, int width, int height, int mip)
 	{
-		int num = width >> (mip & 31);
-		int num1 = height >> (mip & 31);
-		RenderTexture renderTexture = new RenderTexture(num, num1, (mip == 0 ? 24 : 0), RenderTextureFormat.RFloat, RenderTextureReadWrite.Linear)
+		int num = height >> (mip & 31);
+		RenderTexture renderTexture = new RenderTexture(width >> (mip & 31), num, 0, RenderTextureFormat.RFloat, RenderTextureReadWrite.Linear)
 		{
 			name = name,
 			useMipMap = false,
@@ -1437,9 +1436,12 @@ public class OcclusionCulling : MonoBehaviour
 				UnityEngine.Graphics.SetRenderTarget(renderBuffer, renderBuffer1);
 				return;
 			}
-			this.culling.computeShader.SetBuffer(0, "_Input", this.inputBuffer);
-			this.culling.computeShader.SetBuffer(0, "_Result", this.resultBuffer);
-			this.culling.computeShader.Dispatch(0, this.AlignDispatchSize(count), 1, 1);
+			if (this.inputBuffer != null)
+			{
+				this.culling.computeShader.SetBuffer(0, "_Input", this.inputBuffer);
+				this.culling.computeShader.SetBuffer(0, "_Result", this.resultBuffer);
+				this.culling.computeShader.Dispatch(0, this.AlignDispatchSize(count), 1, 1);
+			}
 		}
 
 		public void Dispose(bool data = true)

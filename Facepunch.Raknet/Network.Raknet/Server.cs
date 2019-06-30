@@ -36,8 +36,9 @@ namespace Facepunch.Network.Raknet
 				return;
 			}
 			connection.AddPacketsPerSecond(0);
-			this.read.Start(connection);
-			byte num = this.read.PacketID();
+			base.read.Start(this.peer.RawData(), this.peer.incomingBytesUnread);
+			base.Decrypt(connection, base.read);
+			byte num = base.read.PacketID();
 			if (this.HandleRaknetPacket(num, connection))
 			{
 				return;
@@ -255,7 +256,6 @@ namespace Facepunch.Network.Raknet
 				return false;
 			}
 			this.write = new StreamWrite(this, this.peer);
-			this.read = new StreamRead(this, this.peer);
 			return true;
 		}
 
@@ -267,7 +267,6 @@ namespace Facepunch.Network.Raknet
 			}
 			Console.WriteLine(string.Concat("[Raknet] Server Shutting Down (", shutdownMsg, ")"));
 			(this.write as StreamWrite).Shutdown();
-			(this.read as StreamRead).Shutdown();
 			using (TimeWarning timeWarning = TimeWarning.New("ServerStop", 0.1f))
 			{
 				this.peer.Close();
@@ -278,9 +277,9 @@ namespace Facepunch.Network.Raknet
 
 		internal void UnconnectedPacket()
 		{
-			this.read.Start();
-			byte num = this.read.PacketID();
-			if (this.callbackHandler != null && this.callbackHandler.OnUnconnectedMessage((int)num, this.read, this.peer.incomingAddressInt, (int)this.peer.incomingPort))
+			base.read.Start(this.peer.RawData(), this.peer.incomingBytesUnread);
+			byte num = base.read.PacketID();
+			if (this.callbackHandler != null && this.callbackHandler.OnUnconnectedMessage((int)num, base.read, this.peer.incomingAddressInt, (int)this.peer.incomingPort))
 			{
 				return;
 			}

@@ -159,7 +159,7 @@ public class BasePlayer : BaseCombatEntity
 
 	private float nextSeatSwapTime;
 
-	private Dictionary<int, BasePlayer.FiredProjectile> firedProjectiles = new Dictionary<int, BasePlayer.FiredProjectile>();
+	public Dictionary<int, BasePlayer.FiredProjectile> firedProjectiles = new Dictionary<int, BasePlayer.FiredProjectile>();
 
 	[NonSerialized]
 	public PlayerStatistics stats;
@@ -355,7 +355,15 @@ public class BasePlayer : BaseCombatEntity
 		}
 		set
 		{
-			this._displayName = value;
+			string str = value;
+			str = str.Replace("<", "(");
+			str = str.Replace(">", ")");
+			str = str.Trim();
+			if (str.Length == 0)
+			{
+				str = this.userID.ToString();
+			}
+			this._displayName = str;
 		}
 	}
 
@@ -1068,7 +1076,7 @@ public class BasePlayer : BaseCombatEntity
 				if (this.Belt != null && this.ShouldDropActiveItem())
 				{
 					UnityEngine.Vector3 vector3 = new UnityEngine.Vector3(UnityEngine.Random.Range(-2f, 2f), 0.2f, UnityEngine.Random.Range(-2f, 2f));
-					this.Belt.DropActive(this.GetDropPosition(), base.GetInheritedDropVelocity() + (vector3.normalized * 3f));
+					this.Belt.DropActive(this.GetDropPosition(), this.GetInheritedDropVelocity() + (vector3.normalized * 3f));
 				}
 				if (!this.WoundInsteadOfDying(info))
 				{
@@ -1593,7 +1601,7 @@ public class BasePlayer : BaseCombatEntity
 
 	public override UnityEngine.Vector3 GetDropVelocity()
 	{
-		return (base.GetInheritedDropVelocity() + (this.eyes.BodyForward() * 4f)) + Vector3Ex.Range(-0.5f, 0.5f);
+		return (this.GetInheritedDropVelocity() + (this.eyes.BodyForward() * 4f)) + Vector3Ex.Range(-0.5f, 0.5f);
 	}
 
 	public float GetHeight(bool ducked)
@@ -1631,6 +1639,36 @@ public class BasePlayer : BaseCombatEntity
 			return defaultVal;
 		}
 		return this.net.connection.info.GetInt(key, defaultVal);
+	}
+
+	public override UnityEngine.Vector3 GetInheritedDropVelocity()
+	{
+		BaseMountable mounted = this.GetMounted();
+		if (!mounted)
+		{
+			return base.GetInheritedDropVelocity();
+		}
+		return mounted.GetInheritedDropVelocity();
+	}
+
+	public override UnityEngine.Vector3 GetInheritedProjectileVelocity()
+	{
+		BaseMountable mounted = this.GetMounted();
+		if (!mounted)
+		{
+			return base.GetInheritedProjectileVelocity();
+		}
+		return mounted.GetInheritedProjectileVelocity();
+	}
+
+	public override UnityEngine.Vector3 GetInheritedThrowVelocity()
+	{
+		BaseMountable mounted = this.GetMounted();
+		if (!mounted)
+		{
+			return base.GetInheritedThrowVelocity();
+		}
+		return mounted.GetInheritedThrowVelocity();
 	}
 
 	public override Item GetItem(uint itemId)
@@ -2374,7 +2412,7 @@ public class BasePlayer : BaseCombatEntity
 		ItemModProjectile itemModProjectile = firedItemDef.GetComponent<ItemModProjectile>();
 		Projectile projectile = itemModProjectile.projectileObject.Get().GetComponent<Projectile>();
 		int projectileProtection = ConVar.AntiHack.projectile_protection;
-		if (base.HasParent())
+		if (base.HasParent() || this.isMounted)
 		{
 			projectileProtection = Mathf.Min(projectileProtection, 3);
 		}
@@ -2395,7 +2433,6 @@ public class BasePlayer : BaseCombatEntity
 			{
 				maxVelocity *= baseProjectile1.GetProjectileVelocityScale(true);
 			}
-			maxVelocity += base.GetParentVelocity().magnitude;
 			maxVelocity *= projectileForgiveness;
 			if (single > maxVelocity)
 			{
@@ -2907,26 +2944,41 @@ public class BasePlayer : BaseCombatEntity
 					this.stats.combat.Log(hitInfo, "projectile_los");
 					flag = false;
 				}
+				BasePlayer hitEntity = hitInfo.HitEntity as BasePlayer;
+				if (hitEntity)
+				{
+					UnityEngine.Vector3 hitPositionWorld2 = hitInfo.HitPositionWorld + (hitInfo.HitNormalWorld.normalized * 0.001f);
+					UnityEngine.Vector3 vector35 = hitEntity.eyes.position;
+					UnityEngine.Vector3 vector36 = hitEntity.CenterPoint();
+					if ((GamePhysics.LineOfSight(hitPositionWorld2, vector35, 2162688, 0f) ? false : !GamePhysics.LineOfSight(hitPositionWorld2, vector36, 2162688, 0f)))
+					{
+						string projectilePrefab3 = hitInfo.ProjectilePrefab.name;
+						string str4 = (hitInfo.HitEntity ? hitInfo.HitEntity.ShortPrefabName : "world");
+						AntiHack.Log(this, AntiHackType.ProjectileHack, string.Concat(new object[] { "Line of sight (", projectilePrefab3, " on ", str4, ") ", hitPositionWorld2, " ", vector35, " or ", hitPositionWorld2, " ", vector36 }));
+						this.stats.combat.Log(hitInfo, "projectile_los");
+						flag = false;
+					}
+				}
 			}
 			if (hitPositionWorld.protection >= 4)
 			{
 				this.SimulateProjectile(ref vector3, ref vector31, ref single1, single2, single, vector32, single3);
-				UnityEngine.Vector3 hitPositionWorld2 = hitInfo.HitPositionWorld - vector3;
-				float single14 = hitPositionWorld2.Magnitude2D();
-				float single15 = Mathf.Abs(hitPositionWorld2.y);
+				UnityEngine.Vector3 hitPositionWorld3 = hitInfo.HitPositionWorld - vector3;
+				float single14 = hitPositionWorld3.Magnitude2D();
+				float single15 = Mathf.Abs(hitPositionWorld3.y);
 				if (single14 > ConVar.AntiHack.projectile_trajectory_horizontal)
 				{
-					string str4 = hitPositionWorld.projectilePrefab.name;
-					string str5 = (hitInfo.HitEntity ? hitInfo.HitEntity.ShortPrefabName : "world");
-					AntiHack.Log(this, AntiHackType.ProjectileHack, string.Concat(new object[] { "Horizontal trajectory (", str4, " on ", str5, " with ", single14, "m > ", ConVar.AntiHack.projectile_trajectory_horizontal, "m)" }));
+					string str5 = hitPositionWorld.projectilePrefab.name;
+					string str6 = (hitInfo.HitEntity ? hitInfo.HitEntity.ShortPrefabName : "world");
+					AntiHack.Log(this, AntiHackType.ProjectileHack, string.Concat(new object[] { "Horizontal trajectory (", str5, " on ", str6, " with ", single14, "m > ", ConVar.AntiHack.projectile_trajectory_horizontal, "m)" }));
 					this.stats.combat.Log(hitInfo, "horizontal_trajectory");
 					flag = false;
 				}
 				if (single15 > ConVar.AntiHack.projectile_trajectory_vertical)
 				{
-					string str6 = hitPositionWorld.projectilePrefab.name;
-					string str7 = (hitInfo.HitEntity ? hitInfo.HitEntity.ShortPrefabName : "world");
-					AntiHack.Log(this, AntiHackType.ProjectileHack, string.Concat(new object[] { "Vertical trajectory (", str6, " on ", str7, " with ", single15, "m > ", ConVar.AntiHack.projectile_trajectory_vertical, "m)" }));
+					string str7 = hitPositionWorld.projectilePrefab.name;
+					string str8 = (hitInfo.HitEntity ? hitInfo.HitEntity.ShortPrefabName : "world");
+					AntiHack.Log(this, AntiHackType.ProjectileHack, string.Concat(new object[] { "Vertical trajectory (", str7, " on ", str8, " with ", single15, "m > ", ConVar.AntiHack.projectile_trajectory_vertical, "m)" }));
 					this.stats.combat.Log(hitInfo, "vertical_trajectory");
 					flag = false;
 				}
@@ -3066,6 +3118,10 @@ public class BasePlayer : BaseCombatEntity
 				playerProjectileRicochet = null;
 				return;
 			}
+		}
+		if (Interface.CallHook("OnProjectileRicochet", this, playerProjectileRicochet) != null)
+		{
+			return;
 		}
 		firedProjectile.position = playerProjectileRicochet.hitPosition;
 		firedProjectile.velocity = playerProjectileRicochet.outVelocity;
@@ -3769,6 +3825,7 @@ public class BasePlayer : BaseCombatEntity
 			this.lastInputTime = 0f;
 			this.SetPlayerFlag(BasePlayer.PlayerFlags.ReceivingSnapshot, true);
 			this.stats.Init();
+			base.InvokeRandomized(new Action(this.StatSave), UnityEngine.Random.Range(5f, 10f), 30f, UnityEngine.Random.Range(0f, 6f));
 			this.previousLifeStory = SingletonComponent<ServerMgr>.Instance.persistance.GetLastLifeStory(this.userID);
 			this.SetPlayerFlag(BasePlayer.PlayerFlags.IsAdmin, c.authLevel != 0);
 			this.SetPlayerFlag(BasePlayer.PlayerFlags.IsDeveloper, DeveloperList.IsDeveloper(this));
@@ -3779,12 +3836,12 @@ public class BasePlayer : BaseCombatEntity
 			this.net.OnConnected(c);
 			this.net.StartSubscriber();
 			base.SendAsSnapshot(this.net.connection, false);
+			Interface.CallHook("OnPlayerInit", this);
 			base.ClientRPCPlayer(null, this, "StartLoading");
 			if (this.net != null)
 			{
 				EACServer.OnStartLoading(this.net.connection);
 			}
-			Interface.CallHook("OnPlayerInit", this);
 			if (this.IsAdmin)
 			{
 				if (ConVar.AntiHack.noclip_protection <= 0)
@@ -4326,7 +4383,18 @@ public class BasePlayer : BaseCombatEntity
 		UnityEngine.Vector3 vector3 = base.transform.position + (UnityEngine.Vector3.up * (radius + height));
 		UnityEngine.Vector3 vector31 = base.transform.position;
 		UnityEngine.Vector3 vector32 = base.transform.position;
-		if (!UnityEngine.Physics.SphereCast(vector3, radius, UnityEngine.Vector3.down, out raycastHit, single3 + height, 1537286401, QueryTriggerInteraction.Ignore))
+		if (UnityEngine.Physics.SphereCast(vector3, radius, UnityEngine.Vector3.down, out raycastHit, single3 + height, 1537286401, QueryTriggerInteraction.Ignore))
+		{
+			this.EnableServerFall(false);
+			if (raycastHit.distance > height)
+			{
+				vector32 = vector32 + (UnityEngine.Vector3.down * (raycastHit.distance - height));
+			}
+			this.ApplyFallDamageFromVelocity(this.fallVelocity);
+			this.UpdateEstimatedVelocity(vector32, vector32, single);
+			this.fallVelocity = 0f;
+		}
+		else if (!UnityEngine.Physics.Raycast(vector3, UnityEngine.Vector3.down, out raycastHit, single3 + radius + height, 1537286401, QueryTriggerInteraction.Ignore))
 		{
 			vector32 = vector32 + (UnityEngine.Vector3.down * single3);
 			this.UpdateEstimatedVelocity(vector31, vector32, single);
@@ -4338,9 +4406,9 @@ public class BasePlayer : BaseCombatEntity
 		else
 		{
 			this.EnableServerFall(false);
-			if (raycastHit.distance > height)
+			if (raycastHit.distance > height - radius)
 			{
-				vector32 = vector32 + (UnityEngine.Vector3.down * (raycastHit.distance - height));
+				vector32 = vector32 + (UnityEngine.Vector3.down * (raycastHit.distance - height - radius));
 			}
 			this.ApplyFallDamageFromVelocity(this.fallVelocity);
 			this.UpdateEstimatedVelocity(vector32, vector32, single);
@@ -4506,10 +4574,6 @@ public class BasePlayer : BaseCombatEntity
 
 	public override bool ShouldInheritNetworkGroup()
 	{
-		if (this.IsNpc)
-		{
-			return true;
-		}
 		return this.IsSpectating();
 	}
 
@@ -4613,6 +4677,14 @@ public class BasePlayer : BaseCombatEntity
 		this.EnableServerFall(true);
 		base.SendNetworkUpdateImmediate(false);
 		base.Invoke(new Action(this.WoundingTick), 1f);
+	}
+
+	public void StatSave()
+	{
+		if (this.stats != null)
+		{
+			this.stats.Save();
+		}
 	}
 
 	public void StopSpectating()
@@ -5230,7 +5302,7 @@ public class BasePlayer : BaseCombatEntity
 		Eyes
 	}
 
-	private struct FiredProjectile
+	public struct FiredProjectile
 	{
 		public ItemDefinition itemDef;
 

@@ -35,6 +35,8 @@ public class ItemBlueprint : MonoBehaviour
 
 	public string UnlockAchievment;
 
+	public string RecycleStat;
+
 	public ItemDefinition targetItem
 	{
 		get

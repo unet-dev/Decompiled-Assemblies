@@ -145,7 +145,7 @@ public class StorageContainer : DecayEntity
 
 	public override Vector3 GetDropVelocity()
 	{
-		Vector3 inheritedDropVelocity = base.GetInheritedDropVelocity();
+		Vector3 inheritedDropVelocity = this.GetInheritedDropVelocity();
 		Matrix4x4 matrix4x4 = base.transform.localToWorldMatrix;
 		return inheritedDropVelocity + matrix4x4.MultiplyVector(this.dropPosition);
 	}

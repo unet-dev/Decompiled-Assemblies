@@ -182,7 +182,7 @@ public class ItemBasedFlowRestrictor : IOEntity
 			Item slot = this.inventory.GetSlot(0);
 			if (slot != null)
 			{
-				slot.Drop(this.debugOrigin.transform.position + (base.transform.forward * 0.5f), base.GetInheritedDropVelocity() + (base.transform.forward * 2f), new Quaternion());
+				slot.Drop(this.debugOrigin.transform.position + (base.transform.forward * 0.5f), this.GetInheritedDropVelocity() + (base.transform.forward * 2f), new Quaternion());
 			}
 		}
 	}

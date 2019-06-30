@@ -1,9 +1,11 @@
 using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TeamUI : MonoBehaviour
 {
+	public static Translate.Phrase invitePhrase;
+
 	public RectTransform MemberPanel;
 
 	public GameObject memberEntryPrefab;
@@ -18,7 +20,7 @@ public class TeamUI : MonoBehaviour
 
 	public GameObject InviteAcceptPanel;
 
-	public Text inviteText;
+	public TextMeshProUGUI inviteText;
 
 	public static bool dirty;
 
@@ -30,6 +32,7 @@ public class TeamUI : MonoBehaviour
 
 	static TeamUI()
 	{
+		TeamUI.invitePhrase = new Translate.Phrase("team.invited", "{0} has invited you to join a team");
 		TeamUI.dirty = true;
 	}
 

@@ -45,7 +45,7 @@ public class JunkPile : BaseEntity
 
 	public void CheckEmpty()
 	{
-		if (this.SpawnGroupsEmpty())
+		if (this.SpawnGroupsEmpty() && !this.PlayersNearby())
 		{
 			base.CancelInvoke(new Action(this.CheckEmpty));
 			this.SinkAndDestroy();
@@ -65,6 +65,25 @@ public class JunkPile : BaseEntity
 		return base.OnRpcMessage(player, rpc, msg);
 	}
 
+	public bool PlayersNearby()
+	{
+		List<BasePlayer> list = Pool.GetList<BasePlayer>();
+		Vis.Entities<BasePlayer>(base.transform.position, this.TimeoutPlayerCheckRadius(), list, 131072, QueryTriggerInteraction.Collide);
+		bool flag = false;
+		foreach (BasePlayer basePlayer in list)
+		{
+			if (basePlayer.IsSleeping() || !basePlayer.IsAlive())
+			{
+				continue;
+			}
+			flag = true;
+			Pool.FreeList<BasePlayer>(ref list);
+			return flag;
+		}
+		Pool.FreeList<BasePlayer>(ref list);
+		return flag;
+	}
+
 	public override void ServerInit()
 	{
 		base.ServerInit();
@@ -82,6 +101,7 @@ public class JunkPile : BaseEntity
 		{
 			spawnGroupArray[i].Clear();
 		}
+		base.SetFlag(BaseEntity.Flags.Reserved8, true, true, true);
 		ScientistJunkpileSpawner scientistJunkpileSpawner = this.npcSpawnGroup;
 		if (scientistJunkpileSpawner != null)
 		{
@@ -141,57 +161,40 @@ public class JunkPile : BaseEntity
 
 	public void TimeOut()
 	{
+		if (this.PlayersNearby())
+		{
+			base.Invoke(new Action(this.TimeOut), 30f);
+		}
 		if (this.SpawnGroupsEmpty())
 		{
 			this.SinkAndDestroy();
 			return;
 		}
-		List<BasePlayer> list = Pool.GetList<BasePlayer>();
-		Vis.Entities<BasePlayer>(base.transform.position, this.TimeoutPlayerCheckRadius(), list, 131072, QueryTriggerInteraction.Collide);
-		bool flag = false;
-		foreach (BasePlayer basePlayer in list)
+		if (this._npcs != null)
 		{
-			if (basePlayer.IsSleeping() || !basePlayer.IsAlive())
+			foreach (NPCPlayerApex _npc in this._npcs)
 			{
-				continue;
-			}
-			flag = true;
-			goto Label0;
-		}
-	Label0:
-		if (!flag)
-		{
-			if (this._npcs != null)
-			{
-				foreach (NPCPlayerApex _npc in this._npcs)
+				if (_npc == null || _npc.transform == null || _npc.IsDestroyed || _npc.IsDead())
 				{
-					if (_npc == null || _npc.transform == null || _npc.IsDestroyed || _npc.IsDead())
-					{
-						continue;
-					}
-					_npc.Kill(BaseNetworkable.DestroyMode.None);
+					continue;
 				}
-				this._npcs.Clear();
+				_npc.Kill(BaseNetworkable.DestroyMode.None);
 			}
-			if (this._htnPlayers != null)
-			{
-				foreach (HTNPlayer _htnPlayer in this._htnPlayers)
-				{
-					if (_htnPlayer == null || _htnPlayer.transform == null || _htnPlayer.IsDestroyed || _htnPlayer.IsDead())
-					{
-						continue;
-					}
-					_htnPlayer.Kill(BaseNetworkable.DestroyMode.None);
-				}
-				this._htnPlayers.Clear();
-			}
-			this.SinkAndDestroy();
+			this._npcs.Clear();
 		}
-		else
+		if (this._htnPlayers != null)
 		{
-			base.Invoke(new Action(this.TimeOut), 300f);
+			foreach (HTNPlayer _htnPlayer in this._htnPlayers)
+			{
+				if (_htnPlayer == null || _htnPlayer.transform == null || _htnPlayer.IsDestroyed || _htnPlayer.IsDead())
+				{
+					continue;
+				}
+				_htnPlayer.Kill(BaseNetworkable.DestroyMode.None);
+			}
+			this._htnPlayers.Clear();
 		}
-		Pool.FreeList<BasePlayer>(ref list);
+		this.SinkAndDestroy();
 	}
 
 	public virtual float TimeoutPlayerCheckRadius()

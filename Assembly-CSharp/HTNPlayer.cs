@@ -14,6 +14,8 @@ public class HTNPlayer : BasePlayer, IHTNAgent
 	[Header("Ai Definition")]
 	public BaseNpcDefinition _aiDefinition;
 
+	public string deathStatName = "kill_scientist";
+
 	private bool isDormant;
 
 	private float lastInvokedTickTime;
@@ -271,6 +273,10 @@ public class HTNPlayer : BasePlayer, IHTNAgent
 		if (this.AiDefinition != null)
 		{
 			this.AiDefinition.StopVoices(this);
+		}
+		if (info.InitiatorPlayer != null && !info.InitiatorPlayer.IsNpc)
+		{
+			info.InitiatorPlayer.stats.Add(this.deathStatName, 1, Stats.Steam);
 		}
 	}
 

@@ -14,7 +14,6 @@ public abstract class UIRoot : MonoBehaviour
 
 	protected virtual void Awake()
 	{
-		UnityEngine.Object.DontDestroyOnLoad(base.gameObject);
 	}
 
 	protected abstract void Refresh();

@@ -1,4 +1,4 @@
-using Facepunch.Steamworks;
+using Steamworks.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,11 +112,7 @@ public class AchievementGroup
 		{
 			get
 			{
-				if (Facepunch.Steamworks.Client.Instance == null)
-				{
-					return null;
-				}
-				return Facepunch.Steamworks.Client.Instance.Achievements.Find(this.Name);
+				return new Achievement(this.Name);
 			}
 		}
 
@@ -124,10 +120,6 @@ public class AchievementGroup
 		{
 			get
 			{
-				if (this.Achievement == null)
-				{
-					return false;
-				}
 				return this.Achievement.State;
 			}
 		}

@@ -1,7 +1,9 @@
 using Facepunch.Extend;
-using Facepunch.Steamworks;
 using Rust.Workshop;
+using Steamworks;
+using Steamworks.Ugc;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,17 +11,17 @@ namespace Rust.Workshop.Editor
 {
 	public class WorkshopView : MonoBehaviour
 	{
-		public Text Title;
+		public TextMeshProUGUI Title;
 
-		public Text AuthorName;
+		public TextMeshProUGUI AuthorName;
 
-		public Text VoteInfo;
+		public TextMeshProUGUI VoteInfo;
 
 		public Button VoteUp;
 
 		public Button VoteDown;
 
-		private Facepunch.Steamworks.Workshop.Item item;
+		private Item? item;
 
 		protected WorkshopItemEditor Editor
 		{
@@ -50,36 +52,54 @@ namespace Rust.Workshop.Editor
 
 		public void OnVoteDown()
 		{
-			if (this.item == null)
+			if (!this.item.HasValue)
 			{
 				return;
 			}
-			this.item.VoteDown();
-			this.UpdateFrom(this.item);
+			ref Nullable nullablePointer = ref this.item;
+			if (nullablePointer.HasValue)
+			{
+				nullablePointer.GetValueOrDefault().Vote(false);
+			}
+			this.UpdateFrom(this.item.Value);
 		}
 
 		public void OnVoteUp()
 		{
-			if (this.item == null)
+			if (!this.item.HasValue)
 			{
 				return;
 			}
-			this.item.VoteUp();
-			this.UpdateFrom(this.item);
+			ref Nullable nullablePointer = ref this.item;
+			if (nullablePointer.HasValue)
+			{
+				nullablePointer.GetValueOrDefault().Vote(true);
+			}
+			this.UpdateFrom(this.item.Value);
 		}
 
 		public void OpenWeb()
 		{
-			if (this.item == null)
+			string url;
+			if (!this.item.HasValue)
 			{
 				return;
 			}
-			UnityEngine.Application.OpenURL(this.item.Url);
+			ref Nullable nullablePointer = ref this.item;
+			if (nullablePointer.HasValue)
+			{
+				url = nullablePointer.GetValueOrDefault().Url;
+			}
+			else
+			{
+				url = null;
+			}
+			UnityEngine.Application.OpenURL(url);
 		}
 
 		public void Update()
 		{
-			if (this.item == null)
+			if (!this.item.HasValue)
 			{
 				return;
 			}
@@ -87,14 +107,18 @@ namespace Rust.Workshop.Editor
 			{
 				return;
 			}
-			this.AuthorName.text = this.item.OwnerName.Truncate(32, null).ToUpper();
+			TextMeshProUGUI authorName = this.AuthorName;
+			Friend owner = this.item.Value.Owner;
+			authorName.text = owner.Name.Truncate(32, null).ToUpper();
 		}
 
-		public void UpdateFrom(Facepunch.Steamworks.Workshop.Item item)
+		public void UpdateFrom(Item item)
 		{
-			this.item = item;
+			this.item = new Item?(item);
 			this.Title.text = item.Title.Truncate(24, null).ToUpper();
-			this.AuthorName.text = item.OwnerName.Truncate(32, null).ToUpper();
+			TextMeshProUGUI authorName = this.AuthorName;
+			Friend owner = item.Owner;
+			authorName.text = owner.Name.Truncate(32, null).ToUpper();
 		}
 	}
 }

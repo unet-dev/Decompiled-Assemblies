@@ -1,4 +1,4 @@
-using Facepunch.Steamworks;
+using Steamworks.Data;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +19,7 @@ public class ServerBrowserInfo : SingletonComponent<ServerBrowserInfo>
 
 	public Button refresh;
 
-	public ServerList.Server currentServer;
+	public ServerInfo? currentServer;
 
 	public Texture defaultServerImage;
 

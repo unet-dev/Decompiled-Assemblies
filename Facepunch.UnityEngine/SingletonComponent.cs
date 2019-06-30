@@ -8,15 +8,15 @@ public abstract class SingletonComponent : FacepunchBehaviour
 
 	protected virtual void Awake()
 	{
-		this.Setup();
+		this.SingletonSetup();
 	}
-
-	public abstract void Clear();
 
 	protected virtual void OnDestroy()
 	{
-		this.Clear();
+		this.SingletonClear();
 	}
 
-	public abstract void Setup();
+	public abstract void SingletonClear();
+
+	public abstract void SingletonSetup();
 }

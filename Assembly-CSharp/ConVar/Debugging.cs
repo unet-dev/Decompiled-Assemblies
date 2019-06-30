@@ -97,6 +97,19 @@ namespace ConVar
 			basePlayer.UpdateNetworkGroup();
 		}
 
+		[ServerUserVar]
+		public static void gesture(ConsoleSystem.Arg arg)
+		{
+			string str = arg.GetString(0, string.Empty);
+			if (str == string.Empty)
+			{
+				return;
+			}
+			BasePlayer basePlayer = arg.Player();
+			basePlayer.UpdateActiveItem(0);
+			basePlayer.SignalBroadcast(BaseEntity.Signal.Gesture, str, null);
+		}
+
 		[ServerVar]
 		public static void hurt(ConsoleSystem.Arg arg)
 		{

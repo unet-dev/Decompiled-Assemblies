@@ -73,6 +73,8 @@ namespace Windows
 
 		public void RedrawInputLine()
 		{
+			ConsoleColor backgroundColor = Console.BackgroundColor;
+			ConsoleColor foregroundColor = Console.ForegroundColor;
 			try
 			{
 				Console.ForegroundColor = ConsoleColor.White;
@@ -87,21 +89,26 @@ namespace Windows
 				Console.BackgroundColor = ConsoleColor.Black;
 				Console.ForegroundColor = ConsoleColor.Green;
 				this.ClearLine(1);
-				if (this.inputString.Length != 0)
+				if (this.inputString.Length == 0)
 				{
-					if (this.inputString.Length >= this.lineWidth - 2)
-					{
-						Console.Write(this.inputString.Substring(this.inputString.Length - (this.lineWidth - 2)));
-					}
-					else
-					{
-						Console.Write(this.inputString);
-					}
+					Console.BackgroundColor = backgroundColor;
+					Console.ForegroundColor = foregroundColor;
+					return;
+				}
+				else if (this.inputString.Length >= this.lineWidth - 2)
+				{
+					Console.Write(this.inputString.Substring(this.inputString.Length - (this.lineWidth - 2)));
+				}
+				else
+				{
+					Console.Write(this.inputString);
 				}
 			}
 			catch (Exception exception)
 			{
 			}
+			Console.BackgroundColor = backgroundColor;
+			Console.ForegroundColor = foregroundColor;
 		}
 
 		public void Update()

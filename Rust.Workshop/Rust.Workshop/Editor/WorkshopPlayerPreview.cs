@@ -51,8 +51,8 @@ namespace Rust.Workshop.Editor
 			ClothingPrefab.SetActive(false);
 			this.Instance.SendMessage("ForceModelSeed", id);
 			this.Instance.SendMessage("WorkshopPreviewSetup", new GameObject[] { ClothingPrefab });
-			this.Instance.transform.position = this.Interface.item_position_b.transform.position;
-			this.Instance.transform.rotation = this.Interface.item_position_b.transform.rotation;
+			this.Instance.transform.position = SingletonComponent<WorkshopItemEditor>.Instance.item_position_a.transform.position;
+			this.Instance.transform.rotation = SingletonComponent<WorkshopItemEditor>.Instance.item_position_a.transform.rotation;
 			if (focus)
 			{
 				Camera.main.FocusOnRenderer(this.Instance, new Vector3(0.3f, 0.1f, 1f), Vector3.up, -1);

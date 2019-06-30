@@ -720,7 +720,7 @@ public class BaseEntity : BaseNetworkable, IOnParentSpawning, IPrefabPreProcess
 				array[i].OnParentRemoved();
 			}
 		}
-		this.SetParent(null, false, false);
+		this.SetParent(null, true, false);
 		BaseEntity.Query.Server.Remove(this, false);
 		base.DoServerDestroy();
 	}
@@ -1028,7 +1028,7 @@ public class BaseEntity : BaseNetworkable, IOnParentSpawning, IPrefabPreProcess
 		return this.impactEffect;
 	}
 
-	public Vector3 GetInheritedDropVelocity()
+	public virtual Vector3 GetInheritedDropVelocity()
 	{
 		BaseEntity baseEntity = this.parentEntity.Get(base.isServer);
 		if (baseEntity == null)
@@ -1038,7 +1038,7 @@ public class BaseEntity : BaseNetworkable, IOnParentSpawning, IPrefabPreProcess
 		return baseEntity.GetWorldVelocity();
 	}
 
-	public Vector3 GetInheritedProjectileVelocity()
+	public virtual Vector3 GetInheritedProjectileVelocity()
 	{
 		BaseEntity baseEntity = this.parentEntity.Get(base.isServer);
 		if (baseEntity == null)
@@ -1048,7 +1048,7 @@ public class BaseEntity : BaseNetworkable, IOnParentSpawning, IPrefabPreProcess
 		return this.GetParentVelocity() * baseEntity.InheritedVelocityScale();
 	}
 
-	public Vector3 GetInheritedThrowVelocity()
+	public virtual Vector3 GetInheritedThrowVelocity()
 	{
 		return this.GetParentVelocity();
 	}
@@ -2773,7 +2773,7 @@ public class BaseEntity : BaseNetworkable, IOnParentSpawning, IPrefabPreProcess
 
 		public BasePlayer player;
 
-		public Read read;
+		public NetRead read;
 	}
 
 	public enum Signal

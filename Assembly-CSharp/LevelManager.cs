@@ -23,19 +23,11 @@ public static class LevelManager
 			{
 				return false;
 			}
-			if (LevelManager.CurrentLevelName == "UIScene")
-			{
-				return false;
-			}
 			if (LevelManager.CurrentLevelName == "Empty")
 			{
 				return false;
 			}
 			if (LevelManager.CurrentLevelName == "MenuBackground")
-			{
-				return false;
-			}
-			if (LevelManager.CurrentLevelName == "UIWorkshop")
 			{
 				return false;
 			}
@@ -72,6 +64,6 @@ public static class LevelManager
 	public static void UnloadLevel()
 	{
 		LevelManager.CurrentLevelName = null;
-		Application.LoadLevel("Empty");
+		SceneManager.LoadScene("Empty");
 	}
 }

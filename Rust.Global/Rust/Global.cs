@@ -1,7 +1,5 @@
-using Facepunch.Steamworks;
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Rust
@@ -42,18 +40,6 @@ namespace Rust
 				}
 				return Global._runner;
 			}
-		}
-
-		public static Client SteamClient
-		{
-			get;
-			set;
-		}
-
-		public static Server SteamServer
-		{
-			get;
-			set;
 		}
 	}
 }

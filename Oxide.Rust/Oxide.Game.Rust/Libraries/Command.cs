@@ -28,7 +28,7 @@ namespace Oxide.Game.Rust.Libraries
 		[LibraryFunction("AddChatCommand")]
 		public void AddChatCommand(string name, Plugin plugin, string callback)
 		{
-			this.AddChatCommand(name, plugin, (BasePlayer player, string command, string[] args) => plugin.CallHook(callback, new object[] { player, command, args }));
+			this.AddChatCommand(name, plugin, (BasePlayer player, string command, string[] args) => plugin.CallHook(callback, new Object[] { player, command, args }));
 		}
 
 		public void AddChatCommand(string command, Plugin plugin, Action<BasePlayer, string, string[]> callback)
@@ -55,8 +55,8 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					name2 = "An unknown plugin";
 				}
-				string str = (string)name2;
-				Interface.Oxide.LogError("{0} tried to register command '{1}', this command already exists and cannot be overridden!", new object[] { str, lowerInvariant });
+				string str = name2;
+				Interface.Oxide.LogError("{0} tried to register command '{1}', this command already exists and cannot be overridden!", new Object[] { str, lowerInvariant });
 				return;
 			}
 			if (this.chatCommands.TryGetValue(lowerInvariant, out chatCommand))
@@ -74,7 +74,7 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					name1 = "an unknown plugin";
 				}
-				string str1 = (string)name1;
+				string str1 = name1;
 				if (plugin != null)
 				{
 					obj1 = plugin.Name;
@@ -87,8 +87,8 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					obj1 = "An unknown plugin";
 				}
-				string str2 = (string)obj1;
-				string str3 = string.Concat(new string[] { str2, " has replaced the '", lowerInvariant, "' chat command previously registered by ", str1 });
+				string str2 = obj1;
+				string str3 = String.Concat(new String[] { str2, " has replaced the '", lowerInvariant, "' chat command previously registered by ", str1 });
 				Interface.Oxide.LogWarning(str3, Array.Empty<object>());
 			}
 			if (RustCore.Covalence.CommandSystem.registeredCommands.TryGetValue(lowerInvariant, out registeredCommand))
@@ -106,7 +106,7 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					name = "an unknown plugin";
 				}
-				string str4 = (string)name;
+				string str4 = name;
 				if (plugin != null)
 				{
 					obj = plugin.Name;
@@ -119,8 +119,8 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					obj = "An unknown plugin";
 				}
-				string str5 = (string)obj;
-				string str6 = string.Concat(new string[] { str5, " has replaced the '", lowerInvariant, "' command previously registered by ", str4 });
+				string str5 = obj;
+				string str6 = String.Concat(new String[] { str5, " has replaced the '", lowerInvariant, "' command previously registered by ", str4 });
 				Interface.Oxide.LogWarning(str6, Array.Empty<object>());
 				RustCore.Covalence.CommandSystem.UnregisterCommand(lowerInvariant, registeredCommand.Source);
 			}
@@ -135,7 +135,7 @@ namespace Oxide.Game.Rust.Libraries
 		[LibraryFunction("AddConsoleCommand")]
 		public void AddConsoleCommand(string command, Plugin plugin, string callback)
 		{
-			this.AddConsoleCommand(command, plugin, (ConsoleSystem.Arg arg) => plugin.CallHook(callback, new object[] { arg }) != null);
+			this.AddConsoleCommand(command, plugin, (ConsoleSystem.Arg arg) => (object)plugin.CallHook(callback, new Object[] { arg }) != (object)null);
 		}
 
 		public void AddConsoleCommand(string command, Plugin plugin, Func<ConsoleSystem.Arg, bool> callback)
@@ -153,10 +153,10 @@ namespace Oxide.Game.Rust.Libraries
 			{
 				this.pluginRemovedFromManager[plugin] = plugin.OnRemovedFromManager.Add(new Action<Plugin, PluginManager>(this.plugin_OnRemovedFromManager));
 			}
-			string[] strArrays = command.Split(new char[] { '.' });
-			string str = ((int)strArrays.Length >= 2 ? strArrays[0].Trim() : "global");
-			string rustCommand = ((int)strArrays.Length >= 2 ? string.Join(".", strArrays.Skip<string>(1).ToArray<string>()) : strArrays[0].Trim());
-			string rustCommand1 = string.Concat(str, ".", rustCommand);
+			string[] strArray = command.Split(new Char[] { '.' });
+			string str = ((int)strArray.Length >= 2 ? strArray[0].Trim() : "global");
+			string rustCommand = ((int)strArray.Length >= 2 ? String.Join(".", strArray.Skip<string>(1).ToArray<string>()) : strArray[0].Trim());
+			string rustCommand1 = String.Concat(str, ".", rustCommand);
 			Command.ConsoleCommand originalCallback = new Command.ConsoleCommand(rustCommand1);
 			if (!this.CanOverrideCommand((str == "global" ? rustCommand : rustCommand1), "console"))
 			{
@@ -172,8 +172,8 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					obj2 = "An unknown plugin";
 				}
-				string str1 = (string)obj2;
-				Interface.Oxide.LogError("{0} tried to register command '{1}', this command already exists and cannot be overridden!", new object[] { str1, rustCommand1 });
+				string str1 = obj2;
+				Interface.Oxide.LogError("{0} tried to register command '{1}', this command already exists and cannot be overridden!", new Object[] { str1, rustCommand1 });
 				return;
 			}
 			if (this.consoleCommands.TryGetValue(rustCommand1, out consoleCommand))
@@ -195,7 +195,7 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					obj1 = "an unknown plugin";
 				}
-				string str2 = (string)obj1;
+				string str2 = obj1;
 				if (plugin != null)
 				{
 					name2 = plugin.Name;
@@ -208,8 +208,8 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					name2 = "An unknown plugin";
 				}
-				string str3 = (string)name2;
-				string str4 = string.Concat(new string[] { str3, " has replaced the '", command, "' console command previously registered by ", str2 });
+				string str3 = name2;
+				string str4 = String.Concat(new String[] { str3, " has replaced the '", command, "' console command previously registered by ", str2 });
 				Interface.Oxide.LogWarning(str4, Array.Empty<object>());
 				ConsoleSystem.Index.Server.Dict.Remove(consoleCommand.RustCommand.FullName);
 				if (str == "global")
@@ -237,7 +237,7 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					obj = "an unknown plugin";
 				}
-				string str5 = (string)obj;
+				string str5 = obj;
 				if (plugin != null)
 				{
 					name1 = plugin.Name;
@@ -250,8 +250,8 @@ namespace Oxide.Game.Rust.Libraries
 				{
 					name1 = "An unknown plugin";
 				}
-				string str6 = (string)name1;
-				string str7 = string.Concat(new string[] { str6, " has replaced the '", rustCommand1, "' command previously registered by ", str5 });
+				string str6 = name1;
+				string str7 = String.Concat(new String[] { str6, " has replaced the '", rustCommand1, "' command previously registered by ", str5 });
 				Interface.Oxide.LogWarning(str7, Array.Empty<object>());
 				RustCore.Covalence.CommandSystem.UnregisterCommand((str == "global" ? rustCommand : rustCommand1), registeredCommand.Source);
 			}
@@ -272,8 +272,8 @@ namespace Oxide.Game.Rust.Libraries
 					{
 						name = "An unknown plugin";
 					}
-					string str8 = (string)name;
-					Interface.Oxide.LogError(string.Concat(str8, " tried to register the ", rustCommand, " console variable as a command!"), Array.Empty<object>());
+					string str8 = name;
+					Interface.Oxide.LogError(String.Concat(str8, " tried to register the ", rustCommand, " console variable as a command!"), Array.Empty<object>());
 					return;
 				}
 				originalCallback.OriginalCallback = command1.Call;
@@ -292,10 +292,10 @@ namespace Oxide.Game.Rust.Libraries
 			RustCommandSystem.RegisteredCommand registeredCommand;
 			Command.ChatCommand chatCommand;
 			Command.ConsoleCommand consoleCommand;
-			string[] strArrays = command.Split(new char[] { '.' });
-			string str = ((int)strArrays.Length >= 2 ? strArrays[0].Trim() : "global");
-			string str1 = ((int)strArrays.Length >= 2 ? string.Join(".", strArrays.Skip<string>(1).ToArray<string>()) : strArrays[0].Trim());
-			string str2 = string.Concat(str, ".", str1);
+			string[] strArray = command.Split(new Char[] { '.' });
+			string str = ((int)strArray.Length >= 2 ? strArray[0].Trim() : "global");
+			string str1 = ((int)strArray.Length >= 2 ? String.Join(".", strArray.Skip<string>(1).ToArray<string>()) : strArray[0].Trim());
+			string str2 = String.Concat(str, ".", str1);
 			if (RustCore.Covalence.CommandSystem.registeredCommands.TryGetValue(command, out registeredCommand) && registeredCommand.Source.IsCorePlugin)
 			{
 				return false;
@@ -483,11 +483,11 @@ namespace Oxide.Game.Rust.Libraries
 			public ConsoleCommand(string name)
 			{
 				this.Name = name;
-				string[] strArrays = this.Name.Split(new char[] { '.' });
+				string[] strArray = this.Name.Split(new Char[] { '.' });
 				this.RustCommand = new ConsoleSystem.Command()
 				{
-					Name = strArrays[1],
-					Parent = strArrays[0],
+					Name = strArray[1],
+					Parent = strArray[0],
 					FullName = name,
 					ServerUser = true,
 					ServerAdmin = true,

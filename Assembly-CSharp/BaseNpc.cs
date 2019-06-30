@@ -2090,7 +2090,7 @@ public class BaseNpc : BaseCombatEntity, IContextProvider, IAIAgent, ILoadBalanc
 							this.AiContext.Npcs.Add(baseNpc);
 						}
 					}
-					else if (!AI.ignoreplayers)
+					else if (!AI.ignoreplayers && !(basePlayer is HTNPlayer) && !(basePlayer is NPCPlayer))
 					{
 						Vector3 attackPosition = this.AiContext.AIAgent.AttackPosition;
 						if ((basePlayer.IsVisible(attackPosition, basePlayer.CenterPoint(), Single.PositiveInfinity) || basePlayer.IsVisible(attackPosition, basePlayer.eyes.position, Single.PositiveInfinity) ? false : !basePlayer.IsVisible(attackPosition, basePlayer.transform.position, Single.PositiveInfinity)))

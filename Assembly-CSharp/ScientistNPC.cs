@@ -7,6 +7,8 @@ public class ScientistNPC : HumanNPC
 
 	public GameObjectRef[] DeathEffects;
 
+	public string deathStatName = "kill_scientist";
+
 	public Vector2 IdleChatterRepeatRange = new Vector2(10f, 15f);
 
 	public ScientistNPC.RadioChatterType radioChatterType;
@@ -77,6 +79,10 @@ public class ScientistNPC : HumanNPC
 		if (this.DeathEffects.Length != 0)
 		{
 			Effect.server.Run(this.DeathEffects[UnityEngine.Random.Range(0, (int)this.DeathEffects.Length)].resourcePath, this.ServerPosition, Vector3.up, null, false);
+		}
+		if (info.InitiatorPlayer != null && !info.InitiatorPlayer.IsNpc)
+		{
+			info.InitiatorPlayer.stats.Add(this.deathStatName, 1, Stats.Steam);
 		}
 	}
 

@@ -2,6 +2,8 @@ using System;
 
 public class BaseAnimalNPC : BaseNpc
 {
+	public string deathStatName = "";
+
 	public BaseAnimalNPC()
 	{
 	}
@@ -14,6 +16,11 @@ public class BaseAnimalNPC : BaseNpc
 			if (initiatorPlayer != null)
 			{
 				initiatorPlayer.GiveAchievement("KILL_ANIMAL");
+				if (!string.IsNullOrEmpty(this.deathStatName))
+				{
+					initiatorPlayer.stats.Add(this.deathStatName, 1, Stats.Steam);
+					initiatorPlayer.stats.Save();
+				}
 			}
 		}
 		base.OnKilled(null);

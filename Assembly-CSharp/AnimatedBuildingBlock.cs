@@ -112,9 +112,12 @@ public class AnimatedBuildingBlock : StabilityEntity
 			else
 			{
 				this.model.animator.fireEvents = false;
-				for (int i = 0; (float)i < 20f; i++)
+				if (this.model.animator.isActiveAndEnabled)
 				{
-					this.model.animator.Update(1f);
+					for (int i = 0; (float)i < 20f; i++)
+					{
+						this.model.animator.Update(1f);
+					}
 				}
 				this.PutAnimatorToSleep();
 			}

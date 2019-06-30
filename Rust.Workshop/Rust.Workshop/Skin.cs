@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Rust;
+using Steamworks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Rust.Workshop
 {
@@ -32,7 +34,9 @@ namespace Rust.Workshop
 
 		public Material[] DefaultMaterials;
 
-		public List<Texture> Textures;
+		public List<Texture> TextureAssets;
+
+		public List<Texture> TextureObjects;
 
 		public Action OnLoaded;
 
@@ -88,49 +92,43 @@ namespace Rust.Workshop
 			TimeWarning.EndSample();
 		}
 
-		private bool CompareMaterials(Material a, Material b)
-		{
-			if (a == b)
-			{
-				return true;
-			}
-			if (a.GetTexture("_MainTex") != b.GetTexture("_MainTex"))
-			{
-				return false;
-			}
-			return true;
-		}
-
 		private void DeserializeManifest()
 		{
 			this.manifest = JsonConvert.DeserializeObject<Skin.Manifest>(this.manifestContent);
 		}
 
-		private bool IsSkinnable(string name)
+		public int GetSizeInBytes()
 		{
-			if (name.Contains("PlayerSkin"))
+			int sizeInBytes = 0;
+			if (this.sprite != null)
 			{
-				return false;
+				sizeInBytes += this.sprite.texture.GetSizeInBytes();
 			}
-			if (name.StartsWith("Female."))
+			if (this.TextureAssets != null)
 			{
-				return false;
+				foreach (Texture textureAsset in this.TextureAssets)
+				{
+					sizeInBytes += textureAsset.GetSizeInBytes();
+				}
 			}
-			if (name.StartsWith("Male."))
+			if (this.TextureObjects != null)
 			{
-				return false;
+				foreach (Texture textureObject in this.TextureObjects)
+				{
+					sizeInBytes += textureObject.GetSizeInBytes();
+				}
 			}
-			return true;
+			return sizeInBytes;
 		}
 
-		public IEnumerator LoadAssets(ulong workshopId, DirectoryInfo directory = null, AssetBundle bundle = null)
+		public IEnumerator LoadAssets(ulong workshopId, string directory = null, AssetBundle bundle = null)
 		{
 			// 
-			// Current member / type: System.Collections.IEnumerator Rust.Workshop.Skin::LoadAssets(System.UInt64,System.IO.DirectoryInfo,UnityEngine.AssetBundle)
+			// Current member / type: System.Collections.IEnumerator Rust.Workshop.Skin::LoadAssets(System.UInt64,System.String,UnityEngine.AssetBundle)
 			// File path: D:\GameServers\Rust\RustDedicated_Data\Managed\Rust.Workshop.dll
 			// 
 			// Product version: 2019.1.118.0
-			// Exception in: System.Collections.IEnumerator LoadAssets(System.UInt64,System.IO.DirectoryInfo,UnityEngine.AssetBundle)
+			// Exception in: System.Collections.IEnumerator LoadAssets(System.UInt64,System.String,UnityEngine.AssetBundle)
 			// 
 			// Invalid state value
 			//    at ..( , Queue`1 , ILogicalConstruct ) in C:\DeveloperTooling_JD_Agent1\_work\15\s\OpenSource\Cecil.Decompiler\Decompiler\LogicFlow\YieldGuardedBlocksBuilder.cs:line 203
@@ -156,70 +154,70 @@ namespace Rust.Workshop
 
 		}
 
-		public IEnumerator LoadIcon(ulong workshopId, DirectoryInfo directory = null, AssetBundle bundle = null)
+		public IEnumerator LoadIcon(ulong workshopId, string directory = null, AssetBundle bundle = null)
 		{
-			Skin skin = null;
+			Skin str = null;
 			AssetBundleRequest assetBundleRequest;
 			TimeWarning.BeginSample("Skin.LoadIcon");
 			if (bundle != null)
 			{
 				TimeWarning.BeginSample("ManifestName");
-				skin.manifestName = string.Concat("Assets/Skins/", workshopId, "/manifest.txt");
+				str.manifestName = string.Concat("Assets/Skins/", workshopId, "/manifest.txt");
 				TimeWarning.EndSample();
 				TimeWarning.BeginSample("LoadAssetAsync");
-				assetBundleRequest = bundle.LoadAssetAsync<TextAsset>(skin.manifestName);
+				assetBundleRequest = bundle.LoadAssetAsync<TextAsset>(str.manifestName);
 				TimeWarning.EndSample();
 				TimeWarning.EndSample();
 				yield return assetBundleRequest;
 				TimeWarning.BeginSample("Skin.LoadIcon");
 				TimeWarning.BeginSample("AssetBundleRequest");
-				skin.manifestAsset = assetBundleRequest.asset as TextAsset;
+				str.manifestAsset = assetBundleRequest.asset as TextAsset;
 				TimeWarning.EndSample();
-				if (skin.manifestAsset != null)
+				if (str.manifestAsset != null)
 				{
 					TimeWarning.BeginSample("TextAsset");
-					skin.manifestContent = skin.manifestAsset.text;
+					str.manifestContent = str.manifestAsset.text;
 					TimeWarning.EndSample();
 				}
 				assetBundleRequest = null;
 			}
-			if (skin.manifestContent == null && directory != null)
+			if (str.manifestContent == null && directory != null)
 			{
 				TimeWarning.BeginSample("ManifestName");
-				skin.manifestName = string.Concat(directory.FullName, "/manifest.txt");
+				str.manifestName = string.Concat(directory, "/manifest.txt");
 				TimeWarning.EndSample();
 				TimeWarning.BeginSample("File.Exists");
-				bool flag = File.Exists(skin.manifestName);
+				bool flag = File.Exists(str.manifestName);
 				TimeWarning.EndSample();
 				if (flag)
 				{
 					TimeWarning.EndSample();
-					yield return Global.Runner.StartCoroutine(Parallel.Coroutine(new Action(skin.LoadManifestFromFile)));
+					yield return Global.Runner.StartCoroutine(Parallel.Coroutine(new Action(str.LoadManifestFromFile)));
 					TimeWarning.BeginSample("Skin.LoadIcon");
 				}
 			}
-			if (skin.manifestContent != null)
+			if (str.manifestContent != null)
 			{
 				TimeWarning.EndSample();
-				yield return Global.Runner.StartCoroutine(Parallel.Coroutine(new Action(skin.DeserializeManifest)));
+				yield return Global.Runner.StartCoroutine(Parallel.Coroutine(new Action(str.DeserializeManifest)));
 				TimeWarning.BeginSample("Skin.LoadIcon");
 			}
-			if (skin.manifest == null)
+			if (str.manifest == null)
 			{
-				UnityEngine.Debug.LogWarning(string.Concat("Invalid skin manifest: ", skin.manifestName));
+				UnityEngine.Debug.LogWarning(string.Concat("Invalid skin manifest: ", str.manifestName));
 				TimeWarning.EndSample();
 				yield break;
 			}
 			TimeWarning.BeginSample("Skinnable.FindForItem");
-			skin.Skinnable = Skinnable.FindForItem(skin.manifest.ItemType);
+			str.Skinnable = Skinnable.FindForItem(str.manifest.ItemType);
 			TimeWarning.EndSample();
 			if (bundle != null)
 			{
 				TimeWarning.BeginSample("IconName");
-				skin.iconName = string.Concat("Assets/Skins/", workshopId, "/icon.png");
+				str.iconName = string.Concat("Assets/Skins/", workshopId, "/icon.png");
 				TimeWarning.EndSample();
 				TimeWarning.BeginSample("LoadAssetAsync");
-				assetBundleRequest = bundle.LoadAssetAsync<Sprite>(skin.iconName);
+				assetBundleRequest = bundle.LoadAssetAsync<Sprite>(str.iconName);
 				TimeWarning.EndSample();
 				TimeWarning.EndSample();
 				yield return assetBundleRequest;
@@ -230,23 +228,74 @@ namespace Rust.Workshop
 				if (sprite != null)
 				{
 					TimeWarning.BeginSample("Sprite");
-					skin.sprite = sprite;
+					str.sprite = sprite;
 					TimeWarning.EndSample();
 				}
 				assetBundleRequest = null;
 			}
-			if (skin.sprite == null && directory != null)
+			if (str.sprite == null && SteamClient.IsValid)
+			{
+				string empty = string.Empty;
+				InventoryDef[] definitions = SteamInventory.Definitions;
+				TimeWarning.BeginSample("IconName");
+				str.iconName = workshopId.ToString();
+				TimeWarning.EndSample();
+				if (definitions != null)
+				{
+					TimeWarning.BeginSample("FindItemDefinition");
+					int length = (int)definitions.Length - 1;
+					while (length >= 0)
+					{
+						InventoryDef inventoryDef = definitions[length];
+						string property = inventoryDef.GetProperty("workshopdownload");
+						if (str.iconName != property)
+						{
+							length--;
+						}
+						else
+						{
+							empty = inventoryDef.IconUrlLarge;
+							break;
+						}
+					}
+					TimeWarning.EndSample();
+				}
+				if (!string.IsNullOrEmpty(empty))
+				{
+					TimeWarning.BeginSample("UnityWebRequestTexture.GetTexture");
+					UnityWebRequest texture = UnityWebRequestTexture.GetTexture(empty);
+					texture.timeout = Mathf.CeilToInt(WorkshopSkin.DownloadTimeout);
+					TimeWarning.EndSample();
+					TimeWarning.EndSample();
+					yield return texture.SendWebRequest();
+					TimeWarning.BeginSample("Skin.LoadIcon");
+					if (texture.isDone && !texture.isHttpError && !texture.isNetworkError)
+					{
+						TimeWarning.BeginSample("DownloadHandlerTexture.GetContent");
+						Texture2D content = DownloadHandlerTexture.GetContent(texture);
+						TimeWarning.EndSample();
+						TimeWarning.BeginSample("Sprite");
+						str.sprite = Sprite.Create(content, new Rect(0f, 0f, 512f, 512f), Vector2.zero, 100f, 0, SpriteMeshType.FullRect);
+						TimeWarning.EndSample();
+					}
+					TimeWarning.BeginSample("UnityWebRequest.Dispose");
+					texture.Dispose();
+					TimeWarning.EndSample();
+					texture = null;
+				}
+			}
+			if (str.sprite == null && directory != null)
 			{
 				TimeWarning.BeginSample("IconName");
-				skin.iconName = string.Concat(directory.FullName, "/icon.png");
+				str.iconName = string.Concat(directory, "/icon.png");
 				TimeWarning.EndSample();
 				TimeWarning.BeginSample("File.Exists");
-				bool flag1 = File.Exists(skin.iconName);
+				bool flag1 = File.Exists(str.iconName);
 				TimeWarning.EndSample();
 				if (flag1)
 				{
 					TimeWarning.BeginSample("AsyncTextureLoad.Invoke");
-					AsyncTextureLoad asyncTextureLoad = new AsyncTextureLoad(skin.iconName, false, false, true, false);
+					AsyncTextureLoad asyncTextureLoad = new AsyncTextureLoad(str.iconName, false, false, true, false);
 					TimeWarning.EndSample();
 					TimeWarning.EndSample();
 					yield return asyncTextureLoad;
@@ -255,17 +304,17 @@ namespace Rust.Workshop
 					Texture2D texture2D = asyncTextureLoad.texture;
 					TimeWarning.EndSample();
 					TimeWarning.BeginSample("Sprite");
-					skin.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 512f, 512f), Vector3.zero);
+					str.sprite = Sprite.Create(texture2D, new Rect(0f, 0f, 512f, 512f), Vector2.zero, 100f, 0, SpriteMeshType.FullRect);
 					TimeWarning.EndSample();
 					asyncTextureLoad = null;
 				}
 			}
-			if (skin.sprite != null)
+			if (str.sprite != null)
 			{
-				skin.IconLoaded = true;
-				if (skin.OnIconLoaded != null)
+				str.IconLoaded = true;
+				if (str.OnIconLoaded != null)
 				{
-					skin.OnIconLoaded();
+					str.OnIconLoaded();
 				}
 			}
 			TimeWarning.EndSample();
@@ -279,38 +328,45 @@ namespace Rust.Workshop
 		internal void ReadDefaults()
 		{
 			TimeWarning.BeginSample("Skin.ReadDefaults");
-			if (this.DefaultMaterials != null && this.Materials != null)
+			if (this.AssetsLoaded)
 			{
-				for (int i = 0; i < (int)this.Materials.Length; i++)
+				this.UnloadAssets();
+			}
+			if (this.Skinnable != null && this.Skinnable.Groups != null)
+			{
+				if (this.DefaultMaterials == null || (int)this.DefaultMaterials.Length != (int)this.Skinnable.Groups.Length)
 				{
-					if (this.CompareMaterials(this.Materials[i], this.DefaultMaterials[i]))
+					this.DefaultMaterials = new Material[(int)this.Skinnable.Groups.Length];
+				}
+				if (this.Materials == null || (int)this.Materials.Length != (int)this.Skinnable.Groups.Length)
+				{
+					this.Materials = new Material[(int)this.Skinnable.Groups.Length];
+				}
+				for (int i = 0; i < (int)this.DefaultMaterials.Length; i++)
+				{
+					Skinnable.Group groups = this.Skinnable.Groups[i];
+					if (groups != null)
 					{
-						this.Materials[i] = null;
+						this.DefaultMaterials[i] = groups.Material;
 					}
 				}
-			}
-			this.DefaultMaterials = new Material[(int)this.Skinnable.Groups.Length];
-			for (int j = 0; j < (int)this.Skinnable.Groups.Length; j++)
-			{
-				this.DefaultMaterials[j] = this.Skinnable.Groups[j].Material;
-			}
-			if (this.Materials == null || (int)this.Materials.Length != (int)this.Skinnable.Groups.Length)
-			{
-				this.Materials = new Material[(int)this.Skinnable.Groups.Length];
-			}
-			for (int k = 0; k < (int)this.Materials.Length; k++)
-			{
-				if (this.DefaultMaterials[k] != null)
+				for (int j = 0; j < (int)this.Materials.Length; j++)
 				{
-					Material materials = this.Materials[k];
-					this.Materials[k] = new Material(this.DefaultMaterials[k]);
-					this.Materials[k].DisableKeyword("_COLORIZELAYER_ON");
-					this.Materials[k].SetInt("_COLORIZELAYER_ON", 0);
-					this.Materials[k].name = string.Concat(this.DefaultMaterials[k].name, " (Editing)");
-				}
-				else
-				{
-					UnityEngine.Debug.LogWarning(string.Concat("Missing skin for ", this.Skinnable.ItemName));
+					if (this.DefaultMaterials[j] != null)
+					{
+						Material[] materials = this.Materials;
+						Material material = new Material(this.DefaultMaterials[j]);
+						Material material1 = material;
+						materials[j] = material;
+						Material material2 = material1;
+						material2.DisableKeyword("_COLORIZELAYER_ON");
+						material2.SetInt("_COLORIZELAYER_ON", 0);
+						material2.name = string.Concat(this.DefaultMaterials[j].name, " (Editing)");
+					}
+					else
+					{
+						UnityEngine.Debug.LogWarning(string.Concat("Missing skin for ", this.Skinnable.ItemName));
+					}
 				}
 			}
 			TimeWarning.EndSample();
@@ -325,26 +381,34 @@ namespace Rust.Workshop
 					Material materials = this.Materials[i];
 					if (materials != null)
 					{
-						UnityEngine.Object.DestroyImmediate(materials, true);
+						UnityEngine.Object.DestroyImmediate(materials);
+						this.Materials[i] = null;
 					}
 				}
-				this.Materials = null;
 			}
-			if (this.DefaultMaterials != null)
+			if (this.TextureObjects != null)
 			{
-				this.DefaultMaterials = null;
-			}
-			if (this.Textures != null)
-			{
-				for (int j = 0; j < this.Textures.Count; j++)
+				for (int j = 0; j < this.TextureObjects.Count; j++)
 				{
-					Texture item = this.Textures[j];
+					Texture item = this.TextureObjects[j];
 					if (item != null)
 					{
-						UnityEngine.Object.DestroyImmediate(item, true);
+						UnityEngine.Object.DestroyImmediate(item);
 					}
 				}
-				this.Textures.Clear();
+				this.TextureObjects.Clear();
+			}
+			if (this.TextureAssets != null)
+			{
+				for (int k = 0; k < this.TextureAssets.Count; k++)
+				{
+					Texture texture = this.TextureAssets[k];
+					if (texture != null)
+					{
+						Resources.UnloadAsset(texture);
+					}
+				}
+				this.TextureAssets.Clear();
 			}
 			this.AssetsLoaded = false;
 		}

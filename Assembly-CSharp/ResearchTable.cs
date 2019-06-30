@@ -317,11 +317,11 @@ public class ResearchTable : StorageContainer
 		}
 		if (item.info.rarity == Rarity.Rare)
 		{
-			num = 250;
+			num = 125;
 		}
 		if (item.info.rarity == Rarity.VeryRare || item.info.rarity == Rarity.None)
 		{
-			num = 750;
+			num = 500;
 		}
 		return num;
 	}

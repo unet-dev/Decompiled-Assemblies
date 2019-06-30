@@ -1,11 +1,11 @@
-using Facepunch.Steamworks;
-using Rust;
+using Steamworks;
+using Steamworks.Ugc;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -22,7 +22,7 @@ namespace Rust.Workshop
 
 		public Rust.Workshop.ListType ListType;
 
-		public int PerPage = 40;
+		private const int PerPage = 50;
 
 		public int Page = 1;
 
@@ -46,50 +46,20 @@ namespace Rust.Workshop
 		{
 			get
 			{
-				return Mathf.FloorToInt((float)(this.TotalResults / this.PerPage)) + 1;
+				return Mathf.FloorToInt((float)(this.TotalResults / 50)) + 1;
 			}
 		}
 
 		static WorkshopItemList()
 		{
-			WorkshopItemList.StaticRefresh = 1;
+			WorkshopItemList.StaticRefresh = 10;
 		}
 
 		public WorkshopItemList()
 		{
 		}
 
-		public void OnChangedItemType(int type)
-		{
-			Dropdown.OptionData item = this.ItemTypeSelector.options[type];
-			if (item.text != "All")
-			{
-				this.ItemFilter = item.text;
-			}
-			else
-			{
-				this.ItemFilter = null;
-			}
-			this.ForcedRefresh++;
-		}
-
-		private void OnDisable()
-		{
-			if (Rust.Application.isQuitting)
-			{
-				return;
-			}
-			if (this.PreviousPage)
-			{
-				this.PreviousPage.onClick.RemoveListener(new UnityAction(this.PagePrev));
-			}
-			if (this.NextPage)
-			{
-				this.NextPage.onClick.RemoveListener(new UnityAction(this.PageNext));
-			}
-		}
-
-		private void OnEnable()
+		private void Awake()
 		{
 			if (this.PreviousPage)
 			{
@@ -106,12 +76,29 @@ namespace Rust.Workshop
 				{
 					"All"
 				});
-				this.ItemTypeSelector.AddOptions((
-					from x in (IEnumerable<Skinnable>)Skinnable.All
-					select x.Name into x
-					orderby x
-					select x).ToList<string>());
+				if (Skinnable.All != null)
+				{
+					this.ItemTypeSelector.AddOptions((
+						from x in (IEnumerable<Skinnable>)Skinnable.All
+						select x.Name into x
+						orderby x
+						select x).ToList<string>());
+				}
 			}
+		}
+
+		public void OnChangedItemType(int type)
+		{
+			Dropdown.OptionData item = this.ItemTypeSelector.options[type];
+			if (item.text != "All")
+			{
+				this.ItemFilter = item.text;
+			}
+			else
+			{
+				this.ItemFilter = null;
+			}
+			this.ForcedRefresh++;
 		}
 
 		private void PageNext()
@@ -121,7 +108,7 @@ namespace Rust.Workshop
 				return;
 			}
 			this.Page++;
-			base.StartCoroutine(this.Refresh());
+			this.Refresh();
 		}
 
 		private void PagePrev()
@@ -131,94 +118,90 @@ namespace Rust.Workshop
 				return;
 			}
 			this.Page--;
-			base.StartCoroutine(this.Refresh());
+			this.Refresh();
 		}
 
-		public IEnumerator Refresh()
+		public async Task Refresh()
 		{
-			WorkshopItemList totalResults = null;
-			if (totalResults.Refreshing)
+			if (!this.Refreshing)
 			{
-				yield break;
-			}
-			totalResults.Refreshing = true;
-			totalResults.Page = Mathf.Clamp(totalResults.Page, 1, totalResults.NumPages);
-			while (totalResults.Container.transform.childCount > 0)
-			{
-				UnityEngine.Object.DestroyImmediate(totalResults.Container.transform.GetChild(0).gameObject);
-			}
-			Facepunch.Steamworks.Workshop.Query perPage = Global.SteamClient.Workshop.CreateQuery();
-			perPage.PerPage = totalResults.PerPage;
-			perPage.Page = totalResults.Page;
-			perPage.RequireAllTags = true;
-			if (!string.IsNullOrEmpty(totalResults.ItemFilter))
-			{
-				perPage.RequireTags.Add(totalResults.ItemFilter);
-			}
-			switch (totalResults.ListType)
-			{
-				case Rust.Workshop.ListType.MyItems:
+				this.Refreshing = true;
+				this.Page = Mathf.Clamp(this.Page, 1, this.NumPages);
+				while (this.Container.transform.childCount > 0)
 				{
-					perPage.UserId = new ulong?(Global.SteamClient.SteamId);
-					break;
+					UnityEngine.Object.DestroyImmediate(this.Container.transform.GetChild(0).gameObject);
 				}
-				case Rust.Workshop.ListType.MostRecent:
+				Query query = Query.All.MatchAllTags();
+				if (!string.IsNullOrEmpty(this.ItemFilter))
 				{
-					perPage.Order = Facepunch.Steamworks.Workshop.Order.RankedByPublicationDate;
-					perPage.RequireTags.Add("Version3");
-					break;
+					query = query.WithTag(this.ItemFilter);
 				}
-				case Rust.Workshop.ListType.MostPopular:
+				switch (this.ListType)
 				{
-					perPage.Order = Facepunch.Steamworks.Workshop.Order.RankedByTrend;
-					perPage.RankedByTrendDays = 30;
-					perPage.RequireTags.Add("Version3");
-					break;
+					case Rust.Workshop.ListType.MyItems:
+					{
+						query = query.WhereUserPublished(new SteamId());
+						break;
+					}
+					case Rust.Workshop.ListType.MostRecent:
+					{
+						query = query.RankedByPublicationDate();
+						query = query.WithTag("Version3");
+						break;
+					}
+					case Rust.Workshop.ListType.MostPopular:
+					{
+						query = query.RankedByTrend();
+						query = query.WithTrendDays(30);
+						query = query.WithTag("Version3");
+						break;
+					}
+					case Rust.Workshop.ListType.Trending:
+					{
+						query = query.RankedByTrend();
+						query = query.WithTrendDays(7);
+						query = query.WithTag("Version3");
+						break;
+					}
+					case Rust.Workshop.ListType.Accepted:
+					{
+						query = query.RankedByAcceptanceDate();
+						query = query.WithTag("Version3");
+						break;
+					}
 				}
-				case Rust.Workshop.ListType.Trending:
+				if (this.PageInfo != null)
 				{
-					perPage.Order = Facepunch.Steamworks.Workshop.Order.RankedByTrend;
-					perPage.RankedByTrendDays = 1;
-					perPage.RequireTags.Add("Version3");
-					break;
+					this.PageInfo.text = "UPDATING";
 				}
-				case Rust.Workshop.ListType.Accepted:
+				ResultPage? pageAsync = await query.GetPageAsync(this.Page);
+				if (pageAsync.HasValue)
 				{
-					perPage.Order = Facepunch.Steamworks.Workshop.Order.AcceptedForGameRankedByAcceptanceDate;
-					perPage.RequireTags.Add("Version3");
-					break;
+					this.TotalResults = pageAsync.Value.TotalCount;
+					Item[] array = pageAsync.Value.Entries.ToArray<Item>();
+					if (this.ListType == Rust.Workshop.ListType.MyItems)
+					{
+						Item[] itemArray = array;
+						array = (
+							from x in (IEnumerable<Item>)itemArray
+							orderby x.Updated descending
+							select x).ToArray<Item>();
+					}
+					Item[] itemArray1 = array;
+					for (int i = 0; i < (int)itemArray1.Length; i++)
+					{
+						Item item = itemArray1[i];
+						GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.ButtonPrefab.gameObject);
+						gameObject.transform.SetParent(this.Container.transform, false);
+						gameObject.GetComponent<WorkshopItemButton>().Init(item);
+					}
+					if (this.PageInfo != null)
+					{
+						this.PageInfo.text = string.Format("Page {0} of {1}", this.Page, this.NumPages);
+					}
 				}
+				this.Refreshing = false;
 			}
-			if (totalResults.PageInfo != null)
-			{
-				totalResults.PageInfo.text = "UPDATING";
-			}
-			perPage.Run();
-			yield return new WaitWhile(() => perPage.IsRunning);
-			totalResults.TotalResults = perPage.TotalResults;
-			if (totalResults.ListType == Rust.Workshop.ListType.MyItems)
-			{
-				Facepunch.Steamworks.Workshop.Query array = perPage;
-				Facepunch.Steamworks.Workshop.Item[] items = perPage.Items;
-				array.Items = (
-					from x in (IEnumerable<Facepunch.Steamworks.Workshop.Item>)items
-					orderby x.Modified descending
-					select x).ToArray<Facepunch.Steamworks.Workshop.Item>();
-			}
-			Facepunch.Steamworks.Workshop.Item[] itemArray = perPage.Items;
-			for (int i = 0; i < (int)itemArray.Length; i++)
-			{
-				Facepunch.Steamworks.Workshop.Item item = itemArray[i];
-				GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(totalResults.ButtonPrefab.gameObject);
-				gameObject.transform.SetParent(totalResults.Container.transform, false);
-				gameObject.GetComponent<WorkshopItemButton>().Init(item);
-			}
-			perPage.Dispose();
-			if (totalResults.PageInfo != null)
-			{
-				totalResults.PageInfo.text = string.Format("Page {0} of {1}", totalResults.Page, totalResults.NumPages);
-			}
-			totalResults.Refreshing = false;
 		}
 
 		public static void RefreshAll()
@@ -226,9 +209,9 @@ namespace Rust.Workshop
 			WorkshopItemList.StaticRefresh++;
 		}
 
-		public void SwitchToAccepted(bool b)
+		public void SwitchToAccepted()
 		{
-			if (!b)
+			if (this.ListType == Rust.Workshop.ListType.Accepted)
 			{
 				return;
 			}
@@ -237,9 +220,9 @@ namespace Rust.Workshop
 			this.ForcedRefresh++;
 		}
 
-		public void SwitchToLatest(bool b)
+		public void SwitchToLatest()
 		{
-			if (!b)
+			if (this.ListType == Rust.Workshop.ListType.MostRecent)
 			{
 				return;
 			}
@@ -248,9 +231,9 @@ namespace Rust.Workshop
 			this.ForcedRefresh++;
 		}
 
-		public void SwitchToPopular(bool b)
+		public void SwitchToPopular()
 		{
-			if (!b)
+			if (this.ListType == Rust.Workshop.ListType.MostPopular)
 			{
 				return;
 			}
@@ -259,9 +242,9 @@ namespace Rust.Workshop
 			this.ForcedRefresh++;
 		}
 
-		public void SwitchToTrending(bool b)
+		public void SwitchToTrending()
 		{
-			if (!b)
+			if (this.ListType == Rust.Workshop.ListType.Trending)
 			{
 				return;
 			}
@@ -279,7 +262,7 @@ namespace Rust.Workshop
 			if (this.ForcedRefresh != WorkshopItemList.StaticRefresh)
 			{
 				this.ForcedRefresh = WorkshopItemList.StaticRefresh;
-				base.StartCoroutine(this.Refresh());
+				this.Refresh();
 			}
 		}
 	}

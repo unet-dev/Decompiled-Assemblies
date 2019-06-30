@@ -572,6 +572,11 @@ public class ConsoleSystem
 			this.Reply = strValue;
 		}
 
+		public void ReplyWith(object obj)
+		{
+			this.Reply = JsonConvert.SerializeObject(obj, Formatting.Indented);
+		}
+
 		public void ReplyWithObject(object rval)
 		{
 			if (rval == null)

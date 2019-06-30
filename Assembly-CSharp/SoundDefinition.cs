@@ -110,6 +110,11 @@ public class SoundDefinition : ScriptableObject
 		return single;
 	}
 
+	public Sound Play()
+	{
+		return null;
+	}
+
 	[Serializable]
 	public class DistanceAudioClipList
 	{

@@ -185,11 +185,11 @@ public class GameManifest : ScriptableObject
 
 	private static Skinnable[] LoadSkinnableAssets()
 	{
-		string[] strArrays = GameManifest.loadedManifest.skinnables;
-		Skinnable[] skinnableArray = new Skinnable[(int)strArrays.Length];
-		for (int i = 0; i < (int)strArrays.Length; i++)
+		string[] current = GameManifest.Current.skinnables;
+		Skinnable[] skinnableArray = new Skinnable[(int)current.Length];
+		for (int i = 0; i < (int)current.Length; i++)
 		{
-			skinnableArray[i] = FileSystem.Load<Skinnable>(strArrays[i], true);
+			skinnableArray[i] = FileSystem.Load<Skinnable>(current[i], true);
 		}
 		return skinnableArray;
 	}

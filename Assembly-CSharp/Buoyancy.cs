@@ -29,6 +29,8 @@ public class Buoyancy : BaseMonoBehaviour
 
 	private Vector2[] pointPositionUVArray;
 
+	private Vector3[] pointShoreVectorArray;
+
 	private float[] pointTerrainHeightArray;
 
 	private float[] pointWaterHeightArray;
@@ -76,7 +78,7 @@ public class Buoyancy : BaseMonoBehaviour
 			this.pointPositionArray[i] = new Vector2(vector3.x, vector3.z);
 			this.pointPositionUVArray[i] = new Vector2(single1, single2);
 		}
-		WaterSystem.GetHeight(this.pointPositionArray, this.pointPositionUVArray, this.pointTerrainHeightArray, this.pointWaterHeightArray);
+		WaterSystem.GetHeight(this.pointPositionArray, this.pointPositionUVArray, this.pointShoreVectorArray, this.pointTerrainHeightArray, this.pointWaterHeightArray);
 		int num = 0;
 		for (int j = 0; j < (int)this.points.Length; j++)
 		{
@@ -182,6 +184,7 @@ public class Buoyancy : BaseMonoBehaviour
 			this.pointData = new Buoyancy.BuoyancyPointData[(int)this.points.Length];
 			this.pointPositionArray = new Vector2[(int)this.points.Length];
 			this.pointPositionUVArray = new Vector2[(int)this.points.Length];
+			this.pointShoreVectorArray = new Vector3[(int)this.points.Length];
 			this.pointTerrainHeightArray = new float[(int)this.points.Length];
 			this.pointWaterHeightArray = new float[(int)this.points.Length];
 			for (int i = 0; i < (int)this.points.Length; i++)

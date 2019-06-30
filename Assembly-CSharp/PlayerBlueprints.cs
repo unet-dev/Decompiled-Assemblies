@@ -1,6 +1,6 @@
-using Facepunch.Steamworks;
 using Oxide.Core;
 using ProtoBuf;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 
@@ -82,12 +82,12 @@ public class PlayerBlueprints : EntityComponent<BasePlayer>
 			}
 			if (!flag && targetItem.skins2 != null)
 			{
-				Inventory.Definition[] definitionArray = targetItem.skins2;
+				InventoryDef[] inventoryDefArray = targetItem.skins2;
 				i = 0;
-				while (i < (int)definitionArray.Length)
+				while (i < (int)inventoryDefArray.Length)
 				{
-					Inventory.Definition definition = definitionArray[i];
-					if (!this.steamInventory.HasItem(definition.Id))
+					InventoryDef inventoryDef = inventoryDefArray[i];
+					if (!this.steamInventory.HasItem(inventoryDef.Id))
 					{
 						i++;
 					}

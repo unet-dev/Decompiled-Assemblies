@@ -185,4 +185,9 @@ public class DroppedItem : WorldItem
 		}
 		base.ReceiveCollisionMessages(true);
 	}
+
+	public override bool ShouldInheritNetworkGroup()
+	{
+		return false;
+	}
 }

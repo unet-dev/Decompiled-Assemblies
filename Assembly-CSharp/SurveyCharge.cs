@@ -64,7 +64,7 @@ public class SurveyCharge : TimedExplosive
 			{
 				Item item = ItemManager.Create(_resource.type, num1, (ulong)0);
 				Vector3 modifiedAimConeDirection = AimConeUtil.GetModifiedAimConeDirection(20f, Vector3.up, true);
-				item.Drop(base.transform.position + (Vector3.up * 1f), base.GetInheritedDropVelocity() + (modifiedAimConeDirection * UnityEngine.Random.Range(5f, 10f)), UnityEngine.Random.rotation).SetAngularVelocity(UnityEngine.Random.rotation.eulerAngles * 5f);
+				item.Drop(base.transform.position + (Vector3.up * 1f), this.GetInheritedDropVelocity() + (modifiedAimConeDirection * UnityEngine.Random.Range(5f, 10f)), UnityEngine.Random.rotation).SetAngularVelocity(UnityEngine.Random.rotation.eulerAngles * 5f);
 			}
 		}
 		if (flag)

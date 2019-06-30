@@ -251,7 +251,7 @@ namespace Facepunch.Network.Raknet
 			Native.NET_CloseConnection(this.ptr, connection.guid);
 		}
 
-		public IntPtr RawData()
+		public virtual IntPtr RawData()
 		{
 			this.Check();
 			return Native.NETRCV_RawData(this.ptr);

@@ -1,5 +1,5 @@
+using Facepunch;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -50,10 +50,10 @@ public static class TransformUtil
 		bool flag;
 		startPos.y += 0.25f;
 		range += 0.25f;
-		using (IEnumerator<RaycastHit> enumerator = (
-			from h in (IEnumerable<RaycastHit>)Physics.RaycastAll(new Ray(startPos, Vector3.down), range, mask)
-			orderby h.distance
-			select h).GetEnumerator())
+		List<RaycastHit> list = Pool.GetList<RaycastHit>();
+		GamePhysics.TraceAll(new Ray(startPos, Vector3.down), 0f, list, range, mask, QueryTriggerInteraction.Ignore);
+		List<RaycastHit>.Enumerator enumerator = list.GetEnumerator();
+		try
 		{
 			while (enumerator.MoveNext())
 			{
@@ -64,12 +64,18 @@ public static class TransformUtil
 				}
 				pos = current.point;
 				normal = current.normal;
+				Pool.FreeList<RaycastHit>(ref list);
 				flag = true;
 				return flag;
 			}
 			pos = startPos;
 			normal = Vector3.up;
+			Pool.FreeList<RaycastHit>(ref list);
 			return false;
+		}
+		finally
+		{
+			((IDisposable)enumerator).Dispose();
 		}
 		return flag;
 	}

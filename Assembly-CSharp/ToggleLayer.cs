@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +7,7 @@ public class ToggleLayer : MonoBehaviour, IClientComponent
 {
 	public Toggle toggleControl;
 
-	public Text textControl;
+	public TextMeshProUGUI textControl;
 
 	public LayerSelect layer;
 

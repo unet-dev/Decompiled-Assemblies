@@ -1,5 +1,8 @@
+using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace ConVar
@@ -9,6 +12,26 @@ namespace ConVar
 	{
 		public Inventory()
 		{
+		}
+
+		[ClientVar]
+		[ServerVar]
+		public static void defs(ConsoleSystem.Arg arg)
+		{
+			if (SteamInventory.Definitions == null)
+			{
+				arg.ReplyWith("no definitions");
+				return;
+			}
+			if (SteamInventory.Definitions.Length == 0)
+			{
+				arg.ReplyWith("0 definitions");
+				return;
+			}
+			string[] array = (
+				from x in (IEnumerable<InventoryDef>)SteamInventory.Definitions
+				select x.Name).ToArray<string>();
+			arg.ReplyWith(array);
 		}
 
 		[ServerUserVar]
@@ -207,6 +230,13 @@ namespace ConVar
 				return;
 			}
 			basePlayer.LightToggle();
+		}
+
+		[ClientVar]
+		[ServerVar]
+		public static void reloaddefs(ConsoleSystem.Arg arg)
+		{
+			SteamInventory.LoadItemDefinitions();
 		}
 
 		[ServerVar]

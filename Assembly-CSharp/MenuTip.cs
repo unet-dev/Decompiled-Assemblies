@@ -1,10 +1,10 @@
 using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MenuTip : MonoBehaviour
 {
-	public Text text;
+	public TextMeshProUGUI text;
 
 	public LoadingScreen screen;
 
@@ -49,7 +49,5 @@ public class MenuTip : MonoBehaviour
 	public void UpdateTip()
 	{
 		this.text.text = MenuTip.MenuTips[this.currentTipIndex].translated;
-		base.GetComponent<HorizontalLayoutGroup>().enabled = false;
-		base.GetComponent<HorizontalLayoutGroup>().enabled = true;
 	}
 }

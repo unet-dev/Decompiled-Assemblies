@@ -1,11 +1,11 @@
 using System;
 using System.Text;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SystemInfoGeneralText : MonoBehaviour
 {
-	public Text text;
+	public TextMeshProUGUI text;
 
 	public static string currentInfo
 	{

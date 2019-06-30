@@ -12,7 +12,7 @@ public class NetworkCryptographyServer : NetworkCryptography
 	{
 		if (connection.encryptionLevel <= 1)
 		{
-			Craptography.XOR(2164, src, srcOffset, dst, dstOffset);
+			Craptography.XOR(2177, src, srcOffset, dst, dstOffset);
 			return;
 		}
 		EACServer.Decrypt(connection, src, srcOffset, dst, dstOffset);
@@ -22,7 +22,7 @@ public class NetworkCryptographyServer : NetworkCryptography
 	{
 		if (connection.encryptionLevel <= 1)
 		{
-			Craptography.XOR(2164, src, srcOffset, dst, dstOffset);
+			Craptography.XOR(2177, src, srcOffset, dst, dstOffset);
 			return;
 		}
 		EACServer.Encrypt(connection, src, srcOffset, dst, dstOffset);

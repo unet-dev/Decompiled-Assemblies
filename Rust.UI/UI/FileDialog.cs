@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -296,6 +297,55 @@ namespace Rust.UI
 			{
 				yield return new WaitForSeconds(0.1f);
 			}
+		}
+
+		public async Task<string> SaveAsync(string path = null, string allowedExtensions = null, string windowName = "SAVE FILE", Sprite windowIcon = null, bool saveLastPath = true)
+		{
+			string str;
+			this.mode = FileDialog.FileDialogMode.Save;
+			this.commit.GetComponentInChildren<Text>().text = "SAVE";
+			this.fileName.text = "";
+			this.workingPath = "";
+			this.workingFile = "";
+			this.result = null;
+			this.finished = false;
+			this.maxSize = (long)-1;
+			this.saveLastPath = saveLastPath;
+			if (string.IsNullOrEmpty(allowedExtensions))
+			{
+				this.allowedExtensions = null;
+			}
+			else
+			{
+				allowedExtensions = allowedExtensions.ToLower();
+				string str1 = allowedExtensions;
+				char[] chrArray = new char[] { '|' };
+				this.allowedExtensions = str1.Split(chrArray);
+			}
+			if (string.IsNullOrEmpty(path))
+			{
+				if (saveLastPath)
+				{
+					str = (string.IsNullOrEmpty(PlayerPrefs.GetString("OxOD.lastPath", null)) ? string.Concat(Rust.Application.dataPath, "/../") : PlayerPrefs.GetString("OxOD.lastPath", null));
+				}
+				else
+				{
+					str = string.Concat(Rust.Application.dataPath, "/../");
+				}
+				path = str;
+			}
+			this.windowName.text = windowName;
+			if (windowIcon)
+			{
+				this.windowIcon.sprite = windowIcon;
+			}
+			this.GoTo(path);
+			base.gameObject.SetActive(true);
+			while (!this.finished)
+			{
+				await Task.Delay(100);
+			}
+			return this.result;
 		}
 
 		public void SelectFile(string file)

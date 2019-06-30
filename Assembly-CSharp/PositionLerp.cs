@@ -8,19 +8,19 @@ public class PositionLerp : ListComponent<PositionLerp>
 
 	public static bool DebugDraw;
 
+	public static int TimeOffsetInterval;
+
 	private Action idleDisable;
 
 	private TransformInterpolator interpolator = new TransformInterpolator();
 
 	private ILerpTarget target;
 
-	private float timeOffset0 = Single.MaxValue;
+	private float timeOffset = Single.MaxValue;
 
-	private float timeOffset1 = Single.MaxValue;
+	private float timeOffsetNew = Single.MaxValue;
 
-	private float timeOffset2 = Single.MaxValue;
-
-	private float timeOffset3 = Single.MaxValue;
+	private int timeOffsetCount;
 
 	private float lastClientTime;
 
@@ -30,6 +30,9 @@ public class PositionLerp : ListComponent<PositionLerp>
 
 	static PositionLerp()
 	{
+		PositionLerp.DebugLog = false;
+		PositionLerp.DebugDraw = false;
+		PositionLerp.TimeOffsetInterval = 16;
 	}
 
 	public PositionLerp()
@@ -132,18 +135,24 @@ public class PositionLerp : ListComponent<PositionLerp>
 	public void Initialize(ILerpTarget target)
 	{
 		this.target = target;
+		this.timeOffset = Single.MaxValue;
+		this.timeOffsetNew = Single.MaxValue;
+		this.timeOffsetCount = 0;
 	}
 
 	public void Snapshot(Vector3 position, Quaternion rotation, float serverTime)
 	{
 		float interpolationDelay = this.target.GetInterpolationDelay() + this.target.GetInterpolationSmoothing() + 1f;
 		float single = Time.time;
-		this.timeOffset0 = this.timeOffset1;
-		this.timeOffset1 = this.timeOffset2;
-		this.timeOffset2 = this.timeOffset3;
-		this.timeOffset3 = single - serverTime;
-		float single1 = Mathx.Min(this.timeOffset0, this.timeOffset1, this.timeOffset2, this.timeOffset3);
-		single = serverTime + single1;
+		this.timeOffsetNew = Mathf.Min(this.timeOffsetNew, single - serverTime);
+		this.timeOffsetCount++;
+		if (this.timeOffsetCount >= PositionLerp.TimeOffsetInterval)
+		{
+			this.timeOffset = this.timeOffsetNew;
+			this.timeOffsetNew = Single.MaxValue;
+			this.timeOffsetCount = 0;
+		}
+		single = (this.timeOffset == Single.MaxValue ? serverTime + this.timeOffsetNew : serverTime + this.timeOffset);
 		if (PositionLerp.DebugLog && this.interpolator.list.Count > 0 && serverTime < this.lastServerTime)
 		{
 			Debug.LogWarning(string.Concat(new object[] { this.target.ToString(), " adding tick from the past: server time ", serverTime, " < ", this.lastServerTime }));

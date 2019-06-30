@@ -30,6 +30,13 @@ namespace UnityEngine
 			scrollrect.normalizedPosition = pos;
 		}
 
+		public static void RebuildHackUnity2019(this Image image)
+		{
+			Sprite sprite = image.sprite;
+			image.sprite = null;
+			image.sprite = sprite;
+		}
+
 		public static Vector2 Unpivot(this RectTransform rect, Vector2 localPos)
 		{
 			ref float singlePointer = ref localPos.x;

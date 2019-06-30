@@ -194,8 +194,13 @@ namespace Rust
 			}
 		}
 
-		public static void RenderScreenshot(GameObject prefab, string filename, int width, int height, int SuperSampleSize = 1)
+		public static bool RenderScreenshot(GameObject prefab, string filename, int width, int height, int SuperSampleSize = 1)
 		{
+			if (prefab == null)
+			{
+				Debug.Log("RenderScreenshot - prefab is null", prefab);
+				return false;
+			}
 			PropRenderer propRenderer = null;
 			PropRenderer component = prefab.GetComponent<PropRenderer>();
 			if (component == null)
@@ -208,6 +213,7 @@ namespace Rust
 			{
 				UnityEngine.Object.DestroyImmediate(propRenderer);
 			}
+			return true;
 		}
 
 		public delegate float LightIntensityScale(float intensity);

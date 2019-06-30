@@ -1,10 +1,10 @@
 using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Branding : BaseMonoBehaviour
 {
-	public Text versionText;
+	public TextMeshProUGUI versionText;
 
 	public CanvasGroup canvasGroup;
 

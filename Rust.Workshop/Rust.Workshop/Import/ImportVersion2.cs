@@ -1,9 +1,7 @@
-using Facepunch.Extend;
-using Facepunch.Steamworks;
 using Facepunch.Utility;
 using Rust;
-using Rust.UI;
 using Rust.Workshop;
+using Steamworks.Ugc;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,14 +16,6 @@ namespace Rust.Workshop.Import
 	{
 		private AssetBundle Bundle;
 
-		protected WorkshopInterface Interface
-		{
-			get
-			{
-				return base.GetComponentInParent<WorkshopInterface>();
-			}
-		}
-
 		public ImportVersion2()
 		{
 		}
@@ -37,25 +27,54 @@ namespace Rust.Workshop.Import
 			{
 				for (int j = 0; j < tex.width; j++)
 				{
-					UnityEngine.Color pixel = tex.GetPixel(j, i);
+					Color pixel = tex.GetPixel(j, i);
 					if (pixel.a == 0f)
 					{
 						pixel.a = 0.007843138f;
 					}
-					UnityEngine.Color color = new UnityEngine.Color(pixel.r, pixel.r, pixel.r, pixel.a);
+					Color color = new Color(pixel.r, pixel.r, pixel.r, pixel.a);
 					tex.SetPixel(j, i, color);
 				}
 			}
 			tex.Apply();
 			outputMaterial.SetTexture("_SpecGlossMap", tex);
 			outputMaterial.SetFloat("_Glossiness", 1f);
-			outputMaterial.SetColor("_SpecColor", UnityEngine.Color.white);
+			outputMaterial.SetColor("_SpecColor", Color.white);
 			return tex;
 		}
 
-		internal void DoImport(Facepunch.Steamworks.Workshop.Item item, Skin skin, Action onImportFinished)
+		internal IEnumerator DoImport(Item item, Skin skin)
 		{
-			base.StartCoroutine(this.RunImport(item, skin, onImportFinished));
+			ImportVersion2 importVersion2 = null;
+			if (importVersion2.Bundle != null)
+			{
+				importVersion2.Bundle.Unload(true);
+				importVersion2.Bundle = null;
+			}
+			WorkshopItemEditor.Loading(true, "Downloading..", "", 0f);
+			if (!item.IsInstalled)
+			{
+				item.Download(true);
+				while (item.IsDownloading)
+				{
+					yield return null;
+				}
+				while (!item.IsInstalled)
+				{
+					yield return null;
+				}
+			}
+			string str = string.Concat(item.Directory, "/bundle");
+			if (!File.Exists(str))
+			{
+				UnityEngine.Debug.LogWarning("No Bundle Found!");
+				Os.OpenFolder(item.Directory);
+				yield return new WaitForSeconds(5f);
+			}
+			else
+			{
+				yield return importVersion2.StartCoroutine(importVersion2.LoadItem(item.Directory, str, skin));
+			}
 		}
 
 		private Texture2D ImportTexture(string name, Material inputMaterial, Material outputMaterial, bool normal, Skin skin, int group, string targetName = null)
@@ -83,7 +102,6 @@ namespace Rust.Workshop.Import
 		{
 			ImportVersion2 importVersion2 = null;
 			AssetBundleCreateRequest assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(BundleName);
-			importVersion2.Interface.LoadingBar.Text = "Loading Asset Bundle";
 			yield return new WaitUntil(() => assetBundleCreateRequest.isDone);
 			if (assetBundleCreateRequest.assetBundle == null)
 			{
@@ -108,12 +126,9 @@ namespace Rust.Workshop.Import
 			if (workshopSkinBase == null)
 			{
 				Os.OpenFolder(Folder);
-				importVersion2.Interface.LoadingBar.Text = "Couldn't Load";
-				importVersion2.Interface.LoadingBar.SubText = "So we're going to open the folder so you can update it manually";
 				yield return new WaitForSeconds(5f);
 				yield break;
 			}
-			importVersion2.Interface.LoadingBar.Text = "SettingSkin";
 			yield return importVersion2.StartCoroutine(importVersion2.ProcessMaterial(0, workshopSkinBase.skinMaterial0, skin));
 			yield return importVersion2.StartCoroutine(importVersion2.ProcessMaterial(1, workshopSkinBase.skinMaterial1, skin));
 			yield return importVersion2.StartCoroutine(importVersion2.ProcessMaterial(2, workshopSkinBase.skinMaterial2, skin));
@@ -145,7 +160,6 @@ namespace Rust.Workshop.Import
 			{
 				yield break;
 			}
-			importVersion2.Interface.LoadingBar.Text = string.Concat("Loading Material ", v + 1);
 			yield return null;
 			importVersion2.ImportTexture("_MainTex", inputMaterial, skin.Materials[v], false, skin, v, null);
 			importVersion2.ImportTexture("_BumpMap", inputMaterial, skin.Materials[v], true, skin, v, null);
@@ -158,52 +172,6 @@ namespace Rust.Workshop.Import
 					spec = importVersion2.ConvertMetalToSpec(spec, skin.Materials[v]);
 				}
 			}
-		}
-
-		private IEnumerator RunImport(Facepunch.Steamworks.Workshop.Item item, Skin skin, Action onImportFinished)
-		{
-			ImportVersion2 downloadProgress = null;
-			if (downloadProgress.Bundle != null)
-			{
-				downloadProgress.Bundle.Unload(true);
-				downloadProgress.Bundle = null;
-			}
-			downloadProgress.Interface.LoadingBar.Active = true;
-			downloadProgress.Interface.LoadingBar.Text = "Downloading..";
-			downloadProgress.Interface.LoadingBar.Progress = 0f;
-			if (!item.Installed)
-			{
-				item.Download(true);
-				while (item.Downloading)
-				{
-					downloadProgress.Interface.LoadingBar.Progress = (float)item.DownloadProgress;
-					downloadProgress.Interface.LoadingBar.SubText = string.Format("{0} / {1}", item.BytesDownloaded.FormatBytes<ulong>(false), item.BytesTotalDownload.FormatBytes<ulong>(false));
-					yield return null;
-				}
-				downloadProgress.Interface.LoadingBar.SubText = "";
-				downloadProgress.Interface.LoadingBar.Text = "Installing..";
-				while (!item.Installed)
-				{
-					downloadProgress.Interface.LoadingBar.Text = "Installing";
-					yield return null;
-				}
-			}
-			string str = string.Concat(item.Directory.FullName, "/bundle");
-			if (!File.Exists(str))
-			{
-				UnityEngine.Debug.LogWarning("No Bundle Found!");
-				Os.OpenFolder(item.Directory.FullName);
-				downloadProgress.Interface.LoadingBar.Text = "Couldn't Load";
-				downloadProgress.Interface.LoadingBar.SubText = "So we're going to open the folder so you can update it manually";
-				yield return new WaitForSeconds(5f);
-			}
-			else
-			{
-				downloadProgress.Interface.LoadingBar.Text = "Loading Item";
-				yield return downloadProgress.StartCoroutine(downloadProgress.LoadItem(item.Directory.FullName, str, skin));
-			}
-			onImportFinished();
-			downloadProgress.Interface.LoadingBar.Active = false;
 		}
 	}
 }

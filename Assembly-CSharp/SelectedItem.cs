@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,9 +9,9 @@ public class SelectedItem : SingletonComponent<SelectedItem>, IInventoryChanged
 
 	public Image iconSplitter;
 
-	public Text title;
+	public TextMeshProUGUI title;
 
-	public Text description;
+	public TextMeshProUGUI description;
 
 	public GameObject splitPanel;
 

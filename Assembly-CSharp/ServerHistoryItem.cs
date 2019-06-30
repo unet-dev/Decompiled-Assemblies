@@ -1,11 +1,11 @@
-using Facepunch.Steamworks;
+using Steamworks.Data;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ServerHistoryItem : MonoBehaviour
 {
-	private ServerList.Server serverInfo;
+	private ServerInfo serverInfo;
 
 	public Text serverName;
 

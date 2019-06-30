@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,7 @@ public class UIChat : SingletonComponent<UIChat>
 
 	public GameObject chatArea;
 
-	public InputField inputField;
+	public TMP_InputField inputField;
 
 	public ScrollRect scrollRect;
 

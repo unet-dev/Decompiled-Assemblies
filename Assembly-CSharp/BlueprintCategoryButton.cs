@@ -1,10 +1,10 @@
 using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BlueprintCategoryButton : MonoBehaviour, IInventoryChanged
 {
-	public Text amountLabel;
+	public TextMeshProUGUI amountLabel;
 
 	public ItemCategory Category;
 

@@ -19,6 +19,53 @@ public class CollectibleEntity : BaseEntity, IPrefabPreProcess
 	{
 	}
 
+	public void DoPickup(BasePlayer reciever)
+	{
+		if (this.itemList == null)
+		{
+			return;
+		}
+		ItemAmount[] itemAmountArray = this.itemList;
+		for (int i = 0; i < (int)itemAmountArray.Length; i++)
+		{
+			ItemAmount itemAmount = itemAmountArray[i];
+			Item item = ItemManager.Create(itemAmount.itemDef, (int)itemAmount.amount, (ulong)0);
+			if (item != null)
+			{
+				if (!reciever)
+				{
+					item.Drop(base.transform.position + (Vector3.up * 0.5f), Vector3.up, new Quaternion());
+				}
+				else
+				{
+					if (Interface.CallHook("OnCollectiblePickup", item, reciever, this) != null)
+					{
+						return;
+					}
+					reciever.GiveItem(item, BaseEntity.GiveItemReason.ResourceHarvested);
+				}
+			}
+		}
+		this.itemList = null;
+		if (this.pickupEffect.isValid)
+		{
+			Effect.server.Run(this.pickupEffect.resourcePath, base.transform.position, base.transform.up, null, false);
+		}
+		base.Kill(BaseNetworkable.DestroyMode.None);
+	}
+
+	public bool IsFood()
+	{
+		for (int i = 0; i < (int)this.itemList.Length; i++)
+		{
+			if (this.itemList[i].itemDef.category == ItemCategory.Food)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public override bool OnRpcMessage(BasePlayer player, uint rpc, Message msg)
 	{
 		bool flag;
@@ -78,27 +125,7 @@ public class CollectibleEntity : BaseEntity, IPrefabPreProcess
 		{
 			return;
 		}
-		if (this.itemList == null)
-		{
-			return;
-		}
-		ItemAmount[] itemAmountArray = this.itemList;
-		for (int i = 0; i < (int)itemAmountArray.Length; i++)
-		{
-			ItemAmount itemAmount = itemAmountArray[i];
-			Item item = ItemManager.Create(itemAmount.itemDef, (int)itemAmount.amount, (ulong)0);
-			if (Interface.CallHook("OnCollectiblePickup", item, msg.player, this) != null)
-			{
-				return;
-			}
-			msg.player.GiveItem(item, BaseEntity.GiveItemReason.ResourceHarvested);
-		}
-		this.itemList = null;
-		if (this.pickupEffect.isValid)
-		{
-			Effect.server.Run(this.pickupEffect.resourcePath, base.transform.position, base.transform.up, null, false);
-		}
-		base.Kill(BaseNetworkable.DestroyMode.None);
+		this.DoPickup(msg.player);
 	}
 
 	public override void PreProcess(IPrefabProcessor preProcess, GameObject rootObj, string name, bool serverside, bool clientside, bool bundling)

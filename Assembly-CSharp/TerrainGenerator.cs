@@ -42,6 +42,7 @@ public class TerrainGenerator : SingletonComponent<TerrainGenerator>
 		component.gameObject.AddComponent<TerrainTopologyMap>();
 		component.gameObject.AddComponent<TerrainWaterMap>();
 		component.gameObject.AddComponent<TerrainPath>();
+		component.gameObject.AddComponent<TerrainTexturing>();
 		terrainMetum.terrain = component;
 		terrainMetum.config = this.config;
 		UnityEngine.Object.DestroyImmediate(base.gameObject);

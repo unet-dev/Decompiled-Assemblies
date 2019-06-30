@@ -24,14 +24,9 @@ public class BaseVehicle : BaseMountable
 	{
 	}
 
-	public override bool AttemptDismount(BasePlayer player)
+	public bool AnyMounted()
 	{
-		if (player != this._mounted)
-		{
-			return false;
-		}
-		base.DismountPlayer(player, false);
-		return true;
+		return this.NumMounted() > 0;
 	}
 
 	public override void AttemptMount(BasePlayer player)
@@ -49,12 +44,18 @@ public class BaseVehicle : BaseMountable
 		{
 			return;
 		}
-		if (idealMountPoint == this)
+		if (idealMountPoint != this)
+		{
+			idealMountPoint.AttemptMount(player);
+		}
+		else
 		{
 			base.AttemptMount(player);
-			return;
 		}
-		idealMountPoint.AttemptMount(player);
+		if (player.GetMountedVehicle() == this)
+		{
+			this.PlayerMounted(player, idealMountPoint);
+		}
 	}
 
 	public virtual void CheckSeatsForClipping()
@@ -88,12 +89,12 @@ public class BaseVehicle : BaseMountable
 		}
 	}
 
-	public override Vector3 GetDismountPosition(BasePlayer player)
+	public override bool GetDismountPosition(BasePlayer player, out Vector3 res)
 	{
 		BaseVehicle baseVehicle = base.VehicleParent();
 		if (baseVehicle != null)
 		{
-			return baseVehicle.GetDismountPosition(player);
+			return baseVehicle.GetDismountPosition(player, out res);
 		}
 		List<Vector3> list = Pool.GetList<Vector3>();
 		Transform[] transformArrays = this.dismountPositions;
@@ -109,20 +110,35 @@ public class BaseVehicle : BaseMountable
 		{
 			Vector3 vector3 = player.transform.position;
 			list.Sort((Vector3 a, Vector3 b) => Vector3.Distance(a, vector3).CompareTo(Vector3.Distance(b, vector3)));
-			Vector3 item = list[0];
+			res = list[0];
 			Pool.FreeList<Vector3>(ref list);
-			return item;
+			return true;
 		}
 		Debug.LogWarning(string.Concat(new object[] { "Failed to find dismount position for player :", player.displayName, " / ", player.userID, " on obj : ", base.gameObject.name }));
 		Pool.FreeList<Vector3>(ref list);
-		return BaseMountable.DISMOUNT_POS_INVALID;
+		res = player.transform.position;
+		return false;
+	}
+
+	public BasePlayer GetDriver()
+	{
+		if (!this.HasMountPoints())
+		{
+			return this._mounted;
+		}
+		BaseVehicle.MountPointInfo mountPointInfo = this.mountPoints[0];
+		if (mountPointInfo == null || mountPointInfo.mountable == null)
+		{
+			return null;
+		}
+		return mountPointInfo.mountable.GetMounted();
 	}
 
 	public BaseMountable GetIdealMountPoint(Vector3 pos)
 	{
 		if (!this.HasMountPoints())
 		{
-			return null;
+			return this;
 		}
 		BaseMountable baseMountable = null;
 		float single = Single.PositiveInfinity;
@@ -138,6 +154,18 @@ public class BaseVehicle : BaseMountable
 			}
 		}
 		return baseMountable;
+	}
+
+	public int GetIndexFromSeat(BaseMountable seat)
+	{
+		for (int i = 0; i < (int)this.mountPoints.Length; i++)
+		{
+			if (this.mountPoints[i].mountable == seat)
+			{
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public int GetPlayerSeat(BasePlayer player)
@@ -226,6 +254,36 @@ public class BaseVehicle : BaseMountable
 		return true;
 	}
 
+	public int NumMounted()
+	{
+		if (!this.HasMountPoints())
+		{
+			if (!this.IsMounted())
+			{
+				return 0;
+			}
+			return 1;
+		}
+		int num = 0;
+		for (int i = 0; i < (int)this.mountPoints.Length; i++)
+		{
+			BaseVehicle.MountPointInfo mountPointInfo = this.mountPoints[i];
+			if (mountPointInfo.mountable != null && mountPointInfo.mountable.GetMounted() != null)
+			{
+				num++;
+			}
+		}
+		return num;
+	}
+
+	public virtual void PlayerDismounted(BasePlayer player, BaseMountable seat)
+	{
+	}
+
+	public virtual void PlayerMounted(BasePlayer player, BaseMountable seat)
+	{
+	}
+
 	public virtual void SeatClippedWorld(BaseMountable mountable)
 	{
 		mountable.DismountPlayer(mountable.GetMounted(), false);
@@ -248,9 +306,24 @@ public class BaseVehicle : BaseMountable
 		{
 			BaseVehicle.MountPointInfo component = this.mountPoints[i];
 			Vector3 vector3 = Quaternion.Euler(component.rot) * Vector3.forward;
-			BaseEntity baseEntity = GameManager.server.CreateEntity(component.prefab.resourcePath, component.pos, Quaternion.LookRotation(vector3, Vector3.up), true);
+			Vector3 vector31 = component.pos;
+			Vector3 vector32 = Vector3.up;
+			if (component.bone != "")
+			{
+				vector31 = this.model.FindBone(component.bone).transform.position + base.transform.TransformDirection(component.pos);
+				vector3 = base.transform.TransformDirection(vector3);
+				vector32 = base.transform.up;
+			}
+			BaseEntity baseEntity = GameManager.server.CreateEntity(component.prefab.resourcePath, vector31, Quaternion.LookRotation(vector3, vector32), true);
 			baseEntity.Spawn();
-			baseEntity.SetParent(this, false, false);
+			if (component.bone == "")
+			{
+				baseEntity.SetParent(this, false, false);
+			}
+			else
+			{
+				baseEntity.SetParent(this, component.bone, true, true);
+			}
 			component.mountable = baseEntity.GetComponent<BaseMountable>();
 		}
 	}
@@ -319,6 +392,8 @@ public class BaseVehicle : BaseMountable
 		public Vector3 pos;
 
 		public Vector3 rot;
+
+		public string bone;
 
 		public GameObjectRef prefab;
 

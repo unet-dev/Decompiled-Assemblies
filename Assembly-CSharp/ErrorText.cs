@@ -1,12 +1,12 @@
 using Rust;
 using System;
 using System.Diagnostics;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ErrorText : MonoBehaviour
 {
-	public Text text;
+	public TextMeshProUGUI text;
 
 	public int maxLength = 1024;
 
@@ -22,8 +22,12 @@ public class ErrorText : MonoBehaviour
 		{
 			return;
 		}
-		Text text = this.text;
-		text.text = string.Concat(new string[] { text.text, error, "\n", stacktrace, "\n\n" });
+		if (this.text == null)
+		{
+			return;
+		}
+		TextMeshProUGUI textMeshProUGUI = this.text;
+		textMeshProUGUI.text = string.Concat(new string[] { textMeshProUGUI.text, error, "\n", stacktrace, "\n\n" });
 		if (this.text.text.Length > this.maxLength)
 		{
 			this.text.text = this.text.text.Substring(this.text.text.Length - this.maxLength, this.maxLength);

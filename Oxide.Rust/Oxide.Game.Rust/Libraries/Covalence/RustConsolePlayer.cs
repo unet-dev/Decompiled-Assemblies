@@ -179,8 +179,8 @@ namespace Oxide.Game.Rust.Libraries.Covalence
 
 		public void Message(string message, string prefix, params object[] args)
 		{
-			message = (args.Length != 0 ? string.Format(Formatter.ToPlaintext(message), args) : Formatter.ToPlaintext(message));
-			Interface.Oxide.LogInfo((prefix != null ? string.Concat(prefix, " ", message) : message), Array.Empty<object>());
+			message = (args.Length != 0 ? String.Format(Formatter.ToPlaintext(message), args) : Formatter.ToPlaintext(message));
+			Interface.Oxide.LogInfo((prefix != null ? String.Concat(prefix, " ", message) : message), Array.Empty<object>());
 		}
 
 		public void Message(string message)

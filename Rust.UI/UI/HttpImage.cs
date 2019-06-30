@@ -17,9 +17,15 @@ namespace Rust.UI
 
 		public static Dictionary<string, Texture2D> TextureCache;
 
+		public Texture2D LoadingImage;
+
+		public Texture2D MissingImage;
+
 		private RawImage image;
 
 		public string Url = "";
+
+		public bool PreserveAspectHeight;
 
 		static HttpImage()
 		{
@@ -37,39 +43,41 @@ namespace Rust.UI
 			this.image.enabled = false;
 		}
 
-		public void Load(string url)
+		public bool Load(string url)
 		{
 			if (string.IsNullOrEmpty(url))
 			{
-				return;
+				return false;
 			}
 			if (this.Url == url)
 			{
-				return;
+				return false;
 			}
 			if (this.image == null)
 			{
 				this.Init();
 			}
+			this.UpdateImageTexture(this.LoadingImage);
 			this.Url = url;
 			if (HttpImage.TextureCache.ContainsKey(url))
 			{
 				this.image.texture = HttpImage.TextureCache[url];
 				this.image.enabled = true;
-				return;
+				return false;
 			}
 			if (!base.isActiveAndEnabled)
 			{
-				return;
+				return false;
 			}
 			if (HttpImage.RequestCache.ContainsKey(url))
 			{
 				this.image.enabled = false;
 				Global.Runner.StartCoroutine(this.WaitForLoad(url));
-				return;
+				return false;
 			}
 			this.image.enabled = false;
 			Global.Runner.StartCoroutine(this.StartAndWaitForLoad(url));
+			return true;
 		}
 
 		private void OnEnable()
@@ -85,44 +93,74 @@ namespace Rust.UI
 
 		private IEnumerator StartAndWaitForLoad(string url)
 		{
-			HttpImage item = null;
+			HttpImage httpImage = null;
 			UnityWebRequest unityWebRequest = new UnityWebRequest(url)
 			{
 				downloadHandler = new DownloadHandlerBuffer()
 			};
 			HttpImage.RequestCache.Add(url, unityWebRequest);
-			yield return unityWebRequest.Send();
+			yield return unityWebRequest.SendWebRequest();
 			HttpImage.RequestCache.Remove(url);
 			Texture2D texture2D = null;
 			if (unityWebRequest.isDone && !unityWebRequest.isHttpError && !unityWebRequest.isNetworkError)
 			{
-				texture2D = new Texture2D(16, 16);
-				texture2D.LoadImage(unityWebRequest.downloadHandler.data);
+				texture2D = new Texture2D(16, 16)
+				{
+					name = url
+				};
+				if (!ImageConversion.LoadImage(texture2D, unityWebRequest.downloadHandler.data, true))
+				{
+					UnityEngine.Object.DestroyImmediate(texture2D);
+					texture2D = null;
+				}
 			}
 			if (texture2D == null)
 			{
-				texture2D = Texture2D.blackTexture;
+				texture2D = httpImage.MissingImage;
+				if (texture2D == null)
+				{
+					texture2D = Texture2D.blackTexture;
+				}
 			}
 			HttpImage.TextureCache.Add(url, texture2D);
 			unityWebRequest.Dispose();
-			if (item && item.image)
+			if (httpImage && httpImage.image)
 			{
-				item.image.texture = HttpImage.TextureCache[url];
-				item.image.enabled = true;
+				httpImage.UpdateImageTexture(texture2D);
+				if (httpImage.PreserveAspectHeight)
+				{
+					float single = (float)texture2D.height / (float)texture2D.width;
+					RectTransform vector2 = httpImage.image.rectTransform;
+					Rect rect = httpImage.image.rectTransform.rect;
+					vector2.sizeDelta = new Vector2(0f, rect.width * single);
+					httpImage.image.enabled = true;
+				}
+			}
+		}
+
+		private void UpdateImageTexture(Texture2D tex)
+		{
+			if (tex == null)
+			{
+				return;
+			}
+			if (this && this.image)
+			{
+				this.image.texture = tex;
+				this.image.enabled = true;
 			}
 		}
 
 		private IEnumerator WaitForLoad(string url)
 		{
-			HttpImage item = null;
+			HttpImage httpImage = null;
 			while (!HttpImage.TextureCache.ContainsKey(url))
 			{
 				yield return null;
 			}
-			if (item && item.image)
+			if (httpImage && httpImage.image)
 			{
-				item.image.texture = HttpImage.TextureCache[url];
-				item.image.enabled = true;
+				httpImage.UpdateImageTexture(HttpImage.TextureCache[url]);
 			}
 		}
 	}

@@ -13,7 +13,7 @@ public class ForceChildSingletonSetup : MonoBehaviour
 		SingletonComponent[] componentsInChildren = base.GetComponentsInChildren<SingletonComponent>(true);
 		for (int i = 0; i < (int)componentsInChildren.Length; i++)
 		{
-			componentsInChildren[i].Setup();
+			componentsInChildren[i].SingletonSetup();
 		}
 	}
 }

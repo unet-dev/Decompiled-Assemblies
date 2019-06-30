@@ -8,10 +8,24 @@ public class ItemModConsumable : MonoBehaviour
 
 	public float conditionFractionToLose;
 
+	public string achievementWhenEaten;
+
 	public List<ItemModConsumable.ConsumableEffect> effects = new List<ItemModConsumable.ConsumableEffect>();
 
 	public ItemModConsumable()
 	{
+	}
+
+	public float GetIfType(MetabolismAttribute.Type typeToPick)
+	{
+		for (int i = 0; i < this.effects.Count; i++)
+		{
+			if (this.effects[i].type == typeToPick)
+			{
+				return this.effects[i].amount;
+			}
+		}
+		return 0f;
 	}
 
 	[Serializable]

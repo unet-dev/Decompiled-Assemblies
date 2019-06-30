@@ -201,7 +201,7 @@ public class MotorRowboat : MotorBoat
 		base.SetFlag(BaseEntity.Flags.Reserved1, wantsOn, false, true);
 	}
 
-	public override Vector3 GetDismountPosition(BasePlayer player)
+	public override bool GetDismountPosition(BasePlayer player, out Vector3 res)
 	{
 		if (this.myRigidBody.velocity.magnitude <= 4f)
 		{
@@ -219,13 +219,13 @@ public class MotorRowboat : MotorBoat
 			{
 				Vector3 vector3 = player.transform.position;
 				list.Sort((Vector3 a, Vector3 b) => Vector3.Distance(a, vector3).CompareTo(Vector3.Distance(b, vector3)));
-				Vector3 item = list[0];
+				res = list[0];
 				Facepunch.Pool.FreeList<Vector3>(ref list);
-				return item;
+				return true;
 			}
 			Facepunch.Pool.FreeList<Vector3>(ref list);
 		}
-		return base.GetDismountPosition(player);
+		return base.GetDismountPosition(player, out res);
 	}
 
 	public int GetFuelAmount()

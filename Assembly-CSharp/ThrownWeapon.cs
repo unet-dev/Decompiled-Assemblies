@@ -71,7 +71,7 @@ public class ThrownWeapon : AttackEntity
 		baseEntity.creatorEntity = msg.player;
 		baseEntity.Spawn();
 		base.StartAttackCooldown(this.repeatDelay);
-		Interface.CallHook("OnExplosiveDropped", msg.player, baseEntity);
+		Interface.CallHook("OnExplosiveDropped", msg.player, baseEntity, this);
 		base.UseItemAmount(1);
 	}
 
@@ -108,7 +108,7 @@ public class ThrownWeapon : AttackEntity
 		}
 		baseEntity.Spawn();
 		base.StartAttackCooldown(this.repeatDelay);
-		Interface.CallHook("OnExplosiveThrown", msg.player, baseEntity);
+		Interface.CallHook("OnExplosiveThrown", msg.player, baseEntity, this);
 		base.UseItemAmount(1);
 		BasePlayer basePlayer = msg.player;
 		if (basePlayer != null)

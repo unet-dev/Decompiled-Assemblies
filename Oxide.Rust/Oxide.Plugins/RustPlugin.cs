@@ -31,9 +31,9 @@ namespace Oxide.Plugins
 			foreach (CSharpPlugin.PluginFieldInfo onlinePlayerField in this.onlinePlayerFields)
 			{
 				Type genericArguments = onlinePlayerField.GenericArguments[1];
-				object obj = (genericArguments.GetConstructor(new Type[] { typeof(BasePlayer) }) == null ? Activator.CreateInstance(genericArguments) : Activator.CreateInstance(genericArguments, new object[] { player }));
+				object obj = (genericArguments.GetConstructor(new Type[] { typeof(BasePlayer) }) == null ? Activator.CreateInstance(genericArguments) : Activator.CreateInstance(genericArguments, new Object[] { player }));
 				genericArguments.GetField("Player").SetValue(obj, player);
-				onlinePlayerField.Call("Add", new object[] { player, obj });
+				onlinePlayerField.Call("Add", new Object[] { player, obj });
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Oxide.Plugins
 			base.NextTick(() => {
 				foreach (CSharpPlugin.PluginFieldInfo onlinePlayerField in this.onlinePlayerFields)
 				{
-					onlinePlayerField.Call("Remove", new object[] { player });
+					onlinePlayerField.Call("Remove", new Object[] { player });
 				}
 			});
 		}
@@ -77,19 +77,19 @@ namespace Oxide.Plugins
 					CSharpPlugin.PluginFieldInfo pluginFieldInfo = new CSharpPlugin.PluginFieldInfo(this, fieldInfo);
 					if ((int)pluginFieldInfo.GenericArguments.Length != 2 || pluginFieldInfo.GenericArguments[0] != typeof(BasePlayer))
 					{
-						base.Puts(string.Concat("The ", fieldInfo.Name, " field is not a Hash with a BasePlayer key! (online players will not be tracked)"), Array.Empty<object>());
+						base.Puts(String.Concat("The ", fieldInfo.Name, " field is not a Hash with a BasePlayer key! (online players will not be tracked)"), Array.Empty<object>());
 					}
 					else if (!pluginFieldInfo.LookupMethod("Add", pluginFieldInfo.GenericArguments))
 					{
-						base.Puts(string.Concat("The ", fieldInfo.Name, " field does not support adding BasePlayer keys! (online players will not be tracked)"), Array.Empty<object>());
+						base.Puts(String.Concat("The ", fieldInfo.Name, " field does not support adding BasePlayer keys! (online players will not be tracked)"), Array.Empty<object>());
 					}
 					else if (!pluginFieldInfo.LookupMethod("Remove", new Type[] { typeof(BasePlayer) }))
 					{
-						base.Puts(string.Concat("The ", fieldInfo.Name, " field does not support removing BasePlayer keys! (online players will not be tracked)"), Array.Empty<object>());
+						base.Puts(String.Concat("The ", fieldInfo.Name, " field does not support removing BasePlayer keys! (online players will not be tracked)"), Array.Empty<object>());
 					}
 					else if (pluginFieldInfo.GenericArguments[1].GetField("Player") == null)
 					{
-						base.Puts(string.Concat("The ", pluginFieldInfo.GenericArguments[1].Name, " class does not have a public Player field! (online players will not be tracked)"), Array.Empty<object>());
+						base.Puts(String.Concat("The ", pluginFieldInfo.GenericArguments[1].Name, " class does not have a public Player field! (online players will not be tracked)"), Array.Empty<object>());
 					}
 					else if (pluginFieldInfo.HasValidConstructor(new Type[] { typeof(BasePlayer) }))
 					{
@@ -97,7 +97,7 @@ namespace Oxide.Plugins
 					}
 					else
 					{
-						base.Puts(string.Concat("The ", fieldInfo.Name, " field is using a class which contains no valid constructor (online players will not be tracked)"), Array.Empty<object>());
+						base.Puts(String.Concat("The ", fieldInfo.Name, " field is using a class which contains no valid constructor (online players will not be tracked)"), Array.Empty<object>());
 					}
 				}
 			}
@@ -151,8 +151,8 @@ namespace Oxide.Plugins
 			if (flag)
 			{
 				BasePlayer basePlayer = player;
-				object[] objArray = new object[] { 0, null, null };
-				objArray[1] = (args.Length != 0 ? string.Format(format, args) : format);
+				System.Object[] objArray = new Object[] { 0, null, null };
+				objArray[1] = (args.Length != 0 ? String.Format(format, args) : format);
 				objArray[2] = 1f;
 				basePlayer.SendConsoleCommand("chat.add", objArray);
 			}
@@ -162,8 +162,8 @@ namespace Oxide.Plugins
 		{
 			if (BasePlayer.activePlayerList.Count >= 1)
 			{
-				object[] objArray = new object[] { 0, null, null };
-				objArray[1] = (args.Length != 0 ? string.Format(format, args) : format);
+				System.Object[] objArray = new Object[] { 0, null, null };
+				objArray[1] = (args.Length != 0 ? String.Format(format, args) : format);
 				objArray[2] = 1f;
 				ConsoleNetwork.BroadcastToAllClients("chat.add", objArray);
 			}
@@ -182,7 +182,7 @@ namespace Oxide.Plugins
 			}
 			if (flag)
 			{
-				player.SendConsoleCommand(string.Concat("echo ", (args.Length != 0 ? string.Format(format, args) : format)), Array.Empty<object>());
+				player.SendConsoleCommand(String.Concat("echo ", (args.Length != 0 ? String.Format(format, args) : format)), Array.Empty<object>());
 			}
 		}
 
@@ -190,7 +190,7 @@ namespace Oxide.Plugins
 		{
 			if (BasePlayer.activePlayerList.Count >= 1)
 			{
-				ConsoleNetwork.BroadcastToAllClients(string.Concat("echo ", (args.Length != 0 ? string.Format(format, args) : format)), Array.Empty<object>());
+				ConsoleNetwork.BroadcastToAllClients(String.Concat("echo ", (args.Length != 0 ? String.Format(format, args) : format)), Array.Empty<object>());
 			}
 		}
 
@@ -208,7 +208,7 @@ namespace Oxide.Plugins
 				obj = null;
 			}
 			BasePlayer basePlayer = obj as BasePlayer;
-			string str = (args.Length != 0 ? string.Format(format, args) : format);
+			string str = (args.Length != 0 ? String.Format(format, args) : format);
 			if (basePlayer != null)
 			{
 				flag = basePlayer.net;
@@ -222,7 +222,7 @@ namespace Oxide.Plugins
 				Debug.LogError(str);
 				return;
 			}
-			basePlayer.SendConsoleCommand(string.Concat("echo ", str), Array.Empty<object>());
+			basePlayer.SendConsoleCommand(String.Concat("echo ", str), Array.Empty<object>());
 		}
 
 		protected void SendReply(ConsoleSystem.Arg arg, string format, params object[] args)
@@ -239,7 +239,7 @@ namespace Oxide.Plugins
 				obj = null;
 			}
 			BasePlayer basePlayer = obj as BasePlayer;
-			string str = (args.Length != 0 ? string.Format(format, args) : format);
+			string str = (args.Length != 0 ? String.Format(format, args) : format);
 			if (basePlayer != null)
 			{
 				flag = basePlayer.net;
@@ -253,7 +253,7 @@ namespace Oxide.Plugins
 				base.Puts(str, Array.Empty<object>());
 				return;
 			}
-			basePlayer.SendConsoleCommand(string.Concat("echo ", str), Array.Empty<object>());
+			basePlayer.SendConsoleCommand(String.Concat("echo ", str), Array.Empty<object>());
 		}
 
 		protected void SendReply(BasePlayer player, string format, params object[] args)
@@ -275,7 +275,7 @@ namespace Oxide.Plugins
 				obj = null;
 			}
 			BasePlayer basePlayer = obj as BasePlayer;
-			string str = (args.Length != 0 ? string.Format(format, args) : format);
+			string str = (args.Length != 0 ? String.Format(format, args) : format);
 			if (basePlayer != null)
 			{
 				flag = basePlayer.net;
@@ -289,7 +289,7 @@ namespace Oxide.Plugins
 				Debug.LogWarning(str);
 				return;
 			}
-			basePlayer.SendConsoleCommand(string.Concat("echo ", str), Array.Empty<object>());
+			basePlayer.SendConsoleCommand(String.Concat("echo ", str), Array.Empty<object>());
 		}
 	}
 }

@@ -70,7 +70,7 @@ public class LootContainer : StorageContainer
 			Item item = ItemManager.Create(LootContainer.scrapDef, num, (ulong)0);
 			if (!item.MoveToContainer(this.inventory, -1, true))
 			{
-				item.Drop(base.transform.position, base.GetInheritedDropVelocity(), new Quaternion());
+				item.Drop(base.transform.position, this.GetInheritedDropVelocity(), new Quaternion());
 			}
 		}
 	}

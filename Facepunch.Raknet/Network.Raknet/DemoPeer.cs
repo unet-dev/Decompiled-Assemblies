@@ -1,12 +1,13 @@
 using Network;
 using System;
-using System.Runtime.InteropServices;
 
 namespace Facepunch.Network.Raknet
 {
 	internal class DemoPeer : Peer
 	{
-		public byte[] Packet;
+		public unsafe byte* Data;
+
+		public int Length;
 
 		public int Position;
 
@@ -22,7 +23,7 @@ namespace Facepunch.Network.Raknet
 		{
 			get
 			{
-				return (int)this.Packet.Length * 8;
+				return this.Length * 8;
 			}
 		}
 
@@ -30,7 +31,7 @@ namespace Facepunch.Network.Raknet
 		{
 			get
 			{
-				return ((int)this.Packet.Length - this.Position) * 8;
+				return (this.Length - this.Position) * 8;
 			}
 		}
 
@@ -52,6 +53,11 @@ namespace Facepunch.Network.Raknet
 
 		public DemoPeer()
 		{
+		}
+
+		protected override void Check()
+		{
+			base.Check();
 		}
 
 		public override int GetPingAverage(ulong guid)
@@ -84,13 +90,18 @@ namespace Facepunch.Network.Raknet
 			return string.Empty;
 		}
 
+		public override IntPtr RawData()
+		{
+			return (IntPtr)this.Data;
+		}
+
 		protected override unsafe bool Read(byte* data, int length)
 		{
-			if (this.Position + length > (int)this.Packet.Length)
+			if (this.Position + length > this.Length)
 			{
 				return false;
 			}
-			Marshal.Copy(this.Packet, this.Position, (IntPtr)data, length);
+			Buffer.MemoryCopy(this.Data + this.Position, data, (long)length, (long)length);
 			this.Position += length;
 			return true;
 		}

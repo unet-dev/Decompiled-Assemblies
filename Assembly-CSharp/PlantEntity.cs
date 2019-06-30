@@ -309,6 +309,77 @@ public class PlantEntity : BaseCombatEntity, IInstanceDataReceiver
 		return flag;
 	}
 
+	public void PickFruit(BasePlayer receiver)
+	{
+		Quaternion quaternion;
+		if (!this.CanPick())
+		{
+			return;
+		}
+		this.harvests++;
+		float single = this.YieldBonusScale() * (float)this.plantProperty.waterYieldBonus;
+		int num = Mathf.RoundToInt((this.currentStage.resources + single) * (float)this.plantProperty.pickupAmount);
+		this.ResetSeason();
+		if (!this.plantProperty.pickupItem.condition.enabled)
+		{
+			Item item = ItemManager.Create(this.plantProperty.pickupItem, num, (ulong)0);
+			if (!receiver)
+			{
+				Vector3 vector3 = base.transform.position + (Vector3.up * 0.5f);
+				Vector3 vector31 = Vector3.up * 1f;
+				quaternion = new Quaternion();
+				item.Drop(vector3, vector31, quaternion);
+			}
+			else
+			{
+				if (Interface.CallHook("OnCropGather", this, item, receiver) != null)
+				{
+					return;
+				}
+				receiver.GiveItem(item, BaseEntity.GiveItemReason.PickedUp);
+			}
+		}
+		else
+		{
+			for (int i = 0; i < num; i++)
+			{
+				Item item1 = ItemManager.Create(this.plantProperty.pickupItem, 1, (ulong)0);
+				item1.conditionNormalized = this.plantProperty.fruitCurve.Evaluate(this.stageAgeFraction);
+				if (!receiver)
+				{
+					Vector3 vector32 = base.transform.position + (Vector3.up * 0.5f);
+					Vector3 vector33 = Vector3.up * 1f;
+					quaternion = new Quaternion();
+					item1.Drop(vector32, vector33, quaternion);
+				}
+				else
+				{
+					if (Interface.CallHook("OnCropGather", this, item1, receiver) != null)
+					{
+						return;
+					}
+					receiver.GiveItem(item1, BaseEntity.GiveItemReason.PickedUp);
+				}
+			}
+		}
+		if (this.plantProperty.pickEffect.isValid)
+		{
+			Effect.server.Run(this.plantProperty.pickEffect.resourcePath, base.transform.position, Vector3.up, null, false);
+		}
+		if (this.harvests >= this.plantProperty.maxHarvests)
+		{
+			if (this.plantProperty.disappearAfterHarvest)
+			{
+				this.Die(null);
+				return;
+			}
+			this.BecomeState(PlantProperties.State.Dying, true);
+			return;
+		}
+		this.growthAge = this.plantProperty.waterConsumptionLifetime - this.plantProperty.stages[3].lifeLength;
+		this.BecomeState(PlantProperties.State.Mature, true);
+	}
+
 	private bool PlacedInPlanter()
 	{
 		if (base.GetParentEntity() != null && base.GetParentEntity() is PlanterBox)
@@ -356,52 +427,7 @@ public class PlantEntity : BaseCombatEntity, IInstanceDataReceiver
 	[RPC_Server]
 	public void RPC_PickFruit(BaseEntity.RPCMessage msg)
 	{
-		if (!this.CanPick())
-		{
-			return;
-		}
-		this.harvests++;
-		float single = this.YieldBonusScale() * (float)this.plantProperty.waterYieldBonus;
-		int num = Mathf.RoundToInt((this.currentStage.resources + single) * (float)this.plantProperty.pickupAmount);
-		this.ResetSeason();
-		if (!this.plantProperty.pickupItem.condition.enabled)
-		{
-			Item item = ItemManager.Create(this.plantProperty.pickupItem, num, (ulong)0);
-			if (Interface.CallHook("OnCropGather", this, item, msg.player) != null)
-			{
-				return;
-			}
-			msg.player.GiveItem(item, BaseEntity.GiveItemReason.PickedUp);
-		}
-		else
-		{
-			for (int i = 0; i < num; i++)
-			{
-				Item item1 = ItemManager.Create(this.plantProperty.pickupItem, 1, (ulong)0);
-				item1.conditionNormalized = this.plantProperty.fruitCurve.Evaluate(this.stageAgeFraction);
-				if (Interface.CallHook("OnCropGather", this, item1, msg.player) != null)
-				{
-					return;
-				}
-				msg.player.GiveItem(item1, BaseEntity.GiveItemReason.PickedUp);
-			}
-		}
-		if (this.plantProperty.pickEffect.isValid)
-		{
-			Effect.server.Run(this.plantProperty.pickEffect.resourcePath, base.transform.position, Vector3.up, null, false);
-		}
-		if (this.harvests >= this.plantProperty.maxHarvests)
-		{
-			if (this.plantProperty.disappearAfterHarvest)
-			{
-				this.Die(null);
-				return;
-			}
-			this.BecomeState(PlantProperties.State.Dying, true);
-			return;
-		}
-		this.growthAge = this.plantProperty.waterConsumptionLifetime - this.plantProperty.stages[3].lifeLength;
-		this.BecomeState(PlantProperties.State.Mature, true);
+		this.PickFruit(msg.player);
 	}
 
 	[MaxDistance(3f)]

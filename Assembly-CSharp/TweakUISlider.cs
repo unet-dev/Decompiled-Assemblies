@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +7,7 @@ public class TweakUISlider : MonoBehaviour
 {
 	public Slider sliderControl;
 
-	public Text textControl;
+	public TextMeshProUGUI textControl;
 
 	public string convarName = "effects.motionblur";
 
@@ -74,13 +75,13 @@ public class TweakUISlider : MonoBehaviour
 		float single;
 		if (this.sliderControl.wholeNumbers)
 		{
-			Text str = this.textControl;
+			TextMeshProUGUI str = this.textControl;
 			single = this.sliderControl.@value;
 			str.text = single.ToString("N0");
 			return;
 		}
-		Text text = this.textControl;
+		TextMeshProUGUI textMeshProUGUI = this.textControl;
 		single = this.sliderControl.@value;
-		text.text = single.ToString("0.0");
+		textMeshProUGUI.text = single.ToString("0.0");
 	}
 }

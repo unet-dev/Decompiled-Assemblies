@@ -3,152 +3,290 @@ using UnityEngine;
 
 public class WaterGerstner
 {
+	public const int WaveCount = 6;
+
 	public WaterGerstner()
 	{
 	}
 
-	public static float SampleHeight(WaterGerstner.Wave[] waves, Vector3 location)
+	private static void GerstnerShoreWave(WaterGerstner.PrecomputedShoreWaves wave, Vector2 waveDir, Vector2 pos, Vector2 shoreVec, float variation_t, ref float outH)
 	{
-		Vector2 vector2 = new Vector2(location.x, location.z);
-		float waveTime = WaterSystem.WaveTime;
-		float single = 0f;
-		for (uint i = 0; (ulong)i < (long)((int)waves.Length); i++)
-		{
-			float single1 = waves[i].wi;
-			float single2 = waves[i].phi;
-			Vector2 di = waves[i].Di;
-			float ai = waves[i].Ai;
-			float single3 = Mathf.Sin(single1 * Vector2.Dot(di, vector2) + single2 * waveTime);
-			single = single + ai * single3;
-		}
-		return single;
+		float single = Mathf.Clamp01(waveDir.x * shoreVec.x + waveDir.y * shoreVec.y);
+		single *= single;
+		float k = wave.K * (waveDir.x * pos.x + waveDir.y * pos.y - wave.C + variation_t);
+		Mathf.Cos(k);
+		float single1 = Mathf.Sin(k);
+		outH = outH + wave.A * wave.Amplitude * single1 * single;
 	}
 
-	public static void SampleHeightArray(WaterGerstner.Wave[] waves, Vector2[] location, float[] height)
+	private static void GerstnerShoreWave(WaterGerstner.PrecomputedShoreWaves wave, Vector2 waveDir, Vector2 pos, Vector2 shoreVec, float variation_t, ref Vector3 outP)
 	{
-		Debug.Assert((int)location.Length == (int)height.Length);
-		float waveTime = WaterSystem.WaveTime;
-		for (uint i = 0; (ulong)i < (long)((int)waves.Length); i++)
-		{
-			float single = waves[i].wi;
-			float single1 = waves[i].phi;
-			Vector2 di = waves[i].Di;
-			float ai = waves[i].Ai;
-			for (int j = 0; j < (int)location.Length; j++)
-			{
-				float single2 = Mathf.Sin(single * (di.x * location[j].x + di.y * location[j].y) + single1 * waveTime);
-				float single3 = ai * single2;
-				height[j] = (i > 0 ? height[j] + single3 : single3);
-			}
-		}
+		float single = Mathf.Clamp01(waveDir.x * shoreVec.x + waveDir.y * shoreVec.y);
+		single *= single;
+		float k = wave.K * (waveDir.x * pos.x + waveDir.y * pos.y - wave.C + variation_t);
+		float single1 = Mathf.Cos(k);
+		float single2 = Mathf.Sin(k);
+		ref float singlePointer = ref outP.x;
+		singlePointer = singlePointer + waveDir.x * wave.A * single1 * single;
+		ref float a = ref outP.y;
+		a = a + wave.A * wave.Amplitude * single2 * single;
+		ref float singlePointer1 = ref outP.z;
+		singlePointer1 = singlePointer1 + waveDir.y * wave.A * single1 * single;
 	}
 
-	public static void SampleWaves(WaterGerstner.Wave[] waves, Vector3 location, out Vector3 position, out Vector3 normal)
+	private static void GerstnerWave(WaterGerstner.PrecomputedWave wave, Vector2 pos, Vector2 shoreVec, ref float outHeight)
 	{
+		Vector2 direction = wave.Direction;
+		float single = Mathf.Sin(wave.K * (direction.x * pos.x + direction.y * pos.y - wave.C));
+		outHeight = outHeight + wave.A * single;
+	}
+
+	private static void GerstnerWave(WaterGerstner.PrecomputedWave wave, Vector2 pos, Vector2 shoreVec, ref Vector3 outP)
+	{
+		Vector2 direction = wave.Direction;
+		float k = wave.K * (direction.x * pos.x + direction.y * pos.y - wave.C);
+		float single = Mathf.Cos(k);
+		float single1 = Mathf.Sin(k);
+		ref float a = ref outP.x;
+		a = a + direction.x * wave.A * single;
+		ref float singlePointer = ref outP.y;
+		singlePointer = singlePointer + wave.A * single1;
+		ref float a1 = ref outP.z;
+		a1 = a1 + direction.y * wave.A * single;
+	}
+
+	public static Vector3 SampleDisplacement(WaterSystem instance, Vector3 location, Vector3 shore)
+	{
+		WaterGerstner.PrecomputedWave[] precomputedWaves = instance.PrecomputedWaves;
+		WaterGerstner.PrecomputedShoreWaves precomputedShoreWaves = instance.PrecomputedShoreWaves;
 		Vector2 vector2 = new Vector2(location.x, location.z);
-		float waveTime = WaterSystem.WaveTime;
+		Vector2 vector21 = new Vector2(shore.x, shore.y);
+		float single = 1f - Mathf.Clamp01(shore.z * instance.ShoreWavesRcpFadeDistance);
+		float single1 = Mathf.Clamp01(shore.z * instance.TerrainRcpFadeDistance);
+		float single2 = Mathf.Cos(vector2.x * precomputedShoreWaves.DirectionVarFreq) * precomputedShoreWaves.DirectionVarAmp;
+		float single3 = Mathf.Cos(vector2.y * precomputedShoreWaves.DirectionVarFreq) * precomputedShoreWaves.DirectionVarAmp;
+		float single4 = single2 + single3;
 		Vector3 vector3 = Vector3.zero;
 		Vector3 vector31 = Vector3.zero;
-		for (uint i = 0; (ulong)i < (long)((int)waves.Length); i++)
+		for (int i = 0; i < 6; i++)
 		{
-			float single = waves[i].wi;
-			float single1 = waves[i].phi;
-			float wA = waves[i].WA;
-			Vector2 di = waves[i].Di;
-			float ai = waves[i].Ai;
-			float qi = waves[i].Qi;
-			float single2 = single * Vector2.Dot(di, vector2) + single1 * waveTime;
-			float single3 = Mathf.Sin(single2);
-			float single4 = Mathf.Cos(single2);
-			ref float singlePointer = ref vector3.x;
-			singlePointer = singlePointer + qi * ai * di.x * single4;
-			ref float singlePointer1 = ref vector3.y;
-			singlePointer1 = singlePointer1 + qi * ai * di.y * single4;
-			ref float singlePointer2 = ref vector3.z;
-			singlePointer2 = singlePointer2 + ai * single3;
-			ref float singlePointer3 = ref vector31.x;
-			singlePointer3 = singlePointer3 + di.x * wA * single4;
-			ref float singlePointer4 = ref vector31.y;
-			singlePointer4 = singlePointer4 + di.y * wA * single4;
-			ref float singlePointer5 = ref vector31.z;
-			singlePointer5 = singlePointer5 + qi * wA * single3;
+			WaterGerstner.GerstnerWave(precomputedWaves[i], vector2, vector21, ref vector3);
+			WaterGerstner.GerstnerShoreWave(precomputedShoreWaves, precomputedShoreWaves.Directions[i], vector2, vector21, single4, ref vector31);
 		}
-		position = new Vector3(vector3.x, vector3.z, vector3.y);
-		normal = new Vector3(-vector31.x, 1f - vector31.z, -vector31.y);
+		return Vector3.Lerp(vector3, vector31, single) * single1;
 	}
 
-	public static WaterGerstner.Wave[] SetupWaves(Vector3 wind, WaterGerstner.WaveSettings settings)
+	public static float SampleHeight(WaterSystem instance, Vector3 location, Vector3 shore)
 	{
-		UnityEngine.Random.State state = UnityEngine.Random.state;
-		UnityEngine.Random.InitState(settings.RandomSeed);
-		int waveCount = settings.WaveCount;
-		float single = Mathf.Atan2(wind.z, wind.x);
-		float single1 = (float)(1 / waveCount);
-		float amplitude = settings.Amplitude;
-		float length = settings.Length;
-		float steepness = settings.Steepness;
-		WaterGerstner.Wave[] wave = new WaterGerstner.Wave[waveCount];
-		for (int i = 0; i < waveCount; i++)
+		WaterGerstner.PrecomputedWave[] precomputedWaves = instance.PrecomputedWaves;
+		WaterGerstner.PrecomputedShoreWaves precomputedShoreWaves = instance.PrecomputedShoreWaves;
+		Vector2 vector2 = new Vector2(location.x, location.z);
+		Vector2 vector21 = new Vector2(shore.x, shore.y);
+		float single = 1f - Mathf.Clamp01(shore.z * instance.ShoreWavesRcpFadeDistance);
+		float single1 = Mathf.Clamp01(shore.z * instance.TerrainRcpFadeDistance);
+		float single2 = Mathf.Cos(vector2.x * precomputedShoreWaves.DirectionVarFreq) * precomputedShoreWaves.DirectionVarAmp;
+		float single3 = Mathf.Cos(vector2.y * precomputedShoreWaves.DirectionVarFreq) * precomputedShoreWaves.DirectionVarAmp;
+		float single4 = single2 + single3;
+		float single5 = 0f;
+		float single6 = 0f;
+		for (int i = 0; i < 6; i++)
 		{
-			float single2 = Mathf.Lerp(0.5f, 1.5f, (float)i * single1);
-			float single3 = single + 0.0174532924f * UnityEngine.Random.Range(-settings.AngleSpread, settings.AngleSpread);
-			Vector2 vector2 = new Vector2(-Mathf.Cos(single3), -Mathf.Sin(single3));
-			float single4 = amplitude * single2 * UnityEngine.Random.Range(0.8f, 1.2f);
-			float single5 = length * single2 * UnityEngine.Random.Range(0.6f, 1.4f);
-			float single6 = Mathf.Clamp01(steepness * single2 * UnityEngine.Random.Range(0.6f, 1.4f));
-			wave[i] = new WaterGerstner.Wave(waveCount, vector2, single4, single5, single6);
-			UnityEngine.Random.InitState(settings.RandomSeed + i + 1);
+			WaterGerstner.GerstnerWave(precomputedWaves[i], vector2, vector21, ref single5);
+			WaterGerstner.GerstnerShoreWave(precomputedShoreWaves, precomputedShoreWaves.Directions[i], vector2, vector21, single4, ref single6);
 		}
-		UnityEngine.Random.state = state;
-		return wave;
+		return Mathf.Lerp(single5, single6, single) * single1;
 	}
 
-	[Serializable]
-	public struct Wave
+	public static void SampleHeightArray(WaterSystem instance, Vector2[] location, Vector3[] shore, float[] height)
 	{
-		private const float MaxFrequency = 5f;
-
-		public float wi;
-
-		public float phi;
-
-		public float WA;
-
-		public Vector2 Di;
-
-		public float Ai;
-
-		public float Qi;
-
-		public Wave(int waveCount, Vector2 direction, float amplitude, float length, float steepness)
+		Debug.Assert((int)location.Length == (int)height.Length);
+		for (int i = 0; i < (int)location.Length; i++)
 		{
-			this.wi = 2f / length;
-			this.phi = Mathf.Min(5f, Mathf.Sqrt(30.8190269f * this.wi)) * this.wi;
-			this.WA = this.wi * amplitude;
-			this.Di = direction;
-			this.Ai = amplitude;
-			this.Qi = steepness / (this.WA * (float)waveCount);
+			Vector3 vector3 = new Vector3(location[i].x, 0f, location[i].y);
+			Vector3 vector31 = WaterGerstner.SampleDisplacement(instance, vector3, shore[i]);
+			vector31.x = vector3.x - vector31.x;
+			vector31.z = vector3.z - vector31.z;
+			height[i] = WaterGerstner.SampleHeight(instance, vector3, shore[i]);
 		}
 	}
 
-	[Serializable]
-	public class WaveSettings
+	public static void UpdatePrecomputedShoreWaves(WaterGerstner.ShoreWaveParams shoreWaves, ref WaterGerstner.PrecomputedShoreWaves precomputed)
 	{
-		[Range(1f, 8f)]
-		public int WaveCount;
+		if (precomputed.Directions != null || (int)precomputed.Directions.Length != 6)
+		{
+			precomputed.Directions = new Vector2[6];
+		}
+		Debug.Assert((int)precomputed.Directions.Length == (int)shoreWaves.DirectionAngles.Length);
+		for (int i = 0; i < 6; i++)
+		{
+			float directionAngles = shoreWaves.DirectionAngles[i] * 0.0174532924f;
+			precomputed.Directions[i] = new Vector2(Mathf.Cos(directionAngles), Mathf.Sin(directionAngles));
+		}
+		precomputed.Steepness = shoreWaves.Steepness;
+		precomputed.Amplitude = shoreWaves.Amplitude;
+		precomputed.K = 6.28318548f / shoreWaves.Length;
+		precomputed.C = Mathf.Sqrt(9.8f / precomputed.K) * shoreWaves.Speed * WaterSystem.WaveTime;
+		precomputed.A = shoreWaves.Steepness / precomputed.K;
+		precomputed.DirectionVarFreq = shoreWaves.DirectionVarFreq;
+		precomputed.DirectionVarAmp = shoreWaves.DirectionVarAmp;
+	}
+
+	public static void UpdatePrecomputedWaves(WaterGerstner.WaveParams[] waves, ref WaterGerstner.PrecomputedWave[] precomputed)
+	{
+		if (precomputed == null || (int)precomputed.Length != 6)
+		{
+			precomputed = new WaterGerstner.PrecomputedWave[6];
+		}
+		Debug.Assert((int)precomputed.Length == (int)waves.Length);
+		for (int i = 0; i < 6; i++)
+		{
+			float angle = waves[i].Angle * 0.0174532924f;
+			precomputed[i].Angle = angle;
+			precomputed[i].Direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+			precomputed[i].Steepness = waves[i].Steepness;
+			precomputed[i].K = 6.28318548f / waves[i].Length;
+			precomputed[i].C = Mathf.Sqrt(9.8f / precomputed[i].K) * waves[i].Speed * WaterSystem.WaveTime;
+			precomputed[i].A = waves[i].Steepness / precomputed[i].K;
+		}
+	}
+
+	public static void UpdateShoreWaveArray(WaterGerstner.PrecomputedShoreWaves precomputed, ref Vector4[] array)
+	{
+		Debug.Assert((int)precomputed.Directions.Length == 6);
+		if (array == null || (int)array.Length != 6)
+		{
+			array = new Vector4[3];
+		}
+		Debug.Assert((int)array.Length == 3);
+		Vector2[] directions = precomputed.Directions;
+		array[0] = new Vector4(directions[0].x, directions[0].y, directions[1].x, directions[1].y);
+		array[1] = new Vector4(directions[2].x, directions[2].y, directions[3].x, directions[3].y);
+		array[2] = new Vector4(directions[4].x, directions[4].y, directions[5].x, directions[5].y);
+	}
+
+	public static void UpdateWaveArray(WaterGerstner.PrecomputedWave[] precomputed, ref Vector4[] array)
+	{
+		if (array == null || (int)array.Length != 6)
+		{
+			array = new Vector4[6];
+		}
+		Debug.Assert((int)array.Length == (int)precomputed.Length);
+		for (int i = 0; i < 6; i++)
+		{
+			array[i] = new Vector4(precomputed[i].Angle, precomputed[i].Steepness, precomputed[i].K, precomputed[i].C);
+		}
+	}
+
+	public struct PrecomputedShoreWaves
+	{
+		public Vector2[] Directions;
+
+		public float Steepness;
 
 		public float Amplitude;
 
-		public float Length;
+		public float K;
 
-		public float AngleSpread;
+		public float C;
 
-		[NonSerialized]
+		public float A;
+
+		public float DirectionVarFreq;
+
+		public float DirectionVarAmp;
+
+		public static WaterGerstner.PrecomputedShoreWaves Default;
+
+		static PrecomputedShoreWaves()
+		{
+			WaterGerstner.PrecomputedShoreWaves precomputedShoreWafe = new WaterGerstner.PrecomputedShoreWaves()
+			{
+				Directions = new Vector2[] { Vector2.right, Vector2.right, Vector2.right, Vector2.right, Vector2.right, Vector2.right },
+				Steepness = 0.75f,
+				Amplitude = 0.2f,
+				K = 1f,
+				C = 1f,
+				A = 1f,
+				DirectionVarFreq = 0.1f,
+				DirectionVarAmp = 3f
+			};
+			WaterGerstner.PrecomputedShoreWaves.Default = precomputedShoreWafe;
+		}
+	}
+
+	public struct PrecomputedWave
+	{
+		public float Angle;
+
+		public Vector2 Direction;
+
 		public float Steepness;
 
-		public int RandomSeed;
+		public float K;
 
-		public WaveSettings()
+		public float C;
+
+		public float A;
+
+		public static WaterGerstner.PrecomputedWave Default;
+
+		static PrecomputedWave()
+		{
+			WaterGerstner.PrecomputedWave precomputedWave = new WaterGerstner.PrecomputedWave()
+			{
+				Angle = 0f,
+				Direction = Vector2.right,
+				Steepness = 0.4f,
+				K = 1f,
+				C = 1f,
+				A = 1f
+			};
+			WaterGerstner.PrecomputedWave.Default = precomputedWave;
+		}
+	}
+
+	[Serializable]
+	public class ShoreWaveParams
+	{
+		[Range(0f, 2f)]
+		public float Steepness;
+
+		[Range(0f, 1f)]
+		public float Amplitude;
+
+		[Range(0.01f, 1000f)]
+		public float Length;
+
+		[Range(-10f, 10f)]
+		public float Speed;
+
+		public float[] DirectionAngles;
+
+		public float DirectionVarFreq;
+
+		public float DirectionVarAmp;
+
+		public ShoreWaveParams()
+		{
+		}
+	}
+
+	[Serializable]
+	public class WaveParams
+	{
+		[Range(0f, 360f)]
+		public float Angle;
+
+		[Range(0f, 0.99f)]
+		public float Steepness;
+
+		[Range(0.01f, 1000f)]
+		public float Length;
+
+		[Range(-10f, 10f)]
+		public float Speed;
+
+		public WaveParams()
 		{
 		}
 	}

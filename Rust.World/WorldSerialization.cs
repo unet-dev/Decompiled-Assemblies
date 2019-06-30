@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class WorldSerialization
 {
-	public const uint CurrentVersion = 8;
+	public const uint CurrentVersion = 9;
 
 	public WorldSerialization.WorldData world = new WorldSerialization.WorldData();
 
@@ -26,7 +26,7 @@ public class WorldSerialization
 
 	public WorldSerialization()
 	{
-		this.Version = 8;
+		this.Version = 9;
 		this.Checksum = null;
 	}
 
@@ -68,7 +68,7 @@ public class WorldSerialization
 		this.world.maps.Clear();
 		this.world.prefabs.Clear();
 		this.world.paths.Clear();
-		this.Version = 8;
+		this.Version = 9;
 		this.Checksum = null;
 	}
 
@@ -150,7 +150,7 @@ public class WorldSerialization
 				using (BinaryReader binaryReader = new BinaryReader(fileStream))
 				{
 					this.Version = binaryReader.ReadUInt32();
-					if (this.Version == 8)
+					if (this.Version == 9)
 					{
 						using (LZ4Stream lZ4Stream = new LZ4Stream(fileStream, LZ4StreamMode.Decompress, LZ4StreamFlags.None, 1048576))
 						{

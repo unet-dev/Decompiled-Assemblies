@@ -1,3 +1,4 @@
+using Steamworks.Data;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,10 +16,6 @@ public class GameStat : MonoBehaviour
 	private long globalValue;
 
 	private long localValue;
-
-	private long oldGlobalValue;
-
-	private long oldLocalValue;
 
 	private float secondsSinceRefresh;
 
@@ -38,5 +35,13 @@ public class GameStat : MonoBehaviour
 		public string statName;
 
 		public string statTitle;
+
+		public Steamworks.Data.Stat SteamStat
+		{
+			get
+			{
+				return new Steamworks.Data.Stat(this.statName);
+			}
+		}
 	}
 }

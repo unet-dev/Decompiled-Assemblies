@@ -1,10 +1,11 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ChatEntry : MonoBehaviour
 {
-	public Text text;
+	public TextMeshProUGUI text;
 
 	public RawImage avatar;
 

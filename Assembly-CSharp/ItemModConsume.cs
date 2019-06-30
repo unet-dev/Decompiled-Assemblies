@@ -38,6 +38,10 @@ public class ItemModConsume : ItemMod
 		}
 		player.metabolism.MarkConsumption();
 		ItemModConsumable consumable = this.GetConsumable();
+		if (!string.IsNullOrEmpty(consumable.achievementWhenEaten))
+		{
+			player.GiveAchievement(consumable.achievementWhenEaten);
+		}
 		float single = (float)Mathf.Max(consumable.amountToConsume, 1);
 		float single1 = (float)Mathf.Min((float)item.amount, single);
 		float single2 = single1 / single;

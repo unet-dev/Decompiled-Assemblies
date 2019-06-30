@@ -1,8 +1,8 @@
 using ConVar;
-using Facepunch.Steamworks;
-using Rust;
+using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class SteamStatistics
@@ -11,7 +11,7 @@ public class SteamStatistics
 
 	public Dictionary<string, int> intStats = new Dictionary<string, int>();
 
-	private bool hasRefreshed;
+	private Task refresh;
 
 	public SteamStatistics(BasePlayer p)
 	{
@@ -20,11 +20,11 @@ public class SteamStatistics
 
 	public void Add(string name, int var)
 	{
-		if (Rust.Global.SteamServer == null)
+		if (!SteamServer.IsValid)
 		{
 			return;
 		}
-		if (!this.hasRefreshed)
+		if (this.refresh == null || !this.refresh.IsCompleted)
 		{
 			return;
 		}
@@ -33,12 +33,12 @@ public class SteamStatistics
 			int num = 0;
 			if (!this.intStats.TryGetValue(name, out num))
 			{
-				num = Rust.Global.SteamServer.Stats.GetInt(this.player.userID, name, 0);
-				if (Rust.Global.SteamServer.Stats.SetInt(this.player.userID, name, num + var))
+				num = SteamServerStats.GetInt(this.player.userID, name, 0);
+				if (SteamServerStats.SetInt(this.player.userID, name, num + var))
 				{
 					this.intStats.Add(name, num + var);
 				}
-				else if (ConVar.Global.developer > 0)
+				else if (Global.developer > 0)
 				{
 					Debug.LogWarning(string.Concat("[STEAMWORKS] Couldn't SetUserStat: ", name));
 					return;
@@ -49,32 +49,27 @@ public class SteamStatistics
 				Dictionary<string, int> item = this.intStats;
 				string str = name;
 				item[str] = item[str] + var;
-				Rust.Global.SteamServer.Stats.SetInt(this.player.userID, name, this.intStats[name]);
+				SteamServerStats.SetInt(this.player.userID, name, this.intStats[name]);
 			}
 		}
 	}
 
 	public void Init()
 	{
-		if (Rust.Global.SteamServer == null)
+		if (!SteamServer.IsValid)
 		{
 			return;
 		}
-		Rust.Global.SteamServer.Stats.Refresh(this.player.userID, new Action<ulong, bool>(this.OnStatsRefreshed));
+		this.refresh = SteamServerStats.RequestUserStats(this.player.userID);
 		this.intStats.Clear();
-	}
-
-	public void OnStatsRefreshed(ulong steamid, bool state)
-	{
-		this.hasRefreshed = true;
 	}
 
 	public void Save()
 	{
-		if (Rust.Global.SteamServer == null)
+		if (!SteamServer.IsValid)
 		{
 			return;
 		}
-		Rust.Global.SteamServer.Stats.Commit(this.player.userID, null);
+		SteamServerStats.StoreUserStats(this.player.userID);
 	}
 }

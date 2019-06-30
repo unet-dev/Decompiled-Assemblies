@@ -1,5 +1,5 @@
-using Facepunch.Steamworks;
 using Rust;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,7 +79,7 @@ public class ItemDefinition : MonoBehaviour
 	public ItemSkinDirectory.Skin[] skins;
 
 	[NonSerialized]
-	public Inventory.Definition[] _skins2;
+	public InventoryDef[] _skins2;
 
 	[Tooltip("Panel to show in the inventory menu when selected")]
 	public GameObject panel;
@@ -151,7 +151,7 @@ public class ItemDefinition : MonoBehaviour
 		private set;
 	}
 
-	public Inventory.Definition[] skins2
+	public InventoryDef[] skins2
 	{
 		get
 		{
@@ -159,16 +159,16 @@ public class ItemDefinition : MonoBehaviour
 			{
 				return this._skins2;
 			}
-			if (Global.SteamServer != null && Global.SteamServer.Inventory.Definitions != null)
+			if (SteamServer.IsValid && Steamworks.SteamInventory.Definitions != null)
 			{
 				string str = base.name;
-				this._skins2 = Global.SteamServer.Inventory.Definitions.Where<Inventory.Definition>((Inventory.Definition x) => {
-					if (!(x.GetCachedStringProperty("itemshortname") == this.shortname) && !(x.GetCachedStringProperty("itemshortname") == str))
+				this._skins2 = Steamworks.SteamInventory.Definitions.Where<InventoryDef>((InventoryDef x) => {
+					if (!(x.GetProperty("itemshortname") == this.shortname) && !(x.GetProperty("itemshortname") == str))
 					{
 						return false;
 					}
-					return !string.IsNullOrEmpty(x.GetCachedStringProperty("workshopdownload"));
-				}).ToArray<Inventory.Definition>();
+					return !string.IsNullOrEmpty(x.GetProperty("workshopdownload"));
+				}).ToArray<InventoryDef>();
 			}
 			return this._skins2;
 		}
@@ -185,13 +185,13 @@ public class ItemDefinition : MonoBehaviour
 		{
 			return (ulong)0;
 		}
-		Inventory.Definition definition = Global.SteamServer.Inventory.FindDefinition(skinID);
-		if (definition != null)
+		InventoryDef inventoryDef = Steamworks.SteamInventory.FindDefinition(skinID);
+		if (inventoryDef != null)
 		{
-			ulong property = definition.GetProperty<ulong>("workshopdownload");
+			ulong property = inventoryDef.GetProperty<ulong>("workshopdownload");
 			if (property != 0)
 			{
-				string str = definition.GetProperty<string>("itemshortname");
+				string str = inventoryDef.GetProperty<string>("itemshortname");
 				if (str == itemDefinition.shortname || str == itemDefinition.name)
 				{
 					return property;

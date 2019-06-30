@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -47,11 +48,11 @@ public class PieMenu : UIBehaviour
 
 	public Image middleImage;
 
-	public Text middleTitle;
+	public TextMeshProUGUI middleTitle;
 
-	public Text middleDesc;
+	public TextMeshProUGUI middleDesc;
 
-	public Text middleRequired;
+	public TextMeshProUGUI middleRequired;
 
 	public Color colorIconActive;
 
@@ -164,7 +165,14 @@ public class PieMenu : UIBehaviour
 			select x).ToArray<PieMenu.MenuOption>();
 		while (this.optionsCanvas.transform.childCount > 0)
 		{
-			GameManager.DestroyImmediate(this.optionsCanvas.transform.GetChild(0).gameObject, true);
+			if (!UnityEngine.Application.isPlaying)
+			{
+				UnityEngine.Object.DestroyImmediate(this.optionsCanvas.transform.GetChild(0).gameObject);
+			}
+			else
+			{
+				GameManager.DestroyImmediate(this.optionsCanvas.transform.GetChild(0).gameObject, true);
+			}
 		}
 		float length = this.radiusSize / (float)((int)this.options.Length);
 		for (int i = 0; i < (int)this.options.Length; i++)
@@ -211,10 +219,6 @@ public class PieMenu : UIBehaviour
 
 	private void Update()
 	{
-		if (!UnityEngine.Application.isPlaying)
-		{
-			this.Rebuild();
-		}
 		if (this.pieBackground.innerSize != this.innerSize || this.pieBackground.outerSize != this.outerSize || this.pieBackground.startRadius != this.startRadius || this.pieBackground.endRadius != this.startRadius + this.radiusSize)
 		{
 			this.pieBackground.startRadius = this.startRadius;
@@ -283,7 +287,15 @@ public class PieMenu : UIBehaviour
 						this.scaleTarget.transform.localScale = Vector3.one;
 						LeanTween.scale(this.scaleTarget, Vector3.one * 1.03f, 0.2f).setEase(PieMenu.easePunch);
 					}
+					if (this.selectedOption != null)
+					{
+						this.selectedOption.option.imageIcon.RebuildHackUnity2019();
+					}
 					this.selectedOption = this.options[i];
+					if (this.selectedOption != null)
+					{
+						this.selectedOption.option.imageIcon.RebuildHackUnity2019();
+					}
 				}
 			}
 			if (this.options[i].disabled)

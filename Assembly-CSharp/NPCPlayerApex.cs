@@ -45,6 +45,8 @@ public class NPCPlayerApex : NPCPlayer, IContextProvider, IAIAgent, ILoadBalance
 
 	public readonly static HashSet<NPCPlayerApex> AllBanditCampNPCs;
 
+	public string deathStatName = "kill_scientist";
+
 	private float nextSensorySystemTick;
 
 	private float nextReasoningSystemTick;
@@ -2910,6 +2912,10 @@ public class NPCPlayerApex : NPCPlayer, IContextProvider, IAIAgent, ILoadBalance
 		{
 			Effect.server.Run(this.DeathEffect.resourcePath, this, 0, Vector3.zero, Vector3.zero, null, false);
 		}
+		if (info.InitiatorPlayer != null && !info.InitiatorPlayer.IsNpc)
+		{
+			info.InitiatorPlayer.stats.Add(this.deathStatName, 1, Stats.Steam);
+		}
 	}
 
 	public override void OnSensation(Sensation sensation)
@@ -3925,7 +3931,7 @@ public class NPCPlayerApex : NPCPlayer, IContextProvider, IAIAgent, ILoadBalance
 				BasePlayer basePlayer = sensesResults as BasePlayer;
 				if (basePlayer != null)
 				{
-					if (!AI.ignoreplayers && !basePlayer.IsSleeping() && !basePlayer.IsDead())
+					if (!AI.ignoreplayers && !(basePlayer is HTNPlayer) && !(basePlayer is NPCPlayer) && !basePlayer.IsSleeping() && !basePlayer.IsDead())
 					{
 						this.AiContext.Players.Add(sensesResults as BasePlayer);
 					}

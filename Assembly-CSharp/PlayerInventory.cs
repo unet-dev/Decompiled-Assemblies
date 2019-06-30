@@ -1,10 +1,10 @@
 using ConVar;
 using Facepunch;
-using Facepunch.Steamworks;
 using Network;
 using Oxide.Core;
 using ProtoBuf;
 using Rust;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -356,10 +356,10 @@ public class PlayerInventory : EntityComponent<BasePlayer>
 		int infoInt = base.baseEntity.GetInfoInt("client.rockskin", 0);
 		if (infoInt > 0 && base.baseEntity.blueprints.steamInventory.HasItem(infoInt))
 		{
-			Facepunch.Steamworks.Inventory.Definition definition = Rust.Global.SteamServer.Inventory.FindDefinition(infoInt);
-			if (definition != null)
+			InventoryDef inventoryDef = Steamworks.SteamInventory.FindDefinition(infoInt);
+			if (inventoryDef != null)
 			{
-				property = definition.GetProperty<ulong>("workshopdownload");
+				property = inventoryDef.GetProperty<ulong>("workshopdownload");
 			}
 		}
 		this.GiveItem(ItemManager.CreateByName("rock", 1, property), this.containerBelt);
@@ -482,7 +482,7 @@ public class PlayerInventory : EntityComponent<BasePlayer>
 			return;
 		}
 		int num1 = item.amount;
-		if (msg.read.unread >= 4)
+		if (msg.read.Unread >= 4)
 		{
 			num1 = msg.read.Int32();
 		}
@@ -551,7 +551,7 @@ public class PlayerInventory : EntityComponent<BasePlayer>
 		{
 			num3 = item.amount;
 		}
-		num3 = Mathf.Clamp(num3, 1, item.info.stackable);
+		num3 = Mathf.Clamp(num3, 1, item.MaxStackable());
 		if (num1 == 0)
 		{
 			if (!this.GiveItem(item, null))

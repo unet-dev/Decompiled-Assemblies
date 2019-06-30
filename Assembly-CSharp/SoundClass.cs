@@ -24,6 +24,8 @@ public class SoundClass : ScriptableObject
 	[Header("Voice Limiting")]
 	public int globalVoiceMaxCount = 100;
 
+	public int priority = 128;
+
 	public List<SoundDefinition> definitions = new List<SoundDefinition>();
 
 	public SoundClass()

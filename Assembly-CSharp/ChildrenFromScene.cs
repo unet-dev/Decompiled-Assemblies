@@ -19,6 +19,7 @@ public class ChildrenFromScene : MonoBehaviour
 	private IEnumerator Start()
 	{
 		ChildrenFromScene childrenFromScene = null;
+		UnityEngine.Debug.LogWarning(string.Concat("WARNING: CHILDRENFROMSCENE(", childrenFromScene.SceneName, ") - WE SHOULDN'T BE USING THIS SHITTY COMPONENT NOW WE HAVE AWESOME PREFABS"), childrenFromScene.gameObject);
 		Scene sceneByName = SceneManager.GetSceneByName(childrenFromScene.SceneName);
 		if (!sceneByName.isLoaded)
 		{
@@ -43,7 +44,7 @@ public class ChildrenFromScene : MonoBehaviour
 			SingletonComponent[] componentsInChildren = gameObject.GetComponentsInChildren<SingletonComponent>(true);
 			for (int j = 0; j < (int)componentsInChildren.Length; j++)
 			{
-				componentsInChildren[j].Setup();
+				componentsInChildren[j].SingletonSetup();
 			}
 			if (childrenFromScene.StartChildrenDisabled)
 			{

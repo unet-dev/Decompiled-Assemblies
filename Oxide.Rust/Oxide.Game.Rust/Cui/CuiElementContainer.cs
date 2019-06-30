@@ -11,7 +11,7 @@ namespace Oxide.Game.Rust.Cui
 
 		public string Add(CuiButton button, string parent = "Hud", string name = null)
 		{
-			if (string.IsNullOrEmpty(name))
+			if (String.IsNullOrEmpty(name))
 			{
 				name = CuiHelper.GetGuid();
 			}
@@ -24,7 +24,7 @@ namespace Oxide.Game.Rust.Cui
 			cuiElement.Components.Add(button.Button);
 			cuiElement.Components.Add(button.RectTransform);
 			base.Add(cuiElement);
-			if (!string.IsNullOrEmpty(button.Text.Text))
+			if (!String.IsNullOrEmpty(button.Text.Text))
 			{
 				CuiElement cuiElement1 = new CuiElement()
 				{
@@ -40,7 +40,7 @@ namespace Oxide.Game.Rust.Cui
 
 		public string Add(CuiLabel label, string parent = "Hud", string name = null)
 		{
-			if (string.IsNullOrEmpty(name))
+			if (String.IsNullOrEmpty(name))
 			{
 				name = CuiHelper.GetGuid();
 			}
@@ -58,7 +58,7 @@ namespace Oxide.Game.Rust.Cui
 
 		public string Add(CuiPanel panel, string parent = "Hud", string name = null)
 		{
-			if (string.IsNullOrEmpty(name))
+			if (String.IsNullOrEmpty(name))
 			{
 				name = CuiHelper.GetGuid();
 			}

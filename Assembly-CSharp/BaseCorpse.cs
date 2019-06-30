@@ -191,6 +191,11 @@ public class BaseCorpse : BaseCombatEntity
 		return rigidbody;
 	}
 
+	public override bool ShouldInheritNetworkGroup()
+	{
+		return false;
+	}
+
 	public void TakeChildren(BaseEntity takeChildrenFrom)
 	{
 		if (takeChildrenFrom.children == null)

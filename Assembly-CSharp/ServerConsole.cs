@@ -76,13 +76,9 @@ public class ServerConsole : SingletonComponent<ServerConsole>
 			{
 				return;
 			}
-			if (message.StartsWith("[Physics.PhysX] RigidBody::setRigidBodyFlag"))
-			{
-				return;
-			}
 			if (type == LogType.Warning)
 			{
-				if (message.StartsWith("HDR RenderTexture format is not") || message.StartsWith("The image effect") || message.StartsWith("Image Effects are not supported on this platform") || message.StartsWith("[AmplifyColor]") || message.StartsWith("Skipping profile frame."))
+				if (message.StartsWith("HDR RenderTexture format is not") || message.StartsWith("The image effect") || message.StartsWith("Image Effects are not supported on this platform") || message.StartsWith("[AmplifyColor]") || message.StartsWith("Skipping profile frame.") || message.StartsWith("Kinematic body only supports Speculative Continuous collision detection"))
 				{
 					return;
 				}

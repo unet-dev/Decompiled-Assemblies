@@ -1,10 +1,11 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TeamMemberElement : MonoBehaviour
 {
-	public Text nameText;
+	public TextMeshProUGUI nameText;
 
 	public RawImage icon;
 

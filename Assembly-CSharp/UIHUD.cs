@@ -16,6 +16,10 @@ public class UIHUD : SingletonComponent<UIHUD>, IUIScreen
 
 	public HudElement VehicleHealth;
 
+	public HudElement AnimalStamina;
+
+	public HudElement AnimalStaminaMax;
+
 	public RawImage compassStrip;
 
 	public CanvasGroup compassGroup;
